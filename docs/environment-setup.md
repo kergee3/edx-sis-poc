@@ -2,7 +2,7 @@
 
 ローカル開発に必要な外部サービス（Turso / Google OAuth / LINE Login）のセットアップと `.env.local` の作成手順をまとめたドキュメント。初回セットアップ時、または別マシンで環境を再構築する際のリファレンスとして使う。
 
-DB は **Turso (SQLite, 東京 NRT)** 1 系統。認証・ログイン履歴・ユーザ設定・業務テーブル（todos / routines / packing）をすべて同一 DB に集約している。接続情報（`TURSO_DATABASE_URL` / `TURSO_AUTH_TOKEN`）を `.env.local` に揃える必要がある。
+DB は **Turso (SQLite, 東京 NRT)** 1 系統。認証・ログイン履歴・ユーザ設定をすべて同一 DB に集約している（業務テーブルは今後の機能実装時に追加）。接続情報（`TURSO_DATABASE_URL` / `TURSO_AUTH_TOKEN`）を `.env.local` に揃える必要がある。
 
 関連ドキュメント: [dev-guideline.md](dev-guideline.md) / [architecture-guidelines.md](architecture-guidelines.md)
 
@@ -22,10 +22,10 @@ DB は **Turso (SQLite, 東京 NRT)** 1 系統。認証・ログイン履歴・�
 
 1. [turso.tech](https://turso.tech/) にサインアップ（GitHub アカウント可）し、Turso CLI を入れるかブラウザ Dashboard を使う
 2. **Create Database** から新規 DB を作成
-   - **Database name**: `life-todo`（任意）
+   - **Database name**: `jtp-mj-font`（任意）
    - **Region group**: `nrt` (Tokyo) を選ぶ
 3. 作成した DB のページから **Database URL**（`libsql://...`）と **Auth Token** を取得
-   - CLI なら `turso db show life-todo --url` / `turso db tokens create life-todo`
+   - CLI なら `turso db show jtp-mj-font --url` / `turso db tokens create jtp-mj-font`
 4. `.env.local` に `TURSO_DATABASE_URL` と `TURSO_AUTH_TOKEN` として貼る
 
 ---
@@ -184,11 +184,6 @@ npm run db:migrate:turso   # Turso に適用
 - `verificationToken`
 - `login_history`
 - `user_preferences`
-- `todos`
-- `routines`
-- `routine_completions`
-- `packing_sets`
-- `packing_items`
 
 ---
 
@@ -199,7 +194,7 @@ npm run dev
 ```
 
 1. [http://localhost:3000/](http://localhost:3000/) → `/home` にリダイレクトされる
-2. ナビゲーションの **アカウント** をクリック → Google サインインへ自動リダイレクト
+2. 右下のユーザーメニューから **サインイン**（Google または LINE）を選ぶ
 3. テストユーザーとして登録したアカウントでサインイン
 4. `/account` に戻り、アバター・メール・「ログイン履歴へ」リンクが表示される
 5. Drizzle Studio (`npm run db:studio:turso`) の `login_history` テーブルに 1 行追加されている

@@ -1,6 +1,6 @@
 # 設計方針
 
-このドキュメントは、dev-memo で採用する技術スタックに対する設計方針を整理したものです。関連ドキュメント: [推奨ディレクトリ構成](directory-structure.md) / [コーディング規約](coding-guidelines.md)。
+このドキュメントは、本プロジェクト（jtp-mj-font）で採用する技術スタックに対する設計方針を整理したものです。関連ドキュメント: [推奨ディレクトリ構成](directory-structure.md) / [コーディング規約](coding-guidelines.md)。
 
 ## 前提
 
@@ -57,7 +57,7 @@
 | Webhook 受信、外部公開 API、OAuth コールバック、ファイルストリーム | Route Handler | `app/api/**/route.ts` に置く |
 | サーバーからサーバーへの内部 RPC 的呼び出し | Route Handler | 認証ヘッダで保護する |
 
-いずれの場合も、実処理本体は `server/services` に置き、Action / Handler は薄い受け口に保つ。実例として、xlsx エクスポートはストリーム返却のため Route Handler（`app/api/export/route.ts`）、xlsx インポートはユーザの DB を更新するため Server Action（`features/data-transfer/actions.ts`）に分かれている。
+いずれの場合も、実処理本体は `server/services` に置き、Action / Handler は薄い受け口に保つ。例えば、ファイルストリーム返却が必要な処理は Route Handler、ユーザの DB を更新する処理は Server Action に分けて受ける。
 
 ### 大きな入力を受ける Server Action
 
@@ -90,9 +90,9 @@
 
 ### キャッシュとタグ無効化
 
-- 一覧取得系の service は `unstable_cache(fn, key, { tags, revalidate })` でラップする。タグ名は `server/cache/tags.ts` の `todosTag(userId)` などのヘルパで必ず生成し、文字列リテラルを直接書かない（ユーザ ID を含めることで他ユーザのキャッシュを巻き込まないため）
+- 一覧取得系の service は `unstable_cache(fn, key, { tags, revalidate })` でラップする。タグ名は `server/cache/tags.ts` の `preferencesTag(userId)` などのヘルパで必ず生成し、文字列リテラルを直接書かない（ユーザ ID を含めることで他ユーザのキャッシュを巻き込まないため）
 - 更新系 Server Action は処理成功後に `updateTag(<tag>(userId))` を呼んで対応するキャッシュを失効させる。ページ単位の `revalidatePath` には頼らず、service が握っているタグを起点に無効化する
-- 横断機能（例: data-transfer のインポート）は影響範囲のタグを必要に応じて複数立てる
+- 複数ドメインを更新する横断的な処理は、影響範囲のタグを必要に応じて複数立てる
 
 ### 保存先の責務分担
 
@@ -100,7 +100,7 @@
   - 認証: `user` / `account` / `session` / `verificationToken`
   - ログイン履歴: `login_history`
   - ユーザ設定: `user_preferences`
-  - 業務: `todos` / `routines` / `routine_completions` / `packing_sets` / `packing_items`
+  - 業務: 各機能のテーブル（今後 edu / gov / roster 等の実装時に追加）
   - ほか Blob メタデータ、監査ログもここに置く
 - Blob: 画像、CSV、PDF、生成成果物
 
@@ -114,7 +114,7 @@
 ## 認証と認可
 
 - Auth.js v5 を認証に限定して使い、セッションは JWT 戦略を採用する
-- ログインプロバイダは Google OAuth を採用する。他プロバイダ（GitHub、Email Magic Link など）は必要が生じた時点で追加する
+- ログインプロバイダは Google と LINE を採用する。他プロバイダ（GitHub、Email Magic Link など）は必要が生じた時点で追加する
 - Credentials プロバイダ（自前 ID / パスワード）は採用しない
 - ログイン状態の確認と操作権限の確認は別の責務として扱う
 - 権限モデルは role または permission として DB に保持する

@@ -17,18 +17,18 @@ MUI 主体の UI 設計、Next.js App Router を中心としたアプリケー�
 
 - Runtime: Node.js 22 LTS
 - Package Manager: npm
-- Language: TypeScript / Python (ETL)
+- Language: TypeScript / Python（webfont のフォント変換）
 - Frontend: React / Next.js (App Router)
 - Backend: Next.js (Route Handlers / Server Actions)
 - Styling: MUI Theme（正本。Tailwind は未導入。補助スタイリングが必要になった場合に改めて導入可否を判断する）
 - Component Library: Material UI
 - DB Access: Drizzle ORM（`drizzle-orm/libsql`）
-- RDB: Turso / SQLite (東京 NRT) 1 系統（認証・履歴・ユーザ設定・業務テーブル todos / routines / packing をすべて集約）
+- RDB: Turso / SQLite (東京 NRT) 1 系統（認証・履歴・ユーザ設定と、今後追加する各機能のテーブルをすべて単一 DB に集約）
 - Blob: Vercel Blob
-- Auth: Auth.js (Google OAuth / JWT セッション)
+- Auth: Auth.js v5（Google / LINE OAuth、JWT セッション）
 - Validation: Zod（入出力境界と env 検証で使用）
 - Form: React Hook Form（クライアント側のフォーム状態・バリデーション統合。Zod スキーマと `@hookform/resolvers/zod` で連携。既存フォームには未適用のものが残っており、新規フォームから段階的に切り替える前提）
-- Spreadsheet: exceljs（xlsx の読み書き。`features/data-transfer/services/workbook-build.ts` / `workbook-parse.ts` で使用）
+- Spreadsheet: exceljs（xlsx 読み書き用。依存は残るが現状未使用。データ入出力機能を実装する際に使用予定）
 - Date Utility: date-fns（カレンダー演算ヘルパーは [src/lib/date.ts](../src/lib/date.ts) に集約。TZ 非依存な演算には `@date-fns/utc` の `UTCDate` を併用。表示は `Intl.DateTimeFormat` を継続。MUI X DatePicker 導入時は `AdapterDateFns` を採用予定）
 - State Management: React Context を標準とし、Context で扱いきれない規模・性能要件が出た時点で Zustand に切り替える（インストールは escalate するタイミング）
 - Unit Test: Vitest（ソースとコロケーションした `*.test.ts` を対象。業務ロジックとデータ変換を優先）

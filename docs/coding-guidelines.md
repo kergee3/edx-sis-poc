@@ -17,7 +17,7 @@
 - **Auth.js（JWT セッション）**: 認証のみに使用する
 - **Zod**: 入出力境界のバリデーションと `lib/env` の環境変数検証に使用する
 - **React Hook Form**: クライアント側のフォーム状態管理とバリデーションに使用する（新規フォームから順次採用。既存フォームには `useState` + `useTransition` で書かれたものが残っており、機能追加・修正のタイミングで置き換える前提）。詳細は [フォーム](#フォーム) を参照
-- **exceljs**: xlsx の読み書き。`features/data-transfer/services/` でのみ使用する
+- **exceljs**: xlsx 読み書き用。依存は残るが現状未使用（データ入出力機能の実装時に使用予定）
 - **Vitest**: ユニットテスト用。ソースとコロケーションした `*.test.ts` を対象。詳細は [テスト](#テスト) を参照
 - **Playwright**: E2E / 統合テスト用。トップレベル `tests/` に配置。詳細は [テスト](#テスト) を参照
 - **Prettier + `prettier-plugin-tailwindcss`**: コードフォーマッタ。ESLint とのルール衝突は `eslint-config-prettier` で抑止する。詳細は [フォーマット](#フォーマット) を参照
@@ -52,7 +52,7 @@
   - 例外として、ヘッダのみで取得処理を伴わない静的ページ（例: `about` 等）は省略してよい
 - 構造は対応する page.tsx の **外枠を同じに保つ**（`Card` / `CardContent` / [PageHeader](../src/components/layout/PageHeader.tsx) など）。本物のコンテンツに切り替わった瞬間にレイアウトがジャンプしないようにするため
 - スケルトン本体は共通コンポーネント [PageContentSkeleton](../src/components/layout/PageContentSkeleton.tsx) を使う。スケルトンの見た目を個別ページで作り込まない。`rows` 等の prop で粒度だけ揃える
-- 参考実装: [src/app/todo/loading.tsx](../src/app/todo/loading.tsx) / [src/app/routines/loading.tsx](../src/app/routines/loading.tsx) / [src/app/packing/loading.tsx](../src/app/packing/loading.tsx) / [src/app/home/loading.tsx](../src/app/home/loading.tsx)
+- 参考実装: [src/app/home/loading.tsx](../src/app/home/loading.tsx)
 
 ## MUI とスタイリング
 
@@ -106,7 +106,7 @@
 ### キャッシュとタグ無効化
 
 - 一覧取得は service で `unstable_cache(fn, key, { tags, revalidate })` で包む
-- タグは `server/cache/tags.ts` のヘルパ（`todosTag(userId)` 等）経由で生成する。文字列リテラルを直接書かない（ユーザ ID をキーに含めて他ユーザのキャッシュを巻き込まないため）
+- タグは `server/cache/tags.ts` のヘルパ（`preferencesTag(userId)` 等）経由で生成する。文字列リテラルを直接書かない（ユーザ ID をキーに含めて他ユーザのキャッシュを巻き込まないため）
 - 更新系 Server Action は処理成功後に `updateTag(<tag>(userId))` を呼んで対応するキャッシュを失効させる。`revalidatePath` は最終手段（認証関連レイアウト等、タグでは表現しづらい範囲に限定）
 
 ## 認証と認可

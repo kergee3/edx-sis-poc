@@ -23,20 +23,16 @@
     │   ├── layout.tsx
     │   └── page.tsx
     ├── features/
-    │   ├── login-history/
+    │   ├── login-history/        # 実装済み。新機能の参照実装
     │   │   ├── components/
     │   │   ├── services/
     │   │   ├── schema/
     │   │   ├── types/
     │   │   └── actions.ts
-    │   ├── data-transfer/        # 複数機能を横断する xlsx エクスポート / インポート
+    │   ├── auth/
     │   │   ├── components/
-    │   │   ├── schema/
-    │   │   ├── services/
     │   │   └── actions.ts
-    │   └── auth/
-    │       ├── components/
-    │       └── actions.ts
+    │   └── home/, edu/, gov/, roster/  # 機能スキャフォルド（現状 components/*Placeholder.tsx のみ）
     ├── components/
     │   ├── mui/
     │   ├── layout/
@@ -55,7 +51,7 @@
     │   │       └── client.ts    # getTursoDb()
     │   ├── repositories/
     │   ├── services/
-    │   ├── cache/               # unstable_cache 用タグ生成（todosTag 等）
+    │   ├── cache/               # unstable_cache 用タグ生成（preferencesTag 等）
     │   ├── auth/
     │   └── adapters/
     ├── lib/
@@ -83,7 +79,7 @@
 - 画面に近い処理はここに寄せる
 - Server Action は `features/*/actions.ts` に定義し、実処理は `server/services` を呼び出す
 - DB 直接操作やインフラ依存は server 側へ逃がす
-- 単一ドメインに収まらない横断機能（例: `data-transfer` の xlsx エクスポート / インポート）も `features/<横断機能名>/` を切って独立させる。複数ドメインに跨る読み書きが必要なときは、横断機能側からドメイン services / repositories を呼び出す（個別ドメインの features 配下に紛れ込ませない）
+- 単一ドメインに収まらない横断機能（例: 複数機能をまたぐ xlsx 入出力のような処理）も `features/<横断機能名>/` を切って独立させる。複数ドメインに跨る読み書きが必要なときは、横断機能側からドメイン services / repositories を呼び出す（個別ドメインの features 配下に紛れ込ませない）
 
 ### components
 
@@ -102,7 +98,7 @@
 - サーバー専用コードを置く
 - DB 接続、Drizzle スキーマ、マイグレーション、リポジトリ、アプリケーションサービス、認証、外部サービスアダプタを管理する
 - DB は Turso (SQLite, 東京 NRT) 1 系統: 認証・履歴・ユーザ設定・業務テーブルをすべて単一 DB に集約
-- Turso は `server/db/turso/schema/`（`auth.ts` / `login-history.ts` / `user-preferences.ts` / `todo.ts` / `routines.ts` / `packing.ts`）+ `server/db/turso/migrations/` + `server/db/turso/client.ts` (`getTursoDb()`)
+- Turso は `server/db/turso/schema/`（現状 `auth.ts` / `login-history.ts` / `user-preferences.ts` / `index.ts`。機能追加時にテーブルを足す）+ `server/db/turso/migrations/` + `server/db/turso/client.ts` (`getTursoDb()`)
 - リポジトリは `getTursoDb()` を import して使う。全テーブルが同一 DB に同居するため、ユーザ削除など複数テーブルに跨る整理は単一トランザクションで `server/services/user-deletion.ts` を経由
 - `server/auth/` はセッション検証、認可ロジック、権限判定を担う（UI 側の認証画面は `features/auth/` と分離する）
 - `server/cache/` は `unstable_cache` 用のタグ名生成ヘルパを置く。生成済みタグは services の `unstable_cache({ tags })` と Server Action の `updateTag(...)` の両側から参照する
