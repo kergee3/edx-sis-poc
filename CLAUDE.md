@@ -4,11 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## プロジェクト概要
 
-**jtp-mj-font** は「文字情報基盤(MJ)の漢字を Web フォントとして使う」実証実験プロジェクトで、2 つの独立した部分からなる。
+**jtp-mj-font** は「文字情報基盤(MJ)の漢字を Web フォントとして使う」実証から出発し、その応用として**校務支援システムの PoC** を作るプロジェクト。2 つの独立した部分からなる。
 
-- **`src/`（Web アプリ）** — Next.js 16 App Router + MUI v7 のアプリ。**現状は基盤のみ実装済みで、業務機能はこれから**。
-  - 実装済みの基盤: 認証（Google / LINE, Auth.js v5）、ログイン履歴（サーバ＋クライアント）、Turso(SQLite) への一本化、MUI Theme。
-  - 機能（`home` / `edu`＝教育 / `gov`＝行政 / `roster`＝名簿）は**プレースホルダ表示のみのスキャフォールド**で、業務ロジックは未着手。
+- **`src/`（Web アプリ）= SSS-PoC（School affairs Support System - Proof of Concept）** — IPAmjexMincho Web フォントを活かした**校務支援システムの実証実験**。Next.js 16 App Router + MUI v7。**現状は基盤のみ実装済みで、業務機能はこれから**。
+  - 想定シナリオ: 小さな離島の小さな中学校。ログインした校長先生がワンマンで全校生徒の先生＋事務を兼ねて校務を行う（生徒定員 25 名・各学年 5 名で初期 15 名在籍）。氏名の MJ特有文字（戸籍漢字等）を IPAmjexMincho で正しく表示するのが眼目。
+  - 実装済みの基盤: 認証（Google / LINE, Auth.js v5）、ログイン履歴（サーバ＋クライアント）、右上ユーザーメニュー（ログアウト / About / ログイン履歴）、Turso(SQLite) への一本化、MUI Theme。
+  - 機能（`home`＝位置づけ説明 / `students`＝生徒一覧 / `interop`＝データ連携）は**プレースホルダ表示のみのスキャフォールド**で、業務ロジックは未着手。`students` は名簿の転入/転出/編集・在学/成績証明書発行、`interop` は学齢簿インポート・OneRoster 入出力を担う予定。業務ドメインの設計は [docs/design/](docs/design/) を参照。
 - **`webfont/`（フォント変換ツール, 実装ひと段落）** — IPAmj明朝 + IPAex明朝 を 1 フォント **IPAmjexMincho** に合成し、256 サブセット WOFF2 として Vercel に配信するツール。主に Python（fonttools）。**変換から配信まで完成・稼働中**（公開先 https://ipamjexmincho.shumy.app）。詳細は [webfont/README.md](webfont/README.md)。
 
 Node 22 LTS、npm。
@@ -68,7 +69,7 @@ server/db (schema、migrations、client)
 - **middleware** (`middleware.ts`) はログイン要否の判定のみ。リソース単位の認可は service / Server Action 側で
 - UI 層から Drizzle や SaaS の SDK を直接呼ばない
 
-現在の `src/features/`: `auth`（実装済）/ `login-history`（実装済）/ `home` `edu` `gov` `roster`（いずれも `components/*Placeholder.tsx` のみのスキャフォールド）。
+現在の `src/features/`: `auth`（実装済）/ `login-history`（実装済）/ `home` `students` `interop`（いずれも `components/*Placeholder.tsx` のみのスキャフォールド）。
 
 ### 認証プロバイダ（Google / LINE）
 
@@ -98,7 +99,7 @@ server/db (schema、migrations、client)
 ## ナビゲーションの追加
 
 - 左メニュー/ボトムナビに項目を追加するときは [src/app/ClientLayout.tsx](src/app/ClientLayout.tsx) の `navigationItems` 配列にエントリを足す。ログイン必須なら `requiresAuth: true`。配列はハードコードで、他に登録場所はない
-- 現在のエントリ: ホーム(`/home`, 公開) / 教育(`/edu`) / 行政(`/gov`) / 名簿(`/roster`)。後ろ 3 つは `requiresAuth: true`
+- 現在のエントリ: ホーム(`/home`, 公開) / 生徒一覧(`/students`) / データ連携(`/interop`)。後ろ 2 つは `requiresAuth: true`
 
 ## webfont サブプロジェクト
 
@@ -132,6 +133,6 @@ src を本格実装する際にあわせて整理するとよい既存の不整�
 
 ## スコープの健全性
 
-- `home` / `edu` / `gov` / `roster` は**プレースホルダ**。着手するときは [src/features/login-history/](src/features/login-history/) を参照実装として、`actions.ts` / `schema/` / `services/`（`format.ts` の `toView()`）/ `components/` を同じ構造で起こす
+- `home` / `students` / `interop` は**プレースホルダ**。着手するときは [src/features/login-history/](src/features/login-history/) を参照実装として、`actions.ts` / `schema/` / `services/`（`format.ts` の `toView()`）/ `components/` を同じ構造で起こす
 - 将来の機能を先回りしてスキャフォールドしない。今やる 1 機能に集中する
 - 依存追加は事前に確認する。テスト導入時に `vitest` 一式 + `@playwright/test`、フォーム本格化時に `react-hook-form` + `@hookform/resolvers` を初回利用時にまとめて install する前提（docs で未決）
