@@ -4,6 +4,14 @@
 
 > 区別: `docs/references/` ＝外部出典の保管・索引（再配布条件つき）。本フォルダ＝派生的な設計・調査成果物（自由に更新）。
 
+## 用語（英語表記）
+
+| 日本語 | 英語表記 | 略称 |
+| --- | --- | --- |
+| 学習eポータル | Learning e-Portal | — |
+| 校務支援システム | School affairs support system | SSS |
+| 学習ツール | Learning tool | — |
+
 ## 一覧
 
 | ファイル | 内容 |
