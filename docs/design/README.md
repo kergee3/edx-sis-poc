@@ -1,0 +1,15 @@
+# 設計・調査ドキュメント
+
+本プロジェクトが自ら作成する**設計・調査ドキュメント**の置き場所。外部の一次資料（政府PDF/xlsx・外部リンク集）は [docs/references/](../references/) にあり、本フォルダはそれらを踏まえて**自分たちで育てていく**文書を置く。
+
+> 区別: `docs/references/` ＝外部出典の保管・索引（再配布条件つき）。本フォルダ＝派生的な設計・調査成果物（自由に更新）。
+
+## 一覧
+
+| ファイル | 内容 |
+| --- | --- |
+| [gakureibo-acceptance-data-items.md](gakureibo-acceptance-data-items.md) | 学校受入に必要な最小限データ項目（入学・転入学）。学齢簿 標準仕様書からの抽出・整理 |
+| [koumu-eportal-student-data-model.md](koumu-eportal-student-data-model.md) | 校務支援システムと学習eポータルにおける児童生徒情報の持ち方。§5.0 に**文字集合の分類（JIS文字／MJ文字／MJ特有文字）の用語定義（正本）** |
+| [student-schema-design.md](student-schema-design.md) | 児童生徒スキーマ設計（あるべき持ち方とステージ別データ充足）。論理モデル＋Drizzle＋OneRoster写像 |
+
+読み順は上から（学齢簿の受入項目 → 校務支援/eポータルでの持ち方 → 具体スキーマ設計）。

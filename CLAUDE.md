@@ -28,7 +28,7 @@ Node 22 LTS、npm。
 
 環境構築（Turso / Google OAuth / LINE Login / `.env.local`）の手順は [docs/environment-setup.md](docs/environment-setup.md) を参照。
 
-政府機関などが公開する**外部仕様書 PDF** は [docs/references/](docs/references/) に置き、出典・取得日・再配布条件を [docs/references/README.md](docs/references/README.md) の索引で管理する。
+政府機関などが公開する**外部仕様書 PDF** は [docs/references/](docs/references/) に置き、出典・取得日・再配布条件を [docs/references/README.md](docs/references/README.md) の索引で管理する。それらを踏まえて本プロジェクトが作成する**設計・調査ドキュメント**は [docs/design/](docs/design/)（外部資料とは分離）。
 
 ## コマンド
 
