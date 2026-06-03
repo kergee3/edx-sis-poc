@@ -69,11 +69,6 @@ CREATE TABLE `login_history` (
 CREATE INDEX `login_history_user_logged_at_idx` ON `login_history` (`user_id`,"logged_in_at" desc);--> statement-breakpoint
 CREATE TABLE `user_preferences` (
 	`user_id` text PRIMARY KEY NOT NULL,
-	`routines_expand_tomorrow` integer DEFAULT true NOT NULL,
-	`routines_expand_day_after_tomorrow` integer DEFAULT true NOT NULL,
-	`routines_history_retention_days` integer DEFAULT 7 NOT NULL,
-	`packing_expand_first_n` integer DEFAULT 3 NOT NULL,
-	`packing_show_reset_button` integer DEFAULT false NOT NULL,
 	`created_at` integer NOT NULL,
 	`updated_at` integer NOT NULL,
 	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade

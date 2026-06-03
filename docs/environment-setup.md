@@ -22,10 +22,10 @@ DB は **Turso (SQLite, 東京 NRT)** 1 系統。認証・ログイン履歴・�
 
 1. [turso.tech](https://turso.tech/) にサインアップ（GitHub アカウント可）し、Turso CLI を入れるかブラウザ Dashboard を使う
 2. **Create Database** から新規 DB を作成
-   - **Database name**: `jtp-mj-font`（任意）
+   - **Database name**: `edx-poc`（任意）
    - **Region group**: `nrt` (Tokyo) を選ぶ
 3. 作成した DB のページから **Database URL**（`libsql://...`）と **Auth Token** を取得
-   - CLI なら `turso db show jtp-mj-font --url` / `turso db tokens create jtp-mj-font`
+   - CLI なら `turso db show edx-poc --url` / `turso db tokens create edx-poc`
 4. `.env.local` に `TURSO_DATABASE_URL` と `TURSO_AUTH_TOKEN` として貼る
 
 ---

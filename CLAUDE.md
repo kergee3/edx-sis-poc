@@ -125,11 +125,11 @@ server/db (schema、migrations、client)
 
 src を本格実装する際にあわせて整理するとよい既存の不整合（**新規にこれらへ依存しない**）:
 
-- `user_preferences` に `routines*` / `packing*` の**未使用カラム**が残存（現機能では参照されない）
 - [tsconfig.json](tsconfig.json) の `include` に**存在しない** `drizzle.neon.config.ts` への参照
 - `exceljs` / `@vercel/blob` 等、旧 data-transfer 用の依存が残るが**現状未使用**（README / 旧 CLAUDE が触れていた `data-transfer` / `app/api/export` は**未実装**）
 - [src/app/about/page.tsx](src/app/about/page.tsx) の説明文が旧アプリ（やること/いつもの/もちもの）のまま
-- Turso の古いマイグレーションに `todos` / `packing_*` 等の旧テーブル定義が含まれる（現スキーマには無い）
+
+> 解消済み: `user_preferences` の `routines*` / `packing*` 未使用カラムと、旧マイグレーションの `todos` / `packing_*` 等の死蔵テーブル定義は、Turso を `edx-poc` へ切り替える際にクリーンな単一ベースライン（[migrations/0000_conscious_turbo.sql](src/server/db/turso/migrations/0000_conscious_turbo.sql)）へ作り直して除去済み。`user_preferences` は `user_id` + timestamps のみのスカフォールド。
 
 ## スコープの健全性
 

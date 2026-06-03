@@ -6,26 +6,9 @@ export const userPreferences = sqliteTable('user_preferences', {
     .primaryKey()
     .references(() => users.id, { onDelete: 'cascade' }),
 
-  routinesExpandTomorrow: integer('routines_expand_tomorrow', {
-    mode: 'boolean',
-  })
-    .notNull()
-    .default(true),
-  routinesExpandDayAfterTomorrow: integer('routines_expand_day_after_tomorrow', {
-    mode: 'boolean',
-  })
-    .notNull()
-    .default(true),
-  routinesHistoryRetentionDays: integer('routines_history_retention_days')
-    .notNull()
-    .default(7),
-
-  packingExpandFirstN: integer('packing_expand_first_n').notNull().default(3),
-  packingShowResetButton: integer('packing_show_reset_button', {
-    mode: 'boolean',
-  })
-    .notNull()
-    .default(false),
+  // 現状は永続化する実設定が無いため userId + timestamps のみのスカフォールド。
+  // 実設定を足すときは列をここに追加し、login-history を参照実装に
+  // services/repositories/format(toView) を起こす。
 
   createdAt: integer('created_at', { mode: 'timestamp_ms' })
     .notNull()
