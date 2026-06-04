@@ -23,11 +23,10 @@ export function toView(entry: RosterEntry): StudentView {
     id: student.id,
     attendanceLabel,
     gradeClassLabel,
-    displayName: `${student.preferredFamilyName}${FULLWIDTH_SPACE}${student.preferredGivenName}`,
-    officialFamilyLabel:
-      student.officialFamilyName === student.preferredFamilyName
-        ? '←'
-        : student.officialFamilyName,
+    preferredFamilyName: student.preferredFamilyName,
+    preferredGivenName: student.preferredGivenName,
+    officialFamilyName: student.officialFamilyName,
+    isOfficialSameAsPreferred: student.officialFamilyName === student.preferredFamilyName,
     kanaName: `${student.kanaFamilyName}${FULLWIDTH_SPACE}${student.kanaGivenName}`,
     sexLabel: student.sex ?? '(不明)',
     birthDateLabel: birthDateFormatter.format(student.birthDate),
