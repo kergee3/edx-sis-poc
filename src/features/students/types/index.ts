@@ -5,6 +5,10 @@ export interface StudentView {
   attendanceLabel: string;
   /** 学年・組（例: '1年1組'） */
   gradeClassLabel: string;
+  /** 学年（並べ替え用の数値。未在籍は末尾へ送るため大きな値） */
+  gradeSort: number;
+  /** 生年月日のエポックミリ秒（並べ替え用） */
+  birthDateMs: number;
   /** 表示名の苗字（preferred 苗字。JIS文字・通常フォント） */
   preferredFamilyName: string;
   /** 表示名の名前（preferred 名。JIS文字・通常フォント） */

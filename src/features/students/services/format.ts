@@ -16,6 +16,9 @@ export function toView(entry: RosterEntry): StudentView {
   const gradeClassLabel =
     enrollment?.className ?? (enrollment?.grade ? `${enrollment.grade}年` : '(未在籍)');
 
+  const parsedGrade = enrollment?.grade != null ? Number(enrollment.grade) : Number.NaN;
+  const gradeSort = Number.isFinite(parsedGrade) ? parsedGrade : Number.MAX_SAFE_INTEGER;
+
   const attendanceLabel =
     enrollment?.attendanceNumber != null ? String(enrollment.attendanceNumber) : EMPTY;
 
@@ -23,6 +26,8 @@ export function toView(entry: RosterEntry): StudentView {
     id: student.id,
     attendanceLabel,
     gradeClassLabel,
+    gradeSort,
+    birthDateMs: student.birthDate.getTime(),
     preferredFamilyName: student.preferredFamilyName,
     preferredGivenName: student.preferredGivenName,
     officialFamilyName: student.officialFamilyName,

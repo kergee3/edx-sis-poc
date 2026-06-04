@@ -32,7 +32,7 @@ export default async function StudentsPage() {
               >
                 IPAmjexMincho Web フォント
               </Link>
-              で表示しているため、MJ特有文字（戸籍漢字等）も正しく表示されます。
+              で表示しているため、JIS X 0213に含まれない文字情報基盤の文字も正しく表示されます。
             </Typography>
           </>
         ) : (
