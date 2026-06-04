@@ -27,7 +27,6 @@ import FamilyNameZoom from './FamilyNameZoom';
 /** 苗字と名前の間の全角スペース。 */
 const FULLWIDTH_SPACE = '　';
 
-type SortKey = 'gradeClass' | 'sex' | 'birthDate';
 type SortDir = 'asc' | 'desc';
 
 interface StudentsTableProps {
@@ -99,35 +98,23 @@ export default function StudentsTable({ items }: StudentsTableProps) {
   const [visibleSex, setVisibleSex] = useState<Set<string>>(
     () => new Set(items.map((i) => i.sexLabel)),
   );
-  const [sort, setSort] = useState<{ key: SortKey; dir: SortDir } | null>(null);
+  // 生年月日のみ並べ替え可能（未ソート時は元の順＝学年→出席番号）
+  const [sortDir, setSortDir] = useState<SortDir | null>(null);
 
-  const handleSort = useCallback((key: SortKey) => {
-    setSort((prev) =>
-      prev?.key === key ? { key, dir: prev.dir === 'asc' ? 'desc' : 'asc' } : { key, dir: 'asc' },
-    );
+  const handleBirthDateSort = useCallback(() => {
+    setSortDir((prev) => (prev === 'asc' ? 'desc' : 'asc'));
   }, []);
 
   const rows = useMemo(() => {
     const filtered = items.filter(
       (i) => visibleGradeClass.has(i.gradeClassLabel) && visibleSex.has(i.sexLabel),
     );
-    if (!sort) return filtered;
+    if (!sortDir) return filtered;
 
-    const dir = sort.dir === 'asc' ? 1 : -1;
+    const dir = sortDir === 'asc' ? 1 : -1;
     // Array.prototype.sort は安定なので、同値は元の順（学年→出席番号）を保つ
-    return [...filtered].sort((a, b) => {
-      let cmp = 0;
-      if (sort.key === 'gradeClass') {
-        cmp = a.gradeSort - b.gradeSort;
-        if (cmp === 0) cmp = a.gradeClassLabel.localeCompare(b.gradeClassLabel, 'ja');
-      } else if (sort.key === 'sex') {
-        cmp = a.sexLabel.localeCompare(b.sexLabel, 'ja');
-      } else {
-        cmp = a.birthDateMs - b.birthDateMs;
-      }
-      return cmp * dir;
-    });
-  }, [items, visibleGradeClass, visibleSex, sort]);
+    return [...filtered].sort((a, b) => (a.birthDateMs - b.birthDateMs) * dir);
+  }, [items, visibleGradeClass, visibleSex, sortDir]);
 
   if (items.length === 0) {
     return (
@@ -149,13 +136,7 @@ export default function StudentsTable({ items }: StudentsTableProps) {
             </TableCell>
             <TableCell sx={{ fontWeight: 'bold', width: '1px', whiteSpace: 'nowrap', px: 1 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.25 }}>
-                <TableSortLabel
-                  active={sort?.key === 'gradeClass'}
-                  direction={sort?.key === 'gradeClass' ? sort.dir : 'asc'}
-                  onClick={() => handleSort('gradeClass')}
-                >
-                  学年・組
-                </TableSortLabel>
+                学年・組
                 <ColumnFilter
                   label="学年・組"
                   options={gradeClassOptions}
@@ -172,13 +153,7 @@ export default function StudentsTable({ items }: StudentsTableProps) {
             </TableCell>
             <TableCell sx={{ fontWeight: 'bold', width: '1px', whiteSpace: 'nowrap', px: 1 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.25 }}>
-                <TableSortLabel
-                  active={sort?.key === 'sex'}
-                  direction={sort?.key === 'sex' ? sort.dir : 'asc'}
-                  onClick={() => handleSort('sex')}
-                >
-                  性別
-                </TableSortLabel>
+                性別
                 <ColumnFilter
                   label="性別"
                   options={sexOptions}
@@ -189,9 +164,9 @@ export default function StudentsTable({ items }: StudentsTableProps) {
             </TableCell>
             <TableCell sx={{ fontWeight: 'bold', width: '1px', whiteSpace: 'nowrap', px: 1 }}>
               <TableSortLabel
-                active={sort?.key === 'birthDate'}
-                direction={sort?.key === 'birthDate' ? sort.dir : 'asc'}
-                onClick={() => handleSort('birthDate')}
+                active={sortDir !== null}
+                direction={sortDir ?? 'asc'}
+                onClick={handleBirthDateSort}
               >
                 生年月日
               </TableSortLabel>
