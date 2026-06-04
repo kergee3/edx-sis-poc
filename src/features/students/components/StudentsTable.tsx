@@ -27,6 +27,9 @@ import FamilyNameZoom from './FamilyNameZoom';
 /** 苗字と名前の間の全角スペース。 */
 const FULLWIDTH_SPACE = '　';
 
+/** セル左右パディング。xs（スマホ）ではスクロール無しで多くの列を見せるため狭める。 */
+const CELL_PX = { xs: 0.25, sm: 1 };
+
 type SortDir = 'asc' | 'desc';
 
 interface StudentsTableProps {
@@ -130,11 +133,13 @@ export default function StudentsTable({ items }: StudentsTableProps) {
         <TableHead>
           <TableRow>
             <TableCell
-              sx={{ fontWeight: 'bold', width: '1px', whiteSpace: 'nowrap', px: 1, textAlign: 'center' }}
+              sx={{ fontWeight: 'bold', width: '1px', whiteSpace: 'nowrap', px: CELL_PX, textAlign: 'center' }}
             >
-              出席番号
+              {/* xs（スマホ）では幅節約のため短縮表記 */}
+              <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>出席番号</Box>
+              <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>出席#</Box>
             </TableCell>
-            <TableCell sx={{ fontWeight: 'bold', width: '1px', whiteSpace: 'nowrap', px: 1 }}>
+            <TableCell sx={{ fontWeight: 'bold', width: '1px', whiteSpace: 'nowrap', px: CELL_PX }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.25 }}>
                 学年・組
                 <ColumnFilter
@@ -145,13 +150,13 @@ export default function StudentsTable({ items }: StudentsTableProps) {
                 />
               </Box>
             </TableCell>
-            <TableCell sx={{ fontWeight: 'bold', width: '1px', whiteSpace: 'nowrap', px: 1 }}>
+            <TableCell sx={{ fontWeight: 'bold', width: '1px', whiteSpace: 'nowrap', px: CELL_PX }}>
               氏名
             </TableCell>
-            <TableCell sx={{ fontWeight: 'bold', width: '1px', whiteSpace: 'nowrap', px: 1 }}>
+            <TableCell sx={{ fontWeight: 'bold', width: '1px', whiteSpace: 'nowrap', px: CELL_PX }}>
               正式苗字
             </TableCell>
-            <TableCell sx={{ fontWeight: 'bold', width: '1px', whiteSpace: 'nowrap', px: 1 }}>
+            <TableCell sx={{ fontWeight: 'bold', width: '1px', whiteSpace: 'nowrap', px: CELL_PX }}>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.25 }}>
                 性別
                 <ColumnFilter
@@ -162,7 +167,7 @@ export default function StudentsTable({ items }: StudentsTableProps) {
                 />
               </Box>
             </TableCell>
-            <TableCell sx={{ fontWeight: 'bold', width: '1px', whiteSpace: 'nowrap', px: 1 }}>
+            <TableCell sx={{ fontWeight: 'bold', width: '1px', whiteSpace: 'nowrap', px: CELL_PX }}>
               <TableSortLabel
                 active={sortDir !== null}
                 direction={sortDir ?? 'asc'}
@@ -185,9 +190,9 @@ export default function StudentsTable({ items }: StudentsTableProps) {
           ) : (
             rows.map((item) => (
               <TableRow key={item.id} hover>
-                <TableCell sx={{ px: 1, textAlign: 'center' }}>{item.attendanceLabel}</TableCell>
-                <TableCell sx={{ px: 1, whiteSpace: 'nowrap' }}>{item.gradeClassLabel}</TableCell>
-                <TableCell sx={{ px: 1, whiteSpace: 'nowrap' }}>
+                <TableCell sx={{ px: CELL_PX, textAlign: 'center' }}>{item.attendanceLabel}</TableCell>
+                <TableCell sx={{ px: CELL_PX, whiteSpace: 'nowrap' }}>{item.gradeClassLabel}</TableCell>
+                <TableCell sx={{ px: CELL_PX, whiteSpace: 'nowrap' }}>
                   <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                     <Typography component="span" variant="caption" color="text.secondary">
                       {item.kanaName}
@@ -202,7 +207,7 @@ export default function StudentsTable({ items }: StudentsTableProps) {
                 </TableCell>
                 {/* 正式苗字は MJ特有文字を含みうるため IPAmjexMincho で表示。preferred と同じなら ← */}
                 <TableCell
-                  sx={{ px: 1, whiteSpace: 'nowrap', fontFamily: FONT_MJ, fontSize: '1.575rem' }}
+                  sx={{ px: CELL_PX, whiteSpace: 'nowrap', fontFamily: FONT_MJ, fontSize: '1.575rem' }}
                 >
                   {item.isOfficialSameAsPreferred ? (
                     <FamilyNameZoom familyName={item.officialFamilyName}>←</FamilyNameZoom>
@@ -212,8 +217,8 @@ export default function StudentsTable({ items }: StudentsTableProps) {
                     </FamilyNameZoom>
                   )}
                 </TableCell>
-                <TableCell sx={{ px: 1, textAlign: 'center' }}>{item.sexLabel}</TableCell>
-                <TableCell sx={{ px: 1, whiteSpace: 'nowrap' }}>{item.birthDateLabel}</TableCell>
+                <TableCell sx={{ px: CELL_PX, textAlign: 'center' }}>{item.sexLabel}</TableCell>
+                <TableCell sx={{ px: CELL_PX, whiteSpace: 'nowrap' }}>{item.birthDateLabel}</TableCell>
               </TableRow>
             ))
           )}
