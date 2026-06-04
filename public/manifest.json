@@ -1,7 +1,7 @@
 {
-  "name": "todo",
-  "short_name": "todo",
-  "description": "生活に役立つ Web アプリ",
+  "name": "SSS-PoC",
+  "short_name": "SSS-PoC",
+  "description": "IPAmjexMincho Web フォントを活かした校務支援システムの実証実験 (SSS-PoC)",
   "icons": [
     {
       "src": "/icon-192.png",

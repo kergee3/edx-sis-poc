@@ -8,6 +8,13 @@
       "when": 1780527101799,
       "tag": "0000_conscious_turbo",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1780531468296,
+      "tag": "0001_volatile_lockjaw",
+      "breakpoints": true
     }
   ]
 }

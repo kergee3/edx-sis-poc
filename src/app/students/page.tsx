@@ -1,8 +1,10 @@
-import { Box, Card, CardContent, Typography } from '@mui/material';
+import { Box, Card, CardContent, Link, Typography } from '@mui/material';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import AppFooter from '@/components/layout/AppFooter';
-import StudentsPlaceholder from '@/features/students/components/StudentsPlaceholder';
 import SignInButton from '@/features/auth/components/SignInButton';
+import StudentsTable from '@/features/students/components/StudentsTable';
+import { toView } from '@/features/students/services/format';
+import { listRosterForUser } from '@/server/services/students';
 import { auth } from '@/server/auth/config';
 
 export default async function StudentsPage() {
@@ -19,7 +21,20 @@ export default async function StudentsPage() {
         </Box>
 
         {session?.user?.id ? (
-          <StudentsPlaceholder />
+          <>
+            <StudentsTable items={(await listRosterForUser(session.user.id)).map(toView)} />
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+              正式苗字は{' '}
+              <Link
+                href="https://ipamjexmincho.shumy.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                IPAmjexMincho Web フォント
+              </Link>
+              で表示しているため、MJ特有文字（戸籍漢字等）も正しく表示されます。
+            </Typography>
+          </>
         ) : (
           <Box sx={{ textAlign: 'center', py: 4 }}>
             <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>

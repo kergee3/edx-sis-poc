@@ -4,15 +4,17 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Analytics } from '@vercel/analytics/next';
 import { theme } from '@/theme';
+import { IPAMJEX_FONT_CSS_URL, IPAMJEX_FONT_ORIGIN } from '@/theme/fonts';
 import { auth } from '@/server/auth/config';
 import type { SessionUserView } from '@/features/auth/types';
 import "./globals.css";
 import ClientLayout from './ClientLayout';
 
 export const metadata: Metadata = {
-  title: "MJフォント",
-  description: "文字情報基盤(MJ)の漢字を Web フォントとして使うデモアプリ",
-  keywords: ["MJフォント", "文字情報基盤", "Webフォント", "Webアプリ"],
+  title: "SSS-PoC",
+  description:
+    "IPAmjexMincho Web フォントを活かした校務支援システムの実証実験 (SSS-PoC / School affairs Support System - Proof of Concept)",
+  keywords: ["SSS-PoC", "校務支援システム", "文字情報基盤", "IPAmjexMincho", "Webフォント"],
   manifest: "/manifest.json",
   icons: {
     icon: [
@@ -28,7 +30,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "MJフォント",
+    title: "SSS-PoC",
   },
 };
 
@@ -57,6 +59,11 @@ export default async function RootLayout({
 
   return (
     <html lang="ja">
+      <head>
+        {/* 氏名表示用の IPAmjexMincho Web フォント（CDN 配信の 256 サブセット CSS） */}
+        <link rel="preconnect" href={IPAMJEX_FONT_ORIGIN} crossOrigin="anonymous" />
+        <link rel="stylesheet" href={IPAMJEX_FONT_CSS_URL} />
+      </head>
       <body>
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>

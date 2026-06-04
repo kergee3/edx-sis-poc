@@ -12,15 +12,16 @@ import {
   ListItemIcon,
   ListItemText,
   Stack,
+  Link,
 } from '@mui/material';
 import {
   PhoneIphone,
   Tablet,
   Computer,
   Info as InfoIcon,
-  Checklist as ChecklistIcon,
-  Repeat as RepeatIcon,
-  WorkOutline as WorkOutlineIcon,
+  Home as HomeIcon,
+  PeopleAlt as PeopleAltIcon,
+  SyncAlt as SyncAltIcon,
 } from '@mui/icons-material';
 import AppFooter from '@/components/layout/AppFooter';
 
@@ -31,6 +32,7 @@ const techStack = [
   },
   { title: 'データベース', items: ['Drizzle ORM', 'Turso / SQLite'] },
   { title: '認証', items: ['Auth.js', 'Google', 'LINE'] },
+  { title: 'Web フォント', items: ['IPAmjexMincho'] },
   { title: 'インフラ', items: ['Vercel'] },
 ] as const;
 
@@ -50,7 +52,17 @@ export default function AboutPage() {
             概要
           </Typography>
           <Typography variant="body1" color="text.secondary" paragraph>
-            todo は、いろいろな「やることリスト」を管理する Web アプリです。
+            SSS-PoC（School affairs Support System - Proof of Concept）は、
+            <Link href="https://ipamjexmincho.shumy.app/" target="_blank" rel="noopener noreferrer">
+              IPAmjexMincho Web フォント
+            </Link>
+            を活かした校務支援システムの実証実験（PoC）です。小さな離島の小さな中学校を舞台に、
+            ログインした校長先生がワンマンで全校生徒の先生と事務を兼ねて校務を行います
+            （生徒定員 25 名・各学年 4 名で初期 12 名が在籍）。氏名に含まれる
+            MJ特有文字（戸籍漢字等）も正しく表示するのが眼目です。
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            認証（Google / LINE）・ログイン履歴・右上のユーザーメニューは実装済みです。
           </Typography>
         </Box>
 
@@ -63,29 +75,29 @@ export default function AboutPage() {
           <List>
             <ListItem alignItems="flex-start">
               <ListItemIcon>
-                <ChecklistIcon color="primary" />
+                <HomeIcon color="primary" />
               </ListItemIcon>
               <ListItemText
-                primary="やること"
-                secondary="期限・優先度・タグを付けて日々のタスクを管理。"
+                primary="ホーム"
+                secondary="アプリの位置づけと説明。ログイン後は校長として校務支援システムを操作します。"
               />
             </ListItem>
             <ListItem alignItems="flex-start">
               <ListItemIcon>
-                <RepeatIcon color="primary" />
+                <PeopleAltIcon color="primary" />
               </ListItemIcon>
               <ListItemText
-                primary="いつもの"
-                secondary="毎日・曜日別・定期的など、習慣化した行動の管理と実施記録。"
+                primary="生徒一覧"
+                secondary="生徒名簿の表示・管理（転入・転出・編集）、在学証明書・成績証明書の発行。氏名は IPAmjexMincho で表示します。（一覧表示を実装済み。管理・証明書は開発中）"
               />
             </ListItem>
             <ListItem alignItems="flex-start">
               <ListItemIcon>
-                <WorkOutlineIcon color="primary" />
+                <SyncAltIcon color="primary" />
               </ListItemIcon>
               <ListItemText
-                primary="もちもの"
-                secondary="旅行・出勤などの持ち物セットをチェックボックスのリストで管理。"
+                primary="データ連携"
+                secondary="学齢簿からのインポート、OneRoster に沿ったインポート・エクスポート。（開発中）"
               />
             </ListItem>
           </List>

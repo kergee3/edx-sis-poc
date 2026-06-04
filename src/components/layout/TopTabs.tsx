@@ -49,7 +49,7 @@ export default function TopTabs({ items, user }: TopTabsProps) {
     >
       <Toolbar sx={{ px: { xs: 1, sm: 2 } }}>
         <Typography variant="h6" component="div" sx={{ mr: 0.5, flexShrink: 0 }}>
-          MJフォント
+          SSS-PoC
         </Typography>
         <Tabs
           value={currentIndex !== -1 ? currentIndex : false}
