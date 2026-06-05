@@ -1,11 +1,8 @@
-# jtp-mj-font — IPAmjexMincho Web フォントと、それを活かす校務支援システム PoC（SSS-PoC）
+# jtp-mj-font — SSS-PoC（IPAmjexMincho Web フォントを活かした校務支援システム PoC）
 
-本リポジトリは独立した 2 つの部分からなる。
+本リポジトリは **`src/` — SSS-PoC（School affairs Support System - Proof of Concept）** アプリからなる。IPAmjexMincho Web フォントを活かした、**校務支援システム（School affairs Support System, SSS）の実証実験（PoC）**アプリ。Next.js 16 App Router + MUI v7。
 
-- **`src/` — SSS-PoC（School affairs Support System - Proof of Concept）**
-  IPAmjexMincho Web フォントを活かした、**校務支援システム（School affairs Support System, SSS）の実証実験（PoC）**アプリ。Next.js 16 App Router + MUI v7。
-- **`webfont/` — IPAmjexMincho Web フォント変換・配信ツール**
-  文字情報基盤(MJ)の漢字を Web フォント化して配信するツール。主に Python。**変換から配信まで完成・稼働中**（https://ipamjexmincho.shumy.app）。
+氏名表示に使う **IPAmjexMincho Web フォント**は、**外部に配信されているもの（https://ipamjexmincho.shumy.app）を利用する**（フォントの合成・配信ツール自体は本リポジトリには含まない）。
 
 > 背景: もともと「MJ 漢字を Web フォントとして使う」実証から出発し、その応用先として、**氏名に MJ特有文字（戸籍漢字等）が現れる校務支援システム**を PoC として作る方針に転換した。氏名の正確な表示こそ IPAmjexMincho Web フォントの価値が最も活きる領域である。
 
@@ -55,19 +52,11 @@ PoC の業務設計は、学齢簿〜校務支援システム〜学習eポータ
 
 ---
 
-## `webfont/` — IPAmjexMincho Web フォント（実装ひと段落・稼働中）
+## IPAmjexMincho Web フォント（外部配信を利用）
 
-`webfont/` は MJ フォント(ttf)を Web フォント化して配信するツールで、**変換から配信まで一通り完成**している。SSS-PoC の氏名表示はこのフォントを利用する。
+SSS-PoC の氏名表示は **IPAmjexMincho Web フォント**を利用する。IPAmj明朝 + IPAex明朝 を合成し 256 サブセットの WOFF2 として配信した Web フォントで、**外部（https://ipamjexmincho.shumy.app）で配信されているものを参照する**（本リポジトリにはフォントの合成・配信ツールは含まない）。
 
-- **合成**: IPAmj明朝 + IPAex明朝 を 1 つのフォント **IPAmjexMincho** に合成（54,857 コードポイント / 異体字(IVS) 11,833 / 縦書き対応）
-- **サブセット化**: 256 個の WOFF2 に分割し、CSS の `unicode-range` で表示に必要な分だけ遅延配信
-- **配信**: Vercel の専用静的プロジェクト＋独自ドメインで公開中 → **https://ipamjexmincho.shumy.app**
-
-ビルド・配信の詳細は次を参照:
-
-- [webfont/README.md](webfont/README.md) — サブプロジェクトの入口（前提・ビルド手順・ディレクトリ構成）
-- [フォント分析](webfont/docs/font-analysis.md) — IPAmj明朝 / IPAex明朝 の特徴比較と合成方針の根拠
-- [デプロイ手順](webfont/docs/deploy.md) — 変換物の配置・CORS/キャッシュ・独自ドメイン・更新フロー
+アプリ側は [src/theme/fonts.ts](src/theme/fonts.ts) で配信元 URL を定義し、[src/app/layout.tsx](src/app/layout.tsx) の `<link>` で CSS（`unicode-range` による遅延配信）を読み込み、正式氏名（MJ特有文字を含みうる）の表示に適用している。
 
 ---
 

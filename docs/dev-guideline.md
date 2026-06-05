@@ -17,7 +17,7 @@ MUI 主体の UI 設計、Next.js App Router を中心としたアプリケー�
 
 - Runtime: Node.js 22 LTS
 - Package Manager: npm
-- Language: TypeScript / Python（webfont のフォント変換）
+- Language: TypeScript
 - Frontend: React / Next.js (App Router)
 - Backend: Next.js (Route Handlers / Server Actions)
 - Styling: MUI Theme（正本。Tailwind は未導入。補助スタイリングが必要になった場合に改めて導入可否を判断する）

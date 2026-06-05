@@ -208,7 +208,7 @@ npm run dev
 
 ## 7. 本番デプロイ（Vercel）
 
-`src` アプリは Vercel の専用プロジェクトとして **https://sss-poc.shumy.app** に配信している（`webfont/site` の ipamjexmincho.shumy.app とは別プロジェクト）。
+`src` アプリは Vercel の専用プロジェクトとして **https://sss-poc.shumy.app** に配信している。なお氏名表示に使う IPAmjexMincho Web フォントは別途 https://ipamjexmincho.shumy.app で外部配信されており（このリポジトリの管理外）、アプリはそれを参照するだけである。
 
 - **環境変数**: Vercel の Settings → Environment Variables に、Production 用として手順 1〜3 の値（`TURSO_*` / `AUTH_SECRET` / `AUTH_GOOGLE_*` / `AUTH_LINE_*`）を登録する。加えて **`AUTH_URL=https://sss-poc.shumy.app`** を設定する（カスタムドメインでコールバック URL を正しく組み立てるため）。`NEXTAUTH_URL` はローカル専用なので本番には登録しない。`SKIP_ENV_VALIDATION` も本番では設定しない
 - **Turso**: 本番もローカルと同じ Turso DB を共用（マイグレーション適用済み）。開発と分けたい場合のみ別 DB を作って本番 env に別 URL/Token を入れる

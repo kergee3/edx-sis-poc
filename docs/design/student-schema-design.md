@@ -255,7 +255,7 @@ export type StudentGuardianRow = typeof studentGuardians.$inferSelect;
 ## 7. 設計上の注意
 
 - **個人情報の最小化（層分離）**: 住所・生年月日・保護者・成績はマスタに閉じ、連携層（eポータル/ツール/LRS）へ出さない。データ保護の主体は学校設置者（個人情報保護法66条）。
-- **文字集合の棲み分け**: 正式氏名（`official_*`, `foreign_name_kanji`）は漢字＝MJ特有文字を許容し、帳票印字・本人特定で**本プロジェクトの webfont（IPAmjexMincho）が表示を担う**。連携・画面表示は `preferred_*`（JIS文字）＋カナ。
+- **文字集合の棲み分け**: 正式氏名（`official_*`, `foreign_name_kanji`）は漢字＝MJ特有文字を許容し、帳票印字・本人特定で**外部配信の IPAmjexMincho Web フォントが表示を担う**。連携・画面表示は `preferred_*`（JIS文字）＋カナ。
 - **UUID の生成責務と引継ぎ**: 原則 B（校務支援）で `user_master_identifier`(v4) を発番。D で既存 UUID（eポータル/他校務支援由来）があればそちらを優先。転校・進学・システム移管でも引き継ぎ、1人1UUIDを目指す（標準でも今後の課題）。
 - **nullable 方針**: 取得できないことがある項目（住所/性別/国籍/外国人氏名/保護者カナ等）は nullable とし、UI は null セーフに（[AccountPanel](../../src/features/auth/components/AccountPanel.tsx) の null 安全の作法に倣う）。氏名（正式・表示・カナ）と生年月日は本人特定・必須のため NOT NULL。
 - **`students` ≠ auth `user`**: 操作者（ログインする教職員）と児童生徒（業務対象）は別エンティティ。混同して auth `user` に児童生徒属性を足さない。

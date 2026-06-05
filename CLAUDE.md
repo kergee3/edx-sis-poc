@@ -4,13 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## プロジェクト概要
 
-**jtp-mj-font** は「文字情報基盤(MJ)の漢字を Web フォントとして使う」実証から出発し、その応用として**校務支援システムの PoC** を作るプロジェクト。2 つの独立した部分からなる。
+**jtp-mj-font** は「文字情報基盤(MJ)の漢字を Web フォントとして使う」実証から出発し、その応用として**校務支援システムの PoC** を作るプロジェクト。本体は `src/` の Web アプリ。
 
 - **`src/`（Web アプリ）= SSS-PoC（School affairs Support System - Proof of Concept）** — IPAmjexMincho Web フォントを活かした**校務支援システムの実証実験**。Next.js 16 App Router + MUI v7。**現状は基盤のみ実装済みで、業務機能はこれから**。
   - 想定シナリオ: 小さな離島の小さな中学校。ログインした校長先生がワンマンで全校生徒の先生＋事務を兼ねて校務を行う（生徒定員 25 名・各学年 4 名で初期 12 名在籍）。氏名の MJ特有文字（戸籍漢字等）を IPAmjexMincho で正しく表示するのが眼目。
   - 実装済みの基盤: 認証（Google / LINE, Auth.js v5）、ログイン履歴（サーバ＋クライアント）、右上ユーザーメニュー（ログアウト / About / ログイン履歴）、Turso(SQLite) への一本化、MUI Theme。
   - 機能（`home`＝位置づけ説明 / `students`＝生徒一覧 / `interop`＝データ連携）は**プレースホルダ表示のみのスキャフォールド**で、業務ロジックは未着手。`students` は名簿の転入/転出/編集・在学/成績証明書発行、`interop` は学齢簿インポート・OneRoster 入出力を担う予定。業務ドメインの設計は [docs/design/](docs/design/) を参照。
-- **`webfont/`（フォント変換ツール, 実装ひと段落）** — IPAmj明朝 + IPAex明朝 を 1 フォント **IPAmjexMincho** に合成し、256 サブセット WOFF2 として Vercel に配信するツール。主に Python（fonttools）。**変換から配信まで完成・稼働中**（公開先 https://ipamjexmincho.shumy.app）。詳細は [webfont/README.md](webfont/README.md)。
+
+氏名表示に使う **IPAmjexMincho Web フォント**（IPAmj明朝 + IPAex明朝 を合成した 256 サブセット WOFF2）は、**外部に配信されているもの（https://ipamjexmincho.shumy.app）を利用する**。フォントの合成・配信ツール自体は本リポジトリには含まない。アプリ側の利用箇所は [src/theme/fonts.ts](src/theme/fonts.ts) / [src/app/layout.tsx](src/app/layout.tsx)。
 
 Node 22 LTS、npm。
 
@@ -45,8 +46,6 @@ npm run icons                # public/icon.svg から PWA アイコン再生成
 ```
 
 `SKIP_ENV_VALIDATION=1 npm run build` で Zod による env 検証を迂回できる（シークレット未設定の CI ビルド等）。
-
-webfont の変換・配信は npm ではなく Python ノートブック（[webfont/notebooks/build_webfont.ipynb](webfont/notebooks/build_webfont.ipynb)）と `vercel` CLI で行う。手順は [webfont/README.md](webfont/README.md) / [webfont/docs/deploy.md](webfont/docs/deploy.md)。
 
 ## アーキテクチャのレイヤ（src）
 
@@ -101,13 +100,12 @@ server/db (schema、migrations、client)
 - 左メニュー/ボトムナビに項目を追加するときは [src/app/ClientLayout.tsx](src/app/ClientLayout.tsx) の `navigationItems` 配列にエントリを足す。ログイン必須なら `requiresAuth: true`。配列はハードコードで、他に登録場所はない
 - 現在のエントリ: ホーム(`/home`, 公開) / 生徒一覧(`/students`) / データ連携(`/interop`)。後ろ 2 つは `requiresAuth: true`
 
-## webfont サブプロジェクト
+## IPAmjexMincho Web フォント（外部配信を利用）
 
-`webfont/` は src とは独立（npm ではなく Python + vercel CLI）。要点のみ:
+氏名表示に使う IPAmjexMincho Web フォントは **外部に配信されているもの（https://ipamjexmincho.shumy.app）を参照する**。フォントの合成・配信ツールは本リポジトリには含まない。
 
-- 入口は [webfont/README.md](webfont/README.md)。ビルドは [notebooks/build_webfont.ipynb](webfont/notebooks/build_webfont.ipynb) を Section 0〜7 で実行（合成→リネーム→256分割→WOFF2→配信物 `site/` 生成）
-- 配信物 `webfont/site/` は Vercel の専用静的プロジェクト（Root Directory=`webfont/site`）。**woff2(約47MB) は gitignore**し、`vercel` CLI が直接アップロードする（`site/.vercelignore` で対象に含める）
-- 公開先 https://ipamjexmincho.shumy.app。デプロイ・更新フロー・独自ドメインは [webfont/docs/deploy.md](webfont/docs/deploy.md)、合成方針の根拠は [webfont/docs/font-analysis.md](webfont/docs/font-analysis.md)
+- 配信元 URL は [src/theme/fonts.ts](src/theme/fonts.ts) の `IPAMJEX_FONT_CSS_URL` / `IPAMJEX_FONT_ORIGIN` で定義（環境変数 `IPAMJEX_FONT_CSS_URL` で上書き可）。[src/app/layout.tsx](src/app/layout.tsx) が `<link rel="preconnect">` と CSS の `<link>` を出力する
+- 適用は正式氏名（MJ特有文字を含みうる）の表示に限定（`FONT_MJ`）。アプリ全体のフォントには当てない
 - ライセンスは IPAフォントライセンス v1.0（派生名 IPAmjexMincho）
 
 ## 自明でない実装上の注意点（src）
