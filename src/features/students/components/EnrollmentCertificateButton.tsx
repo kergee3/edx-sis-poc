@@ -12,11 +12,15 @@ import {
 } from '@mui/material';
 import DescriptionIcon from '@mui/icons-material/Description';
 import PrintIcon from '@mui/icons-material/Print';
+import SailingTwoToneIcon from '@mui/icons-material/SailingTwoTone';
 import { FONT_MJ } from '@/theme/fonts';
 import type { CertificateView } from '../types';
 
 /** 苗字と名前の間の全角スペース。 */
 const FULLWIDTH_SPACE = '　';
+
+/** 印影の朱色（朱肉）。 */
+const VERMILION = '#d7000f';
 
 interface EnrollmentCertificateButtonProps {
   certificate: CertificateView;
@@ -84,6 +88,9 @@ export default function EnrollmentCertificateButton({
         <DialogContent>
           {/* 印刷対象。これ以外（操作ボタン・背景）は @media print で非表示にする。 */}
           <Box className="certificate-print-root" sx={{ px: { xs: 1, sm: 3 }, py: 2 }}>
+            <Typography variant="body2" color="text.secondary" align="right" sx={{ mb: 1 }}>
+              {certificate.certificateNumber}
+            </Typography>
             <Typography
               variant="h4"
               component="h2"
@@ -126,23 +133,11 @@ export default function EnrollmentCertificateButton({
                 <Typography sx={{ fontWeight: 'bold' }}>
                   校長　{certificate.principalName}
                 </Typography>
-                {/* 職印欄 */}
-                <Box
-                  sx={{
-                    width: 48,
-                    height: 48,
-                    border: 1,
-                    borderColor: 'text.disabled',
-                    borderRadius: 1,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'text.disabled',
-                    fontSize: '0.7rem',
-                  }}
-                >
-                  印
-                </Box>
+                {/* 職印（朱色） */}
+                <SailingTwoToneIcon
+                  aria-label="校長の印"
+                  sx={{ fontSize: 52, color: VERMILION }}
+                />
               </Box>
             </Box>
           </Box>

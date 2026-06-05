@@ -16,6 +16,26 @@ const warekiFormatter = new Intl.DateTimeFormat('ja-JP-u-ca-japanese', {
   day: 'numeric',
 });
 
+/**
+ * 和暦に整形する。日本の公的書類に合わせ、元年（Intl は '1年' を返す）を '元年' に補正する。
+ * formatToParts で year パートだけを判定するため '11年' 等を誤置換しない。
+ */
+function formatWareki(date: Date): string {
+  return warekiFormatter
+    .formatToParts(date)
+    .map((part) => (part.type === 'year' && part.value === '1' ? '元' : part.value))
+    .join('');
+}
+
+/** 生徒 id から決定的に 4 桁の証明書通番を導く（PoC: 発行履歴を持たないため id 由来で固定）。 */
+function certificateNumber(studentId: string): string {
+  let sum = 0;
+  for (let i = 0; i < studentId.length; i += 1) {
+    sum = (sum + studentId.charCodeAt(i)) % 10000;
+  }
+  return `第 ${String(sum).padStart(4, '0')} 号`;
+}
+
 const EMPTY = '-';
 
 /** RosterEntry（生徒＋在籍）を一覧表示用 ViewModel に変換する。 */
@@ -106,14 +126,15 @@ export function toCertificateView(
     enrollment?.className ?? (enrollment?.grade ? `${enrollment.grade}年` : '(未在籍)');
 
   return {
+    certificateNumber: certificateNumber(student.id),
     officialFamilyName: student.officialFamilyName,
     officialGivenName: student.officialGivenName,
-    birthDateWareki: warekiFormatter.format(student.birthDate),
+    birthDateWareki: formatWareki(student.birthDate),
     sexLabel: student.sex ?? '(不明)',
     gradeClassLabel,
     schoolName: school.schoolName,
     schoolAddress: school.schoolAddress,
     principalName: school.principalName,
-    issueDateWareki: warekiFormatter.format(issuedAt),
+    issueDateWareki: formatWareki(issuedAt),
   };
 }

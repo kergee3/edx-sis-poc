@@ -6,8 +6,10 @@ import AppFooter from '@/components/layout/AppFooter';
 import SignInButton from '@/features/auth/components/SignInButton';
 import StudentDetail from '@/features/students/components/StudentDetail';
 import StudentDetailNav from '@/features/students/components/StudentDetailNav';
-import { toDetailView } from '@/features/students/services/format';
+import EnrollmentCertificateButton from '@/features/students/components/EnrollmentCertificateButton';
+import { toCertificateView, toDetailView } from '@/features/students/services/format';
 import { listRosterForUser } from '@/server/services/students';
+import { getSchoolProfileForUser } from '@/server/services/user-preferences';
 import { auth } from '@/server/auth/config';
 
 export default async function StudentDetailPage({
@@ -48,6 +50,10 @@ export default async function StudentDetailPage({
 
   const view = toDetailView(entry);
 
+  // 在籍証明書には学校プロフィール（学校名・住所・校長氏名）と発行日（本日）を合成する。
+  const school = await getSchoolProfileForUser(session.user.id, session.user.name ?? null);
+  const certificate = toCertificateView(entry, school, new Date());
+
   return (
     <Card>
       <CardContent>
@@ -59,7 +65,12 @@ export default async function StudentDetailPage({
           </Link>
         </Box>
 
-        <StudentDetailNav prevId={prevId} nextId={nextId} />
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+          <StudentDetailNav prevId={prevId} nextId={nextId} />
+          <Box sx={{ ml: 'auto' }}>
+            <EnrollmentCertificateButton certificate={certificate} />
+          </Box>
+        </Box>
 
         <StudentDetail view={view} />
 

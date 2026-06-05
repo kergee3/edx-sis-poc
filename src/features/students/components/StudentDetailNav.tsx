@@ -44,7 +44,7 @@ function NavArrow({
  */
 export default function StudentDetailNav({ prevId, nextId }: StudentDetailNavProps) {
   return (
-    <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
+    <Box sx={{ display: 'flex', gap: 1 }}>
       <NavArrow id={prevId} label="前の生徒" icon={<ArrowBackIcon />} />
       <NavArrow id={nextId} label="次の生徒" icon={<ArrowForwardIcon />} />
     </Box>

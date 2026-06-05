@@ -82,6 +82,8 @@ export interface StudentDetailView {
  * 日付は和暦（例: '令和7年6月5日'）に整形済み。
  */
 export interface CertificateView {
+  /** 証明書番号（例: '第 0042 号'。生徒 id から決定的に導出） */
+  certificateNumber: string;
   /** 正式氏名 姓（MJ特有文字可。IPAmjexMincho で表示） */
   officialFamilyName: string;
   /** 正式氏名 名（MJ特有文字可。IPAmjexMincho で表示） */
