@@ -121,6 +121,10 @@ export default function StudentsTable({ items }: StudentsTableProps) {
     return [...filtered].sort((a, b) => (a.birthDateMs - b.birthDateMs) * dir);
   }, [items, visibleGradeClass, visibleSex, sortDir]);
 
+  // 詳細ページに「今見えている順序」を引き継ぐためのナビ列（フィルタ＋並べ替え適用後の id 列）。
+  // 詳細側はこの順で前後/総数を出す。詳細側で名簿実在チェックするため改ざんは無害。
+  const seqParam = useMemo(() => rows.map((r) => r.id).join(','), [rows]);
+
   if (items.length === 0) {
     return (
       <Typography variant="body2" color="text.secondary" sx={{ py: 4, textAlign: 'center' }}>
@@ -196,7 +200,7 @@ export default function StudentsTable({ items }: StudentsTableProps) {
                     クリックが競合しないよう、対話要素の無いこの列を選択起点にする。 */}
                 <TableCell sx={{ px: CELL_PX, textAlign: 'center' }}>
                   <Link
-                    href={`/students/${item.id}`}
+                    href={`/students/${item.id}?seq=${encodeURIComponent(seqParam)}`}
                     style={{ textDecoration: 'none' }}
                     aria-label={`${item.gradeClassLabel} ${item.preferredFamilyName}${item.preferredGivenName} の詳細を開く`}
                   >

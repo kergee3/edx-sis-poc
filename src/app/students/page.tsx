@@ -23,17 +23,25 @@ export default async function StudentsPage() {
         {session?.user?.id ? (
           <>
             <StudentsTable items={(await listRosterForUser(session.user.id)).map(toView)} />
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-              正式苗字は{' '}
-              <Link
-                href="https://ipamjexmincho.shumy.app/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                IPAmjexMincho Web フォント
-              </Link>
-              で表示しているため、JIS X 0213に含まれない文字情報基盤の文字も正しく表示されます。
-            </Typography>
+            <Box
+              component="ul"
+              sx={{ mt: 2, pl: 3, m: 0, '& li': { mt: 0.5 }, '& li:first-of-type': { mt: 0 } }}
+            >
+              <Typography component="li" variant="body2" color="text.secondary">
+                丸で囲まれた出席番号をクリックすると、該当する生徒の詳細を確認できます。さらに、在籍証明書も発行できます。
+              </Typography>
+              <Typography component="li" variant="body2" color="text.secondary">
+                正式苗字は{' '}
+                <Link
+                  href="https://ipamjexmincho.shumy.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  IPAmjexMincho Web フォント
+                </Link>
+                で表示しているため、JIS X 0213に含まれない文字情報基盤の文字も正しく表示されます。
+              </Typography>
+            </Box>
           </>
         ) : (
           <Box sx={{ textAlign: 'center', py: 4 }}>

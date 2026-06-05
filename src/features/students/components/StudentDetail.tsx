@@ -18,6 +18,8 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
         display: 'grid',
         // 狭い端末でもラベルと値を同じ行に。ラベルは内容幅（nowrap）、値は残り全幅。
         gridTemplateColumns: 'max-content 1fr',
+        // ラベル(body2)と値(body1)はフォントサイズが異なるため、文字のベースラインで揃える。
+        alignItems: 'baseline',
         columnGap: 1.5,
         rowGap: 0,
         py: 0.25,
@@ -85,6 +87,9 @@ export default function StudentDetail({ view }: StudentDetailProps) {
       {/* 氏名ヘッダ：正式氏名（MJ フォント）＋フリガナ */}
       <Card variant="outlined">
         <CardContent sx={{ py: 1.5, '&:last-child': { pb: 1.5 } }}>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+            {view.gradeClassLabel}　出席番号:{view.attendanceLabel}
+          </Typography>
           <Typography variant="caption" color="text.secondary">
             正式氏名
           </Typography>
@@ -140,8 +145,6 @@ export default function StudentDetail({ view }: StudentDetailProps) {
           </Typography>
           <Divider sx={{ mb: 1 }} />
           <Box component="dl" sx={{ m: 0 }}>
-            <Field label="学年・組">{view.gradeClassLabel}</Field>
-            <Field label="出席番号">{view.attendanceLabel}</Field>
             <Field label="在籍状態">{view.enrollmentStatusLabel}</Field>
             <Field label="学校コード">{view.schoolCodeLabel}</Field>
             <Field label="入学日">{view.admissionDateLabel}</Field>
