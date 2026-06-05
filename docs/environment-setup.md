@@ -78,10 +78,10 @@ External + 未公開状態では、テストユーザーとして登録したア
 
 ### 本番デプロイ時
 
-公開ドメイン（本番: https://sis-poc.shumy.app）を同じ手順で追加する（ローカル用の値は消さず併記する）:
+公開ドメイン（本番: https://oauth-callback.example.com）を同じ手順で追加する（ローカル用の値は消さず併記する）:
 
-- **Authorized JavaScript origins**: `https://sis-poc.shumy.app`
-- **Authorized redirect URIs**: `https://sis-poc.shumy.app/api/auth/callback/google`
+- **Authorized JavaScript origins**: `https://oauth-callback.example.com`
+- **Authorized redirect URIs**: `https://oauth-callback.example.com/api/auth/callback/google`
 
 Testing モードのまま運用可能（テストユーザー枠 100 人まで）。
 
@@ -125,7 +125,7 @@ LINE はデフォルトでは email を返さない。取得したい場合は *
 
 ### 本番デプロイ時
 
-公開ドメインのコールバック URL（本番: `https://sis-poc.shumy.app/api/auth/callback/line`）を **Callback URL** に追加する（ローカル用の値は消さず併記する）。
+公開ドメインのコールバック URL（本番: `https://oauth-callback.example.com/api/auth/callback/line`）を **Callback URL** に追加する（ローカル用の値は消さず併記する）。
 
 ---
 
@@ -208,11 +208,11 @@ npm run dev
 
 ## 7. 本番デプロイ（Vercel）
 
-`src` アプリは Vercel の専用プロジェクトとして **https://sis-poc.shumy.app** に配信している。なお氏名表示に使う IPAmjexMincho Web フォントは別途 https://ipamjexmincho.shumy.app で外部配信されており（このリポジトリの管理外）、アプリはそれを参照するだけである。
+`src` アプリは Vercel の専用プロジェクトとして **https://oauth-callback.example.com** に配信している。なお氏名表示に使う IPAmjexMincho Web フォントは別途 https://ipamjexmincho.shumy.app で外部配信されており（このリポジトリの管理外）、アプリはそれを参照するだけである。
 
-- **環境変数**: Vercel の Settings → Environment Variables に、Production 用として手順 1〜3 の値（`TURSO_*` / `AUTH_SECRET` / `AUTH_GOOGLE_*` / `AUTH_LINE_*`）を登録する。加えて **`AUTH_URL=https://sis-poc.shumy.app`** を設定する（カスタムドメインでコールバック URL を正しく組み立てるため）。`NEXTAUTH_URL` はローカル専用なので本番には登録しない。`SKIP_ENV_VALIDATION` も本番では設定しない
+- **環境変数**: Vercel の Settings → Environment Variables に、Production 用として手順 1〜3 の値（`TURSO_*` / `AUTH_SECRET` / `AUTH_GOOGLE_*` / `AUTH_LINE_*`）を登録する。加えて **`AUTH_URL=https://oauth-callback.example.com`** を設定する（カスタムドメインでコールバック URL を正しく組み立てるため）。`NEXTAUTH_URL` はローカル専用なので本番には登録しない。`SKIP_ENV_VALIDATION` も本番では設定しない
 - **Turso**: 本番もローカルと同じ Turso DB を共用（マイグレーション適用済み）。開発と分けたい場合のみ別 DB を作って本番 env に別 URL/Token を入れる
-- **ドメイン**: Settings → Domains に `sis-poc.shumy.app` を追加。`shumy.app` が同一 Vercel アカウント/チーム管理下なら DNS と TLS は自動発行される
+- **ドメイン**: Settings → Domains に `oauth-callback.example.com` を追加。`example.com` が同一 Vercel アカウント/チーム管理下なら DNS と TLS は自動発行される
 - **OAuth コールバック**: 本番ドメインの URL を Google / LINE に追記する（手順 2「本番デプロイ時」/ 2b「本番デプロイ時」参照）
 - 以後 `main` への push で自動的に本番デプロイされる
 

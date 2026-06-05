@@ -121,13 +121,13 @@ server/db (schema、migrations、client)
 
 ## 既知の名残・要整理（旧 life-todo 由来）
 
-src を本格実装する際にあわせて整理するとよい既存の不整合（**新規にこれらへ依存しない**）:
+旧アプリ由来の不整合は順次解消済み。**新規にこれらへ依存しない**。
 
-- [tsconfig.json](tsconfig.json) の `include` に**存在しない** `drizzle.neon.config.ts` への参照
-- `exceljs` / `@vercel/blob` 等、旧 data-transfer 用の依存が残るが**現状未使用**（README / 旧 CLAUDE が触れていた `data-transfer` / `app/api/export` は**未実装**）
-- [src/app/about/page.tsx](src/app/about/page.tsx) の説明文が旧アプリ（やること/いつもの/もちもの）のまま
-
-> 解消済み: `user_preferences` の `routines*` / `packing*` 未使用カラムと、旧マイグレーションの `todos` / `packing_*` 等の死蔵テーブル定義は、Turso を `edx-poc` へ切り替える際にクリーンな単一ベースライン（[migrations/0000_conscious_turbo.sql](src/server/db/turso/migrations/0000_conscious_turbo.sql)）へ作り直して除去済み。`user_preferences` は `user_id` + timestamps のみのスカフォールド。
+> 解消済み（旧 data-transfer / life-todo 由来）:
+> - [tsconfig.json](tsconfig.json) `include` の**存在しない** `drizzle.neon.config.ts` 参照を削除。
+> - 未使用の旧 data-transfer 依存 `exceljs` / `@vercel/blob`（と死蔵ファイル `src/lib/blob/index.ts`）を除去。`data-transfer` / `app/api/export` は元々**未実装**。
+> - [src/app/about/page.tsx](src/app/about/page.tsx) の説明文は SIS-PoC の内容へ更新済み。
+> - `user_preferences` の `routines*` / `packing*` 未使用カラムと、旧マイグレーションの `todos` / `packing_*` 等の死蔵テーブル定義は、Turso を `edx-poc` へ切り替える際にクリーンな単一ベースライン（[migrations/0000_conscious_turbo.sql](src/server/db/turso/migrations/0000_conscious_turbo.sql)）へ作り直して除去済み。`user_preferences` は `user_id` + timestamps のみのスカフォールド。
 
 ## スコープの健全性
 
