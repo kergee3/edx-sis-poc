@@ -18,6 +18,10 @@ const envSchema = z.object({
   NEXTAUTH_URL: optionalUrl,
 
   BLOB_READ_WRITE_TOKEN: optionalString,
+
+  // バグ報告 (GitHub Issue 自動起票)。未設定でも build/dev は通り、起票時に github_failed を返す
+  GITHUB_TOKEN: optionalString,
+  GITHUB_REPO: optionalString, // "owner/name" 形式
 });
 
 export type Env = z.infer<typeof envSchema>;

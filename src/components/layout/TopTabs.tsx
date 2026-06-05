@@ -10,6 +10,7 @@ import {
   type NavigationItem,
 } from '@/types/navigation';
 import type { SessionUserView } from '@/features/auth/types';
+import BugReportButton from './BugReportButton';
 import UserMenu from './UserMenu';
 
 // Tabs が子要素に clone で注入する props (fullWidth / selected / indicator / textColor 等) を
@@ -95,6 +96,7 @@ export default function TopTabs({ items, user }: TopTabsProps) {
           })}
         </Tabs>
         <Box sx={{ flexGrow: 1 }} />
+        <BugReportButton user={user} />
         <UserMenu user={user} variant="default" />
       </Toolbar>
     </AppBar>

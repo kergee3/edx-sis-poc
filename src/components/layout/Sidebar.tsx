@@ -16,6 +16,7 @@ import {
   type NavigationItem,
 } from '@/types/navigation';
 import type { SessionUserView } from '@/features/auth/types';
+import BugReportButton from './BugReportButton';
 import UserMenu from './UserMenu';
 
 interface SidebarProps {
@@ -97,9 +98,15 @@ export default function Sidebar({ items, user, isMobile = false, onClose, width 
           borderTop: '1px solid',
           borderColor: 'divider',
           paddingBottom: 'calc(8px + env(safe-area-inset-bottom))',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 0.5,
         }}
       >
-        <UserMenu user={user} variant="compact" />
+        <BugReportButton user={user} />
+        <Box sx={{ minWidth: 0, flexGrow: 1 }}>
+          <UserMenu user={user} variant="compact" />
+        </Box>
       </Box>
     </Box>
   );

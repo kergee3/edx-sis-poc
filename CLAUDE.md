@@ -68,7 +68,7 @@ server/db (schema、migrations、client)
 - **middleware** (`middleware.ts`) はログイン要否の判定のみ。リソース単位の認可は service / Server Action 側で
 - UI 層から Drizzle や SaaS の SDK を直接呼ばない
 
-現在の `src/features/`: `auth`（実装済）/ `login-history`（実装済）/ `home` `students` `interop`（いずれも `components/*Placeholder.tsx` のみのスキャフォールド）。
+現在の `src/features/`: `auth`（実装済）/ `login-history`（実装済）/ `bug-report`（実装済）/ `home` `students` `interop`（いずれも `components/*Placeholder.tsx` のみのスキャフォールド）。
 
 ### 認証プロバイダ（Google / LINE）
 
@@ -80,6 +80,15 @@ server/db (schema、migrations、client)
 
 - [src/server/auth/config.ts](src/server/auth/config.ts) の `events.signIn` が `recordLogin(userId, account?.provider ?? null)` を呼び、**サーバ側で取れる情報** (provider / IP / UA / Referer / Geo) を `headers()` 経由で記録する（[src/server/services/login-history.ts](src/server/services/login-history.ts)）
 - [src/app/ClientLayout.tsx](src/app/ClientLayout.tsx) にマウントされた [ClientEnricher](src/features/login-history/components/ClientEnricher.tsx) が **クライアント側でしか取れない情報** (OS / ブラウザ / 解像度 / UA Data) を収集し、`enrichLatestLoginAction` で同じ行を UPDATE する。冪等性は repository 側の `os IS NULL` フィルタで担保する
+
+### バグ報告（スクショ + GitHub Issue 自動起票）
+
+- ヘッダ右上の 🐞 ボタン（[BugReportButton](src/components/layout/BugReportButton.tsx)）が `modern-screenshot` の `domToCanvas` で `document.body` をキャプチャ → JPEG 縮小（≤1600px, q0.85）→ [BugReportDialog](src/components/layout/BugReportDialog.tsx) を開く。ボタンは 3 レイアウト（[TopTabs](src/components/layout/TopTabs.tsx) / [Sidebar](src/components/layout/Sidebar.tsx) / [BottomNavBar](src/components/layout/BottomNavBar.tsx)）の UserMenu 左に設置、ログイン時のみ表示
+- 送信時、スクショは **Vercel Blob** にクライアント直アップロード（[app/api/bug-report/upload/route.ts](src/app/api/bug-report/upload/route.ts) が `requireUser` 必須・`bug-reports/` 限定・JPEG/PNG・2MB でトークン発行）→ 公開 URL を `submitBugReportAction`（[src/features/bug-report/actions.ts](src/features/bug-report/actions.ts)）へ。`userId` はクライアントを信用せず Server Action 側で `auth()` から取る
+  - **Blob ストアは `--access public` で作ること**（GitHub Issue に画像を埋め込む = 匿名で取得できる公開 URL が必須。private ストアだと PUT が 400「Cannot use public access on a private store」。access は作成時固定で変更不可・ダッシュボードの既定は private になりがち。`vercel blob create-store <name> --access public` が確実）
+  - **`BLOB_READ_WRITE_TOKEN` を Vercel ダッシュボードの「Copy Snippet」でコピーするときは先に「Show secret」を押す**（押さないとトークンが `***...`（マスク）のままコピーされ、`.env.local` に伏字が入る。トークン発行はローカル処理なので 200 を返し、実 PUT で初めて失敗するため気付きにくい）
+  - スクショ送信は best-effort で、[BugReportDialog](src/components/layout/BugReportDialog.tsx) で `AbortController` により 15 秒で打ち切りテキストのみ起票にフォールバックする。`@vercel/blob` は失敗時に既定 10 回リトライ（≈17分）するため。`AbortSignal.timeout()` は `TimeoutError` を投げ SDK にリトライ継続されるので不可、`controller.abort()`（`AbortError`）でないと止まらない
+- 実処理は [src/server/services/bug-report.ts](src/server/services/bug-report.ts) → [src/server/adapters/github/issues.ts](src/server/adapters/github/issues.ts)（GitHub REST `POST /issues` の薄いラッパ）。`env.GITHUB_TOKEN` / `env.GITHUB_REPO`（`"owner/name"`）が必要で、未設定なら service が throw → action が `github_failed` を返す（アプリは落ちない）。ラベル `bug` / `enhancement` / `user-report` は**リポジトリに事前作成が必要**（GitHub API は未存在ラベルを自動作成しない）
 
 ### ユーザ設定（user_preferences）とキャッシュ戦略
 
@@ -125,7 +134,7 @@ server/db (schema、migrations、client)
 
 > 解消済み（旧 data-transfer / life-todo 由来）:
 > - [tsconfig.json](tsconfig.json) `include` の**存在しない** `drizzle.neon.config.ts` 参照を削除。
-> - 未使用の旧 data-transfer 依存 `exceljs` / `@vercel/blob`（と死蔵ファイル `src/lib/blob/index.ts`）を除去。`data-transfer` / `app/api/export` は元々**未実装**。
+> - 未使用の旧 data-transfer 依存 `exceljs`（と死蔵ファイル `src/lib/blob/index.ts`）を除去。`data-transfer` / `app/api/export` は元々**未実装**。（注: `@vercel/blob` は一旦除去したが、バグ報告のスクショ保存用途で**再導入済み**。上記「バグ報告」節を参照）
 > - [src/app/about/page.tsx](src/app/about/page.tsx) の説明文は SIS-PoC の内容へ更新済み。
 > - `user_preferences` の `routines*` / `packing*` 未使用カラムと、旧マイグレーションの `todos` / `packing_*` 等の死蔵テーブル定義は、Turso を `edx-poc` へ切り替える際にクリーンな単一ベースライン（[migrations/0000_conscious_turbo.sql](src/server/db/turso/migrations/0000_conscious_turbo.sql)）へ作り直して除去済み。`user_preferences` は `user_id` + timestamps のみのスカフォールド。
 
