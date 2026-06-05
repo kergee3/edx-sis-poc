@@ -1,4 +1,4 @@
-# edx-SIS-PoC — IPAmjexMincho Web フォントを活かした校務支援システム PoC
+# edx-SIS-PoC — Web フォントを活かした校務支援システム PoC
 
 本リポジトリは **`src/` — SIS-PoC（Student Information System - Proof of Concept）** アプリからなる。IPAmjexMincho Web フォントを活かした、**校務支援システム（Student Information System, SIS）の実証実験（PoC）**アプリ。Next.js 16 App Router + MUI v7。
 
@@ -8,7 +8,7 @@
 
 ---
 
-## `src/` — SSS-PoC（校務支援システム PoC）
+## `src/` — SIS-PoC（校務支援システム PoC）
 
 ### コンセプト
 
@@ -54,7 +54,7 @@ PoC の業務設計は、学齢簿〜校務支援システム〜学習eポータ
 
 ## IPAmjexMincho Web フォント（外部配信を利用）
 
-SSS-PoC の氏名表示は **IPAmjexMincho Web フォント**を利用する。IPAmj明朝 + IPAex明朝 を合成し 256 サブセットの WOFF2 として配信した Web フォントで、**外部（https://ipamjexmincho.shumy.app）で配信されているものを参照する**（本リポジトリにはフォントの合成・配信ツールは含まない）。
+SIS-PoC の氏名表示は **IPAmjexMincho Web フォント**を利用する。IPAmj明朝 + IPAex明朝 を合成し 256 サブセットの WOFF2 として配信した Web フォントで、**外部（https://ipamjexmincho.shumy.app）で配信されているものを参照する**（本リポジトリにはフォントの合成・配信ツールは含まない）。
 
 アプリ側は [src/theme/fonts.ts](src/theme/fonts.ts) で配信元 URL を定義し、[src/app/layout.tsx](src/app/layout.tsx) の `<link>` で CSS（`unicode-range` による遅延配信）を読み込み、正式氏名（MJ特有文字を含みうる）の表示に適用している。
 
