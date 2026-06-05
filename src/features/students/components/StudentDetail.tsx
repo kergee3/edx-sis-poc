@@ -16,8 +16,9 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
     <Box
       sx={{
         display: 'grid',
-        gridTemplateColumns: { xs: '1fr', sm: '11rem 1fr' },
-        columnGap: 2,
+        // 狭い端末でもラベルと値を同じ行に。ラベルは内容幅（nowrap）、値は残り全幅。
+        gridTemplateColumns: 'max-content 1fr',
+        columnGap: 1.5,
         rowGap: 0,
         py: 0.25,
       }}
