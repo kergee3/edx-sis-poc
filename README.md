@@ -2,7 +2,7 @@
 
 本リポジトリは **`src/` — SIS-PoC（Student Information System - Proof of Concept）** アプリからなる。IPAmjexMincho Web フォントを活かした、**校務支援システム（Student Information System, SIS）の実証実験（PoC）**アプリ。Next.js 16 App Router + MUI v7。
 
-氏名表示に使う **IPAmjexMincho Web フォント**は、**外部に配信されているもの（https://ipamjexmincho.shumy.app）を利用する**（フォントの合成・配信ツール自体は本リポジトリには含まない）。
+氏名表示に使う **IPAmjexMincho Web フォント**は、**外部に配信されているもの（[ipamjexmincho.shumy.app](https://ipamjexmincho.shumy.app)）を利用する**（フォントの合成・配信ツール自体は本リポジトリには含まない）。
 
 > 背景: もともと「MJ 漢字を Web フォントとして使う」実証から出発し、その応用先として、**氏名に MJ特有文字（戸籍漢字等）が現れる校務支援システム**を PoC として作る方針に転換した。氏名の正確な表示こそ IPAmjexMincho Web フォントの価値が最も活きる領域である。
 
@@ -58,7 +58,7 @@ PoC の業務設計は、学齢簿〜校務支援システム〜学習eポータ
 
 ## IPAmjexMincho Web フォント（外部配信を利用）
 
-SIS-PoC の氏名表示は **IPAmjexMincho Web フォント**を利用する。IPAmj明朝 + IPAex明朝 を合成し 256 サブセットの WOFF2 として配信した Web フォントで、**外部（https://ipamjexmincho.shumy.app）で配信されているものを参照する**（本リポジトリにはフォントの合成・配信ツールは含まない）。
+SIS-PoC の氏名表示は **IPAmjexMincho Web フォント**を利用する。IPAmj明朝 + IPAex明朝 を合成し 256 サブセットの WOFF2 として配信した Web フォントで、**外部（[ipamjexmincho.shumy.app](https://ipamjexmincho.shumy.app)）で配信されているものを参照する**（本リポジトリにはフォントの合成・配信ツールは含まない）。
 
 アプリ側は [src/theme/fonts.ts](src/theme/fonts.ts) で配信元 URL を定義し、[src/app/layout.tsx](src/app/layout.tsx) の `<link>` で CSS（`unicode-range` による遅延配信）を読み込み、正式氏名（MJ特有文字を含みうる）の表示に適用している。
 

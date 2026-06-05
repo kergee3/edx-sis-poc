@@ -78,7 +78,7 @@ External + 未公開状態では、テストユーザーとして登録したア
 
 ### 本番デプロイ時
 
-公開ドメイン（本番: https://oauth-callback.example.com）を同じ手順で追加する（ローカル用の値は消さず併記する）:
+公開ドメイン（本番: `https://oauth-callback.example.com`）を同じ手順で追加する（ローカル用の値は消さず併記する）:
 
 - **Authorized JavaScript origins**: `https://oauth-callback.example.com`
 - **Authorized redirect URIs**: `https://oauth-callback.example.com/api/auth/callback/google`
