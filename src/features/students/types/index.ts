@@ -15,8 +15,10 @@ export interface StudentView {
   officialFamilyName: string;
   /** 正式苗字が preferred 苗字と同一か（true なら '←' 表示） */
   isOfficialSameAsPreferred: boolean;
-  /** フリガナ（全角カタカナ） */
-  kanaName: string;
+  /** フリガナ 姓（全角カタカナ。漢字の姓にルビとして対応） */
+  kanaFamilyName: string;
+  /** フリガナ 名（全角カタカナ。漢字の名にルビとして対応） */
+  kanaGivenName: string;
   /** 性別 */
   sexLabel: string;
   /** 生年月日（ja-JP 整形済み） */

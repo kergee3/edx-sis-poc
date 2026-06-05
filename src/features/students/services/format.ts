@@ -7,7 +7,6 @@ const birthDateFormatter = new Intl.DateTimeFormat('ja-JP', {
 });
 
 const EMPTY = '-';
-const FULLWIDTH_SPACE = '　';
 
 /** RosterEntry（生徒＋在籍）を一覧表示用 ViewModel に変換する。 */
 export function toView(entry: RosterEntry): StudentView {
@@ -28,7 +27,8 @@ export function toView(entry: RosterEntry): StudentView {
     preferredGivenName: student.preferredGivenName,
     officialFamilyName: student.officialFamilyName,
     isOfficialSameAsPreferred: student.officialFamilyName === student.preferredFamilyName,
-    kanaName: `${student.kanaFamilyName}${FULLWIDTH_SPACE}${student.kanaGivenName}`,
+    kanaFamilyName: student.kanaFamilyName,
+    kanaGivenName: student.kanaGivenName,
     sexLabel: student.sex ?? '(不明)',
     birthDateLabel: birthDateFormatter.format(student.birthDate),
   };

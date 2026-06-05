@@ -192,17 +192,28 @@ export default function StudentsTable({ items }: StudentsTableProps) {
               <TableRow key={item.id} hover>
                 <TableCell sx={{ px: CELL_PX, textAlign: 'center' }}>{item.attendanceLabel}</TableCell>
                 <TableCell sx={{ px: CELL_PX, whiteSpace: 'nowrap' }}>{item.gradeClassLabel}</TableCell>
+                {/* 表示名（preferred・JIS文字）は通常フォント。フリガナは <ruby> で
+                    姓・名それぞれの漢字に読みを対応付ける（アクセシビリティ／意味的対応）。
+                    <rp> は ruby 非対応ブラウザ向けの括弧フォールバック。 */}
                 <TableCell sx={{ px: CELL_PX, whiteSpace: 'nowrap' }}>
-                  <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                    <Typography component="span" variant="caption" color="text.secondary">
-                      {item.kanaName}
-                    </Typography>
-                    {/* 表示名（preferred・JIS文字）は通常フォント */}
-                    <Typography component="span" sx={{ fontSize: '1.05rem', lineHeight: 1.4 }}>
+                  <Box component="span" sx={{ fontSize: '1.05rem', lineHeight: 1.4 }}>
+                    <Box component="ruby">
                       {item.preferredFamilyName}
-                      {FULLWIDTH_SPACE}
+                      <rp>（</rp>
+                      <Box component="rt" sx={{ fontSize: '0.6em', color: 'text.secondary' }}>
+                        {item.kanaFamilyName}
+                      </Box>
+                      <rp>）</rp>
+                    </Box>
+                    {FULLWIDTH_SPACE}
+                    <Box component="ruby">
                       {item.preferredGivenName}
-                    </Typography>
+                      <rp>（</rp>
+                      <Box component="rt" sx={{ fontSize: '0.6em', color: 'text.secondary' }}>
+                        {item.kanaGivenName}
+                      </Box>
+                      <rp>）</rp>
+                    </Box>
                   </Box>
                 </TableCell>
                 {/* 正式苗字は MJ特有文字を含みうるため IPAmjexMincho で表示。preferred と同じなら ← */}
