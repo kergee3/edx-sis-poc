@@ -15,7 +15,7 @@ export default function HomePlaceholder({ userName }: HomePlaceholderProps) {
       <Typography variant="body1" sx={{ mb: 2 }}>
         {userName ? `${userName} さん、ようこそ。` : 'ようこそ。'}
         ログインすると、あなたは小さな離島にある小さな中学校の校長先生になります。
-        校長はワンマンで全校生徒に対する先生と事務を兼ね、校務を行います
+        校長はワンオペで全校生徒に対する先生と事務を兼ね、校務を行います
         （生徒定員 25 名・各学年 4 名で初期 12 名が在籍）。
       </Typography>
       <Typography variant="body2" color="text.secondary">
