@@ -7,7 +7,6 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SettingsIcon from '@mui/icons-material/Settings';
 import InfoIcon from '@mui/icons-material/Info';
 import HistoryIcon from '@mui/icons-material/History';
-import ComputerIcon from '@mui/icons-material/Computer';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
 import { signInWithGoogle, signInWithLine, signOutAction } from '@/features/auth/actions';
@@ -115,12 +114,6 @@ export default function UserMenu({ user, variant = 'default' }: UserMenuProps) {
               </ListItemIcon>
               <ListItemText>ログイン履歴</ListItemText>
             </MenuItem>,
-            <MenuItem key="env" component={Link} href="/env" onClick={handleClose}>
-              <ListItemIcon>
-                <ComputerIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>実行環境</ListItemText>
-            </MenuItem>,
             <Divider key="divider" />,
             <MenuItem
               key="logout"
@@ -142,12 +135,6 @@ export default function UserMenu({ user, variant = 'default' }: UserMenuProps) {
                 <InfoIcon fontSize="small" />
               </ListItemIcon>
               <ListItemText>About</ListItemText>
-            </MenuItem>,
-            <MenuItem key="env" component={Link} href="/env" onClick={handleClose}>
-              <ListItemIcon>
-                <ComputerIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>実行環境</ListItemText>
             </MenuItem>,
             <MenuItem
               key="login-google"
