@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from 'react';
 import {
   Box,
   Checkbox,
+  Chip,
   Divider,
   IconButton,
   ListItemText,
@@ -20,6 +21,7 @@ import {
   Typography,
 } from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import Link from 'next/link';
 import { FONT_MJ } from '@/theme/fonts';
 import type { StudentView } from '../types';
 import FamilyNameZoom from './FamilyNameZoom';
@@ -190,7 +192,24 @@ export default function StudentsTable({ items }: StudentsTableProps) {
           ) : (
             rows.map((item) => (
               <TableRow key={item.id} hover>
-                <TableCell sx={{ px: CELL_PX, textAlign: 'center' }}>{item.attendanceLabel}</TableCell>
+                {/* 出席番号を押すと詳細ページへ。氏名/正式苗字セルの拡大ポップオーバーと
+                    クリックが競合しないよう、対話要素の無いこの列を選択起点にする。 */}
+                <TableCell sx={{ px: CELL_PX, textAlign: 'center' }}>
+                  <Link
+                    href={`/students/${item.id}`}
+                    style={{ textDecoration: 'none' }}
+                    aria-label={`${item.gradeClassLabel} ${item.preferredFamilyName}${item.preferredGivenName} の詳細を開く`}
+                  >
+                    <Chip
+                      component="span"
+                      clickable
+                      size="small"
+                      variant="outlined"
+                      color="primary"
+                      label={item.attendanceLabel}
+                    />
+                  </Link>
+                </TableCell>
                 <TableCell sx={{ px: CELL_PX, whiteSpace: 'nowrap' }}>{item.gradeClassLabel}</TableCell>
                 {/* 表示名（preferred・JIS文字）は通常フォント。フリガナは <ruby> で
                     姓・名それぞれの漢字に読みを対応付ける（アクセシビリティ／意味的対応）。

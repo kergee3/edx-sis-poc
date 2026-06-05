@@ -1,4 +1,4 @@
-import { asc, count, eq } from 'drizzle-orm';
+import { and, asc, count, eq } from 'drizzle-orm';
 import { getTursoDb } from '@/server/db/turso/client';
 import {
   students,
@@ -35,6 +35,25 @@ export async function findRosterByOwner(userId: string): Promise<RosterEntry[]> 
     .orderBy(asc(studentEnrollments.grade), asc(studentEnrollments.attendanceNumber));
 
   return rows.map((r) => ({ student: r.student, enrollment: r.enrollment }));
+}
+
+/**
+ * 1 名を在籍情報つきで返す。認可をクエリ条件に内包し、
+ * そのオーナー (校長) 自身の生徒でなければ null（他人の生徒は取得不可）。
+ */
+export async function findStudentByIdForOwner(
+  userId: string,
+  studentId: string,
+): Promise<RosterEntry | null> {
+  const rows = await getTursoDb()
+    .select({ student: students, enrollment: studentEnrollments })
+    .from(students)
+    .leftJoin(studentEnrollments, eq(studentEnrollments.studentId, students.id))
+    .where(and(eq(students.id, studentId), eq(students.ownerUserId, userId)))
+    .limit(1);
+
+  const row = rows[0];
+  return row ? { student: row.student, enrollment: row.enrollment } : null;
 }
 
 /**

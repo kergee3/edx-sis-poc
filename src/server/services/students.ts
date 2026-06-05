@@ -2,6 +2,7 @@ import { logger } from '@/lib/logging';
 import {
   countByOwner,
   findRosterByOwner,
+  findStudentByIdForOwner,
   insertStudentsWithEnrollments,
   type RosterEntry,
 } from '@/server/repositories/students';
@@ -36,4 +37,15 @@ export async function ensureSeededForUser(userId: string): Promise<void> {
 export async function listRosterForUser(userId: string): Promise<RosterEntry[]> {
   await ensureSeededForUser(userId);
   return findRosterByOwner(userId);
+}
+
+/**
+ * 1 名の詳細（生徒＋在籍）を取得する。認可は repository のクエリ条件に内包。
+ * 該当オーナーの生徒でなければ null。詳細取得は seed 不要なのでここでは seed しない。
+ */
+export async function getStudentForUser(
+  userId: string,
+  studentId: string,
+): Promise<RosterEntry | null> {
+  return findStudentByIdForOwner(userId, studentId);
 }

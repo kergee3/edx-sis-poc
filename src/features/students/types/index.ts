@@ -24,3 +24,55 @@ export interface StudentView {
   /** 生年月日（ja-JP 整形済み） */
   birthDateLabel: string;
 }
+
+/**
+ * 生徒詳細ページの表示用 ViewModel（students ＋ student_enrollments の表示可能列を網羅）。
+ * 未設定の列は '-' に整形済み（UI 側で null 判定しない）。
+ */
+export interface StudentDetailView {
+  id: string;
+
+  // 氏名 3 系統
+  /** 正式氏名 姓（MJ特有文字可。IPAmjexMincho で表示） */
+  officialFamilyName: string;
+  /** 正式氏名 名（MJ特有文字可。IPAmjexMincho で表示） */
+  officialGivenName: string;
+  /** 表示名 姓（JIS文字） */
+  preferredFamilyName: string;
+  /** 表示名 名（JIS文字） */
+  preferredGivenName: string;
+  /** 表示名 ミドルネーム（未設定は '-'） */
+  preferredMiddleName: string;
+  /** フリガナ 姓（全角カタカナ） */
+  kanaFamilyName: string;
+  /** フリガナ 名（全角カタカナ） */
+  kanaGivenName: string;
+  /** フリガナ ミドルネーム（未設定は '-'） */
+  kanaMiddleName: string;
+
+  // 基本情報
+  /** 生年月日（ja-JP 整形済み） */
+  birthDateLabel: string;
+  /** 性別（未設定は '(不明)'） */
+  sexLabel: string;
+  /** 国籍（未設定は '-'） */
+  nationalityLabel: string;
+
+  // 在籍
+  /** 学年・組（例: '1年1組'、未在籍は '(未在籍)'） */
+  gradeClassLabel: string;
+  /** 出席番号（未設定は '-'） */
+  attendanceLabel: string;
+  /** 在籍状態（未在籍は '-'） */
+  enrollmentStatusLabel: string;
+  /** 学校コード（未設定は '-'） */
+  schoolCodeLabel: string;
+  /** 入学日（ja-JP 整形済み、未設定は '-'） */
+  admissionDateLabel: string;
+  /** 転入日（ja-JP 整形済み、未設定は '-'） */
+  transferInDateLabel: string;
+  /** 転出日（ja-JP 整形済み、未設定は '-'） */
+  transferOutDateLabel: string;
+  /** 卒業日（ja-JP 整形済み、未設定は '-'） */
+  graduationDateLabel: string;
+}
