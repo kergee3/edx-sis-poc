@@ -4,7 +4,7 @@
 
 ## プロジェクト概要
 
-`jtp-mj-font` は、「文字情報基盤 (MJ) の漢字を Web フォントとして使う」実証から出発し、その応用として校務支援システムの PoC を作るプロジェクトです。本体は `src/` の Web アプリです。
+`edx-sis-poc` は、「文字情報基盤 (MJ) の漢字を Web フォントとして使う」実証から出発し、その応用として校務支援システムの PoC を作るプロジェクトです。本体は `src/` の Web アプリです。
 
 - `src/`: SIS-PoC (Student Information System - Proof of Concept)。IPAmjexMincho Web フォントを活かした校務支援システムの実証実験です。Next.js 16 App Router、React 19、MUI v7 を使います。現状は基盤のみ実装済みで、業務機能はこれからです。
 

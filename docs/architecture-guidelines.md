@@ -1,6 +1,6 @@
 # 設計方針
 
-このドキュメントは、本プロジェクト（jtp-mj-font）で採用する技術スタックに対する設計方針を整理したものです。関連ドキュメント: [推奨ディレクトリ構成](directory-structure.md) / [コーディング規約](coding-guidelines.md)。
+このドキュメントは、本プロジェクト（edx-sis-poc）で採用する技術スタックに対する設計方針を整理したものです。関連ドキュメント: [推奨ディレクトリ構成](directory-structure.md) / [コーディング規約](coding-guidelines.md)。
 
 ## 前提
 
