@@ -6,7 +6,7 @@
 
 `jtp-mj-font` は、「文字情報基盤 (MJ) の漢字を Web フォントとして使う」実証から出発し、その応用として校務支援システムの PoC を作るプロジェクトです。本体は `src/` の Web アプリです。
 
-- `src/`: SSS-PoC (School affairs Support System - Proof of Concept)。IPAmjexMincho Web フォントを活かした校務支援システムの実証実験です。Next.js 16 App Router、React 19、MUI v7 を使います。現状は基盤のみ実装済みで、業務機能はこれからです。
+- `src/`: SIS-PoC (Student Information System - Proof of Concept)。IPAmjexMincho Web フォントを活かした校務支援システムの実証実験です。Next.js 16 App Router、React 19、MUI v7 を使います。現状は基盤のみ実装済みで、業務機能はこれからです。
 
 氏名表示に使う `IPAmjexMincho` Web フォント（IPAmj明朝 + IPAex明朝 を合成した 256 サブセット WOFF2）は、**外部に配信されているもの（https://ipamjexmincho.shumy.app）を利用します**。フォントの合成・配信ツール自体はこのリポジトリには含みません（アプリ側の利用箇所は `src/theme/fonts.ts` / `src/app/layout.tsx`）。
 

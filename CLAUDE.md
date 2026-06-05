@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **jtp-mj-font** は「文字情報基盤(MJ)の漢字を Web フォントとして使う」実証から出発し、その応用として**校務支援システムの PoC** を作るプロジェクト。本体は `src/` の Web アプリ。
 
-- **`src/`（Web アプリ）= SSS-PoC（School affairs Support System - Proof of Concept）** — IPAmjexMincho Web フォントを活かした**校務支援システムの実証実験**。Next.js 16 App Router + MUI v7。**現状は基盤のみ実装済みで、業務機能はこれから**。
+- **`src/`（Web アプリ）= SIS-PoC（Student Information System - Proof of Concept）** — IPAmjexMincho Web フォントを活かした**校務支援システムの実証実験**。Next.js 16 App Router + MUI v7。**現状は基盤のみ実装済みで、業務機能はこれから**。
   - 想定シナリオ: 小さな離島の小さな中学校。ログインした校長先生がワンマンで全校生徒の先生＋事務を兼ねて校務を行う（生徒定員 25 名・各学年 4 名で初期 12 名在籍）。氏名の MJ特有文字（戸籍漢字等）を IPAmjexMincho で正しく表示するのが眼目。
   - 実装済みの基盤: 認証（Google / LINE, Auth.js v5）、ログイン履歴（サーバ＋クライアント）、右上ユーザーメニュー（ログアウト / About / ログイン履歴）、Turso(SQLite) への一本化、MUI Theme。
   - 機能（`home`＝位置づけ説明 / `students`＝生徒一覧 / `interop`＝データ連携）は**プレースホルダ表示のみのスキャフォールド**で、業務ロジックは未着手。`students` は名簿の転入/転出/編集・在学/成績証明書発行、`interop` は学齢簿インポート・OneRoster 入出力を担う予定。業務ドメインの設計は [docs/design/](docs/design/) を参照。

@@ -8,7 +8,7 @@ export default function HomePlaceholder({ userName }: HomePlaceholderProps) {
   return (
     <Box>
       <Typography variant="body1" sx={{ mb: 2 }}>
-        SSS-PoC（School affairs Support System - Proof of Concept）は、校務支援システムの実証実験アプリです。
+        SIS-PoC（Student Information System - Proof of Concept）は、校務支援システムの実証実験アプリです。
         文字情報基盤(MJ)の漢字を扱う IPAmjexMincho Web フォントを活かし、
         氏名に現れる、JIS X 0213 外の文字情報基盤の文字も正しく表示します。
       </Typography>

@@ -9,8 +9,10 @@
 | 日本語 | 英語表記 | 略称 |
 | --- | --- | --- |
 | 学習eポータル | Learning e-Portal | — |
-| 校務支援システム | School affairs support system | SSS |
+| 校務支援システム | Student Information System | SIS |
 | 学習ツール | Learning tool | — |
+
+> ※ 校務支援システムの英語表記について: 本 PoC は児童生徒の情報管理に絞っているため、校務支援システムを **SIS (Student Information System)** と呼称している。一方、政府標準仕様（学習eポータル標準モデル等）での英語表記は **School affairs support system (SSS)** である。本フォルダの設計文書で「SIS」と書く場合、対象とする業務範囲は標準仕様の「校務支援システム（SSS）」のうち児童生徒情報に関わる部分を指す。
 
 ## 一覧
 

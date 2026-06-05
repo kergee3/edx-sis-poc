@@ -11,10 +11,10 @@ import "./globals.css";
 import ClientLayout from './ClientLayout';
 
 export const metadata: Metadata = {
-  title: "SSS-PoC",
+  title: "SIS-PoC",
   description:
-    "IPAmjexMincho Web フォントを活かした校務支援システムの実証実験 (SSS-PoC / School affairs Support System - Proof of Concept)",
-  keywords: ["SSS-PoC", "校務支援システム", "文字情報基盤", "IPAmjexMincho", "Webフォント"],
+    "IPAmjexMincho Web フォントを活かした校務支援システムの実証実験 (SIS-PoC / Student Information System - Proof of Concept)",
+  keywords: ["SIS-PoC", "校務支援システム", "文字情報基盤", "IPAmjexMincho", "Webフォント"],
   manifest: "/manifest.json",
   icons: {
     icon: [
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "SSS-PoC",
+    title: "SIS-PoC",
   },
 };
 

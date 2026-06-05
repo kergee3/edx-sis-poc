@@ -36,16 +36,16 @@ DB は **Turso (SQLite, 東京 NRT)** 1 系統。認証・ログイン履歴・�
 
 1. [console.cloud.google.com](https://console.cloud.google.com/) にアクセス
 2. 画面上部のプロジェクトセレクタから **New Project**
-   - **Project name**: `sss-poc`（任意）
+   - **Project name**: `sis-poc`（任意）
    - **Location**: No organization で可
-3. 作成後、プロジェクトセレクタが `sss-poc` に切り替わっていることを確認
+3. 作成後、プロジェクトセレクタが `sis-poc` に切り替わっていることを確認
 
 ### 2.2 OAuth 同意画面の設定
 
 1. 左メニュー ☰ → **APIs & Services** → **OAuth consent screen**
 2. **Get started** をクリック
 3. **App information**
-   - **App name**: `SSS-PoC`
+   - **App name**: `SIS-PoC`
    - **User support email**: 自分の Gmail アドレス
 4. **Audience**: **External** を選択（個人 Gmail では Internal は使用不可）
 5. **Contact Information**: 自分の Gmail アドレス
@@ -56,7 +56,7 @@ DB は **Turso (SQLite, 東京 NRT)** 1 系統。認証・ログイン履歴・�
 1. 左メニュー → **APIs & Services** → **Credentials**
 2. 上部 **+ CREATE CREDENTIALS** → **OAuth client ID**
 3. **Application type**: **Web application**
-4. **Name**: `sss-poc-local`（任意）
+4. **Name**: `sis-poc-local`（任意）
 5. **Authorized JavaScript origins** に追加:
    ```
    http://localhost:3000
@@ -78,10 +78,10 @@ External + 未公開状態では、テストユーザーとして登録したア
 
 ### 本番デプロイ時
 
-公開ドメイン（本番: https://sss-poc.shumy.app）を同じ手順で追加する（ローカル用の値は消さず併記する）:
+公開ドメイン（本番: https://sis-poc.shumy.app）を同じ手順で追加する（ローカル用の値は消さず併記する）:
 
-- **Authorized JavaScript origins**: `https://sss-poc.shumy.app`
-- **Authorized redirect URIs**: `https://sss-poc.shumy.app/api/auth/callback/google`
+- **Authorized JavaScript origins**: `https://sis-poc.shumy.app`
+- **Authorized redirect URIs**: `https://sis-poc.shumy.app/api/auth/callback/google`
 
 Testing モードのまま運用可能（テストユーザー枠 100 人まで）。
 
@@ -93,13 +93,13 @@ Testing モードのまま運用可能（テストユーザー枠 100 人まで�
 
 1. [LINE Developers Console](https://developers.line.biz/console/) に LINE アカウントでログイン
 2. **Create a new provider** から Provider を作成
-   - **Provider name**: `SSS-PoC`（任意）
+   - **Provider name**: `SIS-PoC`（任意）
 
 ### 2b.2 LINE Login チャネル作成
 
 1. 作成した Provider を開き、**Create a new channel** → **LINE Login** を選択
 2. 設定値:
-   - **Channel name**: `SSS-PoC`
+   - **Channel name**: `SIS-PoC`
    - **Channel description**: 任意
    - **App types**: **Web app** にチェック
    - **Region where you provide your service**: Japan
@@ -125,7 +125,7 @@ LINE はデフォルトでは email を返さない。取得したい場合は *
 
 ### 本番デプロイ時
 
-公開ドメインのコールバック URL（本番: `https://sss-poc.shumy.app/api/auth/callback/line`）を **Callback URL** に追加する（ローカル用の値は消さず併記する）。
+公開ドメインのコールバック URL（本番: `https://sis-poc.shumy.app/api/auth/callback/line`）を **Callback URL** に追加する（ローカル用の値は消さず併記する）。
 
 ---
 
@@ -208,11 +208,11 @@ npm run dev
 
 ## 7. 本番デプロイ（Vercel）
 
-`src` アプリは Vercel の専用プロジェクトとして **https://sss-poc.shumy.app** に配信している。なお氏名表示に使う IPAmjexMincho Web フォントは別途 https://ipamjexmincho.shumy.app で外部配信されており（このリポジトリの管理外）、アプリはそれを参照するだけである。
+`src` アプリは Vercel の専用プロジェクトとして **https://sis-poc.shumy.app** に配信している。なお氏名表示に使う IPAmjexMincho Web フォントは別途 https://ipamjexmincho.shumy.app で外部配信されており（このリポジトリの管理外）、アプリはそれを参照するだけである。
 
-- **環境変数**: Vercel の Settings → Environment Variables に、Production 用として手順 1〜3 の値（`TURSO_*` / `AUTH_SECRET` / `AUTH_GOOGLE_*` / `AUTH_LINE_*`）を登録する。加えて **`AUTH_URL=https://sss-poc.shumy.app`** を設定する（カスタムドメインでコールバック URL を正しく組み立てるため）。`NEXTAUTH_URL` はローカル専用なので本番には登録しない。`SKIP_ENV_VALIDATION` も本番では設定しない
+- **環境変数**: Vercel の Settings → Environment Variables に、Production 用として手順 1〜3 の値（`TURSO_*` / `AUTH_SECRET` / `AUTH_GOOGLE_*` / `AUTH_LINE_*`）を登録する。加えて **`AUTH_URL=https://sis-poc.shumy.app`** を設定する（カスタムドメインでコールバック URL を正しく組み立てるため）。`NEXTAUTH_URL` はローカル専用なので本番には登録しない。`SKIP_ENV_VALIDATION` も本番では設定しない
 - **Turso**: 本番もローカルと同じ Turso DB を共用（マイグレーション適用済み）。開発と分けたい場合のみ別 DB を作って本番 env に別 URL/Token を入れる
-- **ドメイン**: Settings → Domains に `sss-poc.shumy.app` を追加。`shumy.app` が同一 Vercel アカウント/チーム管理下なら DNS と TLS は自動発行される
+- **ドメイン**: Settings → Domains に `sis-poc.shumy.app` を追加。`shumy.app` が同一 Vercel アカウント/チーム管理下なら DNS と TLS は自動発行される
 - **OAuth コールバック**: 本番ドメインの URL を Google / LINE に追記する（手順 2「本番デプロイ時」/ 2b「本番デプロイ時」参照）
 - 以後 `main` への push で自動的に本番デプロイされる
 

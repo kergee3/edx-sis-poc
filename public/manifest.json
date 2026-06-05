@@ -1,7 +1,7 @@
 {
-  "name": "SSS-PoC",
-  "short_name": "SSS-PoC",
-  "description": "IPAmjexMincho Web フォントを活かした校務支援システムの実証実験 (SSS-PoC)",
+  "name": "SIS-PoC",
+  "short_name": "SIS-PoC",
+  "description": "IPAmjexMincho Web フォントを活かした校務支援システムの実証実験 (SIS-PoC)",
   "icons": [
     {
       "src": "/icon-192.png",

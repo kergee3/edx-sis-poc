@@ -5,7 +5,7 @@
 > 調査日: 2026-06-03 ／ 典拠: [gakureibo-acceptance-data-items.md](gakureibo-acceptance-data-items.md)、[koumu-eportal-student-data-model.md](koumu-eportal-student-data-model.md)、OneRoster v1.2 Japan Profile、相互運用標準モデル Ver.6.00。
 > 本書は**設計ドキュメント**。実際の `src/server/db/turso/schema/` への追加・マイグレーション生成は別タスク（本書では行わない）。Drizzle 例は本プロジェクト規約（[auth.ts](../../src/server/db/turso/schema/auth.ts) 等）に合わせた**設計例**。
 >
-> 用語（英語表記）: 学習eポータル = Learning e-Portal ／ 校務支援システム = School affairs support system (SSS) ／ 学習ツール = Learning tool
+> 用語（英語表記）: 学習eポータル = Learning e-Portal ／ 校務支援システム = Student Information System (SIS。政府標準では School affairs support system / SSS) ／ 学習ツール = Learning tool
 
 ## 1. 設計方針
 

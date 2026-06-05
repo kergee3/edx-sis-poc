@@ -52,7 +52,7 @@ export default function AboutPage() {
             概要
           </Typography>
           <Typography variant="body1" color="text.secondary" paragraph>
-            SSS-PoC（School affairs Support System - Proof of Concept）は、
+            SIS-PoC（Student Information System - Proof of Concept）は、
             <Link href="https://ipamjexmincho.shumy.app/" target="_blank" rel="noopener noreferrer">
               IPAmjexMincho Web フォント
             </Link>
