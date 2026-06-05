@@ -15,6 +15,13 @@
       "when": 1780531468296,
       "tag": "0001_volatile_lockjaw",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1780641695285,
+      "tag": "0002_nice_inhumans",
+      "breakpoints": true
     }
   ]
 }

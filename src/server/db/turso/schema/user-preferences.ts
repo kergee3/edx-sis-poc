@@ -6,9 +6,12 @@ export const userPreferences = sqliteTable('user_preferences', {
     .primaryKey()
     .references(() => users.id, { onDelete: 'cascade' }),
 
-  // 現状は永続化する実設定が無いため userId + timestamps のみのスカフォールド。
-  // 実設定を足すときは列をここに追加し、login-history を参照実装に
-  // services/repositories/format(toView) を起こす。
+  // 学校プロフィール（ログインユーザ=校長ごとの校務情報）。
+  // 値は service 層で既定値を補い、初回アクセス時に seed される（DB 上は nullable）。
+  // ナビゲーション位置は localStorage 管理で、ここには持たない（保存場所を混同しないため）。
+  schoolName: text('school_name'),
+  principalName: text('principal_name'),
+  schoolAddress: text('school_address'),
 
   createdAt: integer('created_at', { mode: 'timestamp_ms' })
     .notNull()
