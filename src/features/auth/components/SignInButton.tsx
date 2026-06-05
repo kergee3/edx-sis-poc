@@ -1,9 +1,19 @@
 import { Button, Stack } from '@mui/material';
 import { signInWithGoogle, signInWithLine } from '../actions';
 
-export default function SignInButton() {
+interface SignInButtonProps {
+  /** ボタンの並び。既定は縦並び。横並びにしたい場合は 'row'（狭い画面では折り返す）。 */
+  direction?: 'row' | 'column';
+}
+
+export default function SignInButton({ direction = 'column' }: SignInButtonProps) {
   return (
-    <Stack spacing={1.5} sx={{ alignItems: 'flex-start' }}>
+    <Stack
+      direction={direction}
+      spacing={1.5}
+      useFlexGap
+      sx={{ alignItems: 'flex-start', flexWrap: 'wrap' }}
+    >
       <form action={signInWithGoogle}>
         <Button
           type="submit"
