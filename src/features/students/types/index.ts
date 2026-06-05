@@ -76,3 +76,28 @@ export interface StudentDetailView {
   /** 卒業日（ja-JP 整形済み、未設定は '-'） */
   graduationDateLabel: string;
 }
+
+/**
+ * 在籍証明書の表示用 ViewModel。生徒（在籍）情報に学校プロフィールと発行日を合成する。
+ * 日付は和暦（例: '令和7年6月5日'）に整形済み。
+ */
+export interface CertificateView {
+  /** 正式氏名 姓（MJ特有文字可。IPAmjexMincho で表示） */
+  officialFamilyName: string;
+  /** 正式氏名 名（MJ特有文字可。IPAmjexMincho で表示） */
+  officialGivenName: string;
+  /** 生年月日（和暦整形済み） */
+  birthDateWareki: string;
+  /** 性別（未設定は '(不明)'） */
+  sexLabel: string;
+  /** 学年・組（例: '1年1組'、未在籍は '(未在籍)'） */
+  gradeClassLabel: string;
+  /** 学校名 */
+  schoolName: string;
+  /** 学校住所 */
+  schoolAddress: string;
+  /** 校長氏名 */
+  principalName: string;
+  /** 発行日（本日・和暦整形済み） */
+  issueDateWareki: string;
+}

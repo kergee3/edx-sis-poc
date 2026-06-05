@@ -1,13 +1,13 @@
 import { Box, Button, Card, CardContent, Typography } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import AppFooter from '@/components/layout/AppFooter';
 import SignInButton from '@/features/auth/components/SignInButton';
 import StudentDetail from '@/features/students/components/StudentDetail';
+import StudentDetailNav from '@/features/students/components/StudentDetailNav';
 import { toDetailView } from '@/features/students/services/format';
-import { getStudentForUser } from '@/server/services/students';
+import { listRosterForUser } from '@/server/services/students';
 import { auth } from '@/server/auth/config';
 
 export default async function StudentDetailPage({
@@ -34,17 +34,24 @@ export default async function StudentDetailPage({
     );
   }
 
-  const entry = await getStudentForUser(session.user.id, id);
+  // 名簿（学年→出席番号順）から現在地を求め、前/次の生徒 id を割り出す。
+  // 認可は repository のクエリ条件に内包されるため、ここに出る id は自分の生徒のみ。
+  const roster = await listRosterForUser(session.user.id);
+  const index = roster.findIndex((e) => e.student.id === id);
+  const entry = index === -1 ? null : roster[index];
   if (!entry) {
     notFound();
   }
+
+  const prevId = index > 0 ? (roster[index - 1]?.student.id ?? null) : null;
+  const nextId = index < roster.length - 1 ? (roster[index + 1]?.student.id ?? null) : null;
 
   const view = toDetailView(entry);
 
   return (
     <Card>
       <CardContent>
-        <Box sx={{ mb: 2 }}>
+        <Box sx={{ mb: 0.5 }}>
           <Link href="/students" style={{ textDecoration: 'none' }}>
             <Button component="span" startIcon={<ArrowBackIcon />} size="small">
               生徒一覧へ戻る
@@ -52,12 +59,7 @@ export default async function StudentDetailPage({
           </Link>
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <PeopleAltIcon sx={{ fontSize: 32, mr: 1.5, color: 'primary.main' }} />
-          <Typography variant="h4" component="h1" sx={{ mb: 0 }}>
-            生徒詳細
-          </Typography>
-        </Box>
+        <StudentDetailNav prevId={prevId} nextId={nextId} />
 
         <StudentDetail view={view} />
 

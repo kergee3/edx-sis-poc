@@ -1,9 +1,19 @@
 import type { RosterEntry } from '@/server/repositories/students';
-import type { StudentDetailView, StudentView } from '../types';
+import type { SchoolProfile } from '@/server/services/user-preferences';
+import type { CertificateView, StudentDetailView, StudentView } from '../types';
 
 const birthDateFormatter = new Intl.DateTimeFormat('ja-JP', {
   timeZone: 'Asia/Tokyo',
   dateStyle: 'medium',
+});
+
+/** 和暦（例: '令和7年6月5日'）。証明書の発行日・生年月日に使う。 */
+const warekiFormatter = new Intl.DateTimeFormat('ja-JP-u-ca-japanese', {
+  timeZone: 'Asia/Tokyo',
+  era: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
 });
 
 const EMPTY = '-';
@@ -78,5 +88,32 @@ export function toDetailView(entry: RosterEntry): StudentDetailView {
     transferInDateLabel: dateOr(enrollment?.transferInDate),
     transferOutDateLabel: dateOr(enrollment?.transferOutDate),
     graduationDateLabel: dateOr(enrollment?.graduationDate),
+  };
+}
+
+/**
+ * 在籍証明書用 ViewModel を組み立てる。生徒（在籍）に学校プロフィールと発行日を合成。
+ * 発行日は呼び出し側で `new Date()`（本日）を渡す。日付は和暦に整形する。
+ */
+export function toCertificateView(
+  entry: RosterEntry,
+  school: SchoolProfile,
+  issuedAt: Date,
+): CertificateView {
+  const { student, enrollment } = entry;
+
+  const gradeClassLabel =
+    enrollment?.className ?? (enrollment?.grade ? `${enrollment.grade}年` : '(未在籍)');
+
+  return {
+    officialFamilyName: student.officialFamilyName,
+    officialGivenName: student.officialGivenName,
+    birthDateWareki: warekiFormatter.format(student.birthDate),
+    sexLabel: student.sex ?? '(不明)',
+    gradeClassLabel,
+    schoolName: school.schoolName,
+    schoolAddress: school.schoolAddress,
+    principalName: school.principalName,
+    issueDateWareki: warekiFormatter.format(issuedAt),
   };
 }
