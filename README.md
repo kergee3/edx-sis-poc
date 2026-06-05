@@ -1,6 +1,6 @@
-# jtp-mj-font — SSS-PoC（IPAmjexMincho Web フォントを活かした校務支援システム PoC）
+# edx-SIS-PoC — IPAmjexMincho Web フォントを活かした校務支援システム PoC
 
-本リポジトリは **`src/` — SSS-PoC（School affairs Support System - Proof of Concept）** アプリからなる。IPAmjexMincho Web フォントを活かした、**校務支援システム（School affairs Support System, SSS）の実証実験（PoC）**アプリ。Next.js 16 App Router + MUI v7。
+本リポジトリは **`src/` — SIS-PoC（Student Information System - Proof of Concept）** アプリからなる。IPAmjexMincho Web フォントを活かした、**校務支援システム（Student Information System, SIS）の実証実験（PoC）**アプリ。Next.js 16 App Router + MUI v7。
 
 氏名表示に使う **IPAmjexMincho Web フォント**は、**外部に配信されているもの（https://ipamjexmincho.shumy.app）を利用する**（フォントの合成・配信ツール自体は本リポジトリには含まない）。
 
