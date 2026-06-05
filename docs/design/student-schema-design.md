@@ -263,4 +263,4 @@ export type StudentGuardianRow = typeof studentGuardians.$inferSelect;
 ## 8. 出典
 
 - 本プロジェクト調査メモ: [gakureibo-acceptance-data-items.md](gakureibo-acceptance-data-items.md) / [koumu-eportal-student-data-model.md](koumu-eportal-student-data-model.md)
-- OneRoster v1.2 Japan Profile（1EdTech Japan）, 相互運用標準モデル Ver.6.00（ICT CONNECT 21）, 学校教育法施行規則第30条 ほか（[docs/references/README.md](../references/README.md) の索引参照）。
+- OneRoster v1.2 Japan Profile（1EdTech Japan）, 相互運用標準モデル Ver.6.00（ICT CONNECT 21）, 学校教育法施行規則第30条 ほか（[external-references.md](external-references.md) の索引参照）。

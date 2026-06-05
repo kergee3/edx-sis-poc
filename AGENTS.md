@@ -40,7 +40,7 @@
 
 環境構築、Turso、Google OAuth、LINE Login、`.env.local` の手順は `docs/environment-setup.md` を参照してください。
 
-政府機関などが公開する外部仕様書 PDF / xlsx 等はリポジトリに複製せず、`docs/references/README.md` の索引に外部リンク、出典、取得日、利用条件を記録します。それらを踏まえて本プロジェクトが作成する設計・調査ドキュメントは `docs/design/` に置きます。外部資料とは分離してください。
+政府機関などが公開する外部仕様書 PDF / xlsx 等はリポジトリに複製せず、`docs/design/external-references.md` の索引に外部リンク、出典、取得日、利用条件を記録します。それらを踏まえて本プロジェクトが作成する設計・調査ドキュメントも同じ `docs/design/` に置きます。
 
 ## 技術スタック
 

@@ -2,7 +2,7 @@
 
 児童生徒の**入学・転校（転入学）**時に、学校側が受け入れるために必要となる最小限のデータ項目を、政府の標準準拠システム仕様から整理したもの。本プロジェクト（行政/教育/名簿機能）の設計の基礎資料。
 
-> 調査日: 2026-06-03 ／ 典拠: 就学事務システム（学齢簿編製等）標準仕様書【第4.0版】（文部科学省, 2026-01-08公開）。原典はリポジトリに複製せず、外部リンクを [docs/references/README.md](../references/README.md) の索引に記録する。
+> 調査日: 2026-06-03 ／ 典拠: 就学事務システム（学齢簿編製等）標準仕様書【第4.0版】（文部科学省, 2026-01-08公開）。原典はリポジトリに複製せず、外部リンクを [external-references.md](external-references.md) の索引に記録する。
 >
 > 用語（英語表記）: 学習eポータル = Learning e-Portal ／ 校務支援システム = Student Information System (SIS。政府標準では School affairs support system / SSS) ／ 学習ツール = Learning tool
 
@@ -99,6 +99,6 @@
 ## 出典
 
 - 就学事務システム（学齢簿編製等）標準仕様書【第4.0版】掲載ページ: https://www.mext.go.jp/a_menu/shotou/shugaku/detail/1309979_00014.htm
-- 原典ファイル（本体PDF／機能要件xlsx／帳票要件xlsx／標準レイアウトPDF／更新履歴xlsx）はリポジトリに保持せず、[docs/references/README.md](../references/README.md) に外部リンクを記録する。
+- 原典ファイル（本体PDF／機能要件xlsx／帳票要件xlsx／標準レイアウトPDF／更新履歴xlsx）はリポジトリに保持せず、[external-references.md](external-references.md) に外部リンクを記録する。
 - 法令: 学校教育法施行規則第30条、学校教育法施行令第5条・第6条。
 - ライセンス: 文部科学省ウェブサイト利用規約（政府標準利用規約 第2.0版準拠 / CC BY 4.0 互換）。出典明記で複製・再配布可。

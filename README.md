@@ -50,9 +50,9 @@ PoC の業務設計は、学齢簿〜校務支援システム〜学習eポータ
 - [校務支援システムと学習eポータルにおける児童生徒情報の持ち方](docs/design/koumu-eportal-student-data-model.md)
 - [児童生徒スキーマ設計（あるべき持ち方とステージ別データ充足）](docs/design/student-schema-design.md)
 
-> 一次資料（政府の標準仕様書 PDF/xlsx 等）への外部リンク集は [docs/references/](docs/references/) に分離して記録している。
+> 一次資料（政府の標準仕様書 PDF/xlsx 等）への外部リンク集は [docs/design/external-references.md](docs/design/external-references.md) に記録している。
 >
-> **外部から複製した一次資料ファイルは、このリポジトリには保持しない。** 原典の出典・取得日・利用条件は [docs/references/README.md](docs/references/README.md) の索引に記録する。
+> **外部から複製した一次資料ファイルは、このリポジトリには保持しない。** 原典の出典・取得日・利用条件はこの索引に記録する。
 
 ---
 

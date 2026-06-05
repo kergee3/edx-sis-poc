@@ -2,7 +2,7 @@
 
 学齢簿（就学事務システム）から学校が受け入れた児童生徒情報（[gakureibo-acceptance-data-items.md](gakureibo-acceptance-data-items.md)）は、DB 格納後に**校務支援システム**・**学習eポータル**で活用される。本書は「初等中等教育におけるシステム間連携のための相互運用標準モデル Ver.6.00」（ICT CONNECT 21）を踏まえ、各システムが児童生徒情報を**どう持つべきか**を整理する。
 
-> 調査日: 2026-06-03 ／ 典拠: 相互運用標準モデル Ver.6.00（2026-03-27）、OneRoster v1.2 Japan Profile v1.2.1（1EdTech Japan）。両文書は再配布条件が不明なため repo には保存せず**リンクのみ**（[docs/references/README.md](../references/README.md) の索引参照）。
+> 調査日: 2026-06-03 ／ 典拠: 相互運用標準モデル Ver.6.00（2026-03-27）、OneRoster v1.2 Japan Profile v1.2.1（1EdTech Japan）。両文書は再配布条件が不明なため repo には保存せず**リンクのみ**（[external-references.md](external-references.md) の索引参照）。
 >
 > 用語（英語表記）: 学習eポータル = Learning e-Portal ／ 校務支援システム = Student Information System (SIS。政府標準では School affairs support system / SSS) ／ 学習ツール = Learning tool
 
