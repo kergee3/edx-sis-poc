@@ -1,10 +1,9 @@
-# edx-SIS-PoC — Web フォントを活かした校務支援システム PoC
+# SIS-PoC — Web Fontを活かした校務支援システム PoC
 
-本リポジトリは **`src/` — SIS-PoC（Student Information System - Proof of Concept）** アプリからなる。IPAmjexMincho Web フォントを活かした、**校務支援システム（Student Information System, SIS）の実証実験（PoC）**アプリ。Next.js 16 App Router + MUI v7。
+本リポジトリは **SIS-PoC(Student Information System - Proof of Concept)** アプリからなる。IPAmjexMincho Web フォントを活かした、**校務支援システム(Student Information System, SIS)の実証実験(PoC)**アプリ。Next.js 16 App Router + MUI v7。
 
 氏名表示に使う **IPAmjexMincho Web フォント**は、**外部に配信されているもの（[ipamjexmincho.shumy.app](https://ipamjexmincho.shumy.app)）を利用する**（フォントの合成・配信ツール自体は本リポジトリには含まない）。
 
-> 背景: もともと「MJ 漢字を Web フォントとして使う」実証から出発し、その応用先として、**氏名に MJ特有文字（戸籍漢字等）が現れる校務支援システム**を PoC として作る方針に転換した。氏名の正確な表示こそ IPAmjexMincho Web フォントの価値が最も活きる領域である。
 
 > 名称について: 本 PoC は校務のうち**児童生徒の情報管理に絞っている**ため、システムを **SIS (Student Information System)** と呼称している。なお政府標準仕様での「校務支援システム」の英語表記は **School affairs support system (SSS)** である（用語の詳細は [docs/design/README.md](docs/design/README.md) を参照）。
 
