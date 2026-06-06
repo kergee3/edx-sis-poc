@@ -17,7 +17,8 @@ export default async function HomePage() {
       getSchoolProfileForUser(session.user.id, session.user.name ?? null),
     ]);
     account = {
-      userName: session.user.name ?? (school.principalName || '校長先生'),
+      // ヒーローの呼びかけは設定の「校長氏名」を優先（未設定なら既定でログイン名が入る）。
+      userName: school.principalName || session.user.name || '校長先生',
       schoolName: school.schoolName,
       studentCount: roster.length,
     };
