@@ -1,5 +1,6 @@
-import { Box, Card, CardContent, Link, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, Link, Typography } from '@mui/material';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import AppFooter from '@/components/layout/AppFooter';
 import SignInButton from '@/features/auth/components/SignInButton';
 import StudentsTable from '@/features/students/components/StudentsTable';
@@ -22,6 +23,19 @@ export default async function StudentsPage() {
 
         {session?.user?.id ? (
           <>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1.5 }}>
+              {/* GET ダウンロード。Server Component から Next の Link を component に渡すと
+                  関数が渡せずエラーになるため、素の <a>（component="a"）で受ける。 */}
+              <Button
+                component="a"
+                href="/api/students/export"
+                variant="outlined"
+                size="small"
+                startIcon={<FileDownloadIcon />}
+              >
+                Excel出力
+              </Button>
+            </Box>
             <StudentsTable items={(await listRosterForUser(session.user.id)).map(toView)} />
             <Box
               component="ul"
