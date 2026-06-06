@@ -69,3 +69,20 @@ export async function insertStudentsWithEnrollments(
     if (enrollmentRows.length > 0) await tx.insert(studentEnrollments).values(enrollmentRows);
   });
 }
+
+/**
+ * そのオーナー（校長）の名簿を丸ごと置き換える（既存を破棄してから新規投入）。
+ * 単一トランザクションで原子的に行う。在籍は students の onDelete: cascade で消える。
+ */
+export async function replaceRosterForOwner(
+  userId: string,
+  studentRows: StudentInsert[],
+  enrollmentRows: StudentEnrollmentInsert[],
+): Promise<void> {
+  const db = getTursoDb();
+  await db.transaction(async (tx) => {
+    await tx.delete(students).where(eq(students.ownerUserId, userId));
+    if (studentRows.length > 0) await tx.insert(students).values(studentRows);
+    if (enrollmentRows.length > 0) await tx.insert(studentEnrollments).values(enrollmentRows);
+  });
+}

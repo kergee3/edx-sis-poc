@@ -4,26 +4,53 @@ import {
   findRosterByOwner,
   findStudentByIdForOwner,
   insertStudentsWithEnrollments,
+  replaceRosterForOwner,
   type RosterEntry,
 } from '@/server/repositories/students';
 import { buildSeedRoster } from './students-seed';
+import { buildRosterFromMaster } from './roster-master';
 
 /**
- * そのユーザ（校長）の名簿が空なら、PoC 用の初期 12 名を投入する。冪等。
+ * そのユーザ（校長）の名簿が空なら、PoC 用の初期名簿を投入する。冪等。
+ *
+ * 正本は public/poc-data/master-student-roster.xlsx（[roster-master.ts](./roster-master.ts)）。
+ * xlsx の読み込みに失敗したときは、新規ユーザでも名簿が空にならないよう
+ * 旧ハードコード（[students-seed.ts](./students-seed.ts)）へフォールバックする。
  * 失敗してもページ表示は続行できるよう、ここで握りつぶしてログのみ残す。
  */
 export async function ensureSeededForUser(userId: string): Promise<void> {
   try {
     const existing = await countByOwner(userId);
     if (existing > 0) return;
-    const { studentRows, enrollmentRows } = buildSeedRoster(userId);
-    await insertStudentsWithEnrollments(studentRows, enrollmentRows);
+
+    let rows: Awaited<ReturnType<typeof buildRosterFromMaster>>;
+    try {
+      rows = await buildRosterFromMaster(userId);
+    } catch (masterError) {
+      logger.error('Failed to read master roster xlsx; falling back to hardcoded seed', {
+        userId,
+        error: masterError instanceof Error ? masterError.message : String(masterError),
+      });
+      rows = buildSeedRoster(userId);
+    }
+
+    await insertStudentsWithEnrollments(rows.studentRows, rows.enrollmentRows);
   } catch (error) {
     logger.error('Failed to seed students', {
       userId,
       error: error instanceof Error ? error.message : String(error),
     });
   }
+}
+
+/**
+ * 名簿を「マスタ名簿 xlsx」の内容で初期化し直す（既存名簿は破棄）。
+ * 設定ページの「既定の名簿に設定する」から呼ぶ。xlsx 読み込みに失敗したら例外を投げ、
+ * 呼び出し側（Server Action）がエラーを利用者に返せるようにする（ここではフォールバックしない）。
+ */
+export async function resetRosterToMaster(userId: string): Promise<void> {
+  const { studentRows, enrollmentRows } = await buildRosterFromMaster(userId);
+  await replaceRosterForOwner(userId, studentRows, enrollmentRows);
 }
 
 /**

@@ -10,6 +10,7 @@ import SchoolIcon from '@mui/icons-material/School';
 import AppFooter from '@/components/layout/AppFooter';
 import SignInButton from '@/features/auth/components/SignInButton';
 import SchoolProfileForm from '@/features/settings/components/SchoolProfileForm';
+import DefaultRosterSetting from '@/features/settings/components/DefaultRosterSetting';
 import NavigationPositionSetting from '@/features/settings/components/NavigationPositionSetting';
 import { auth } from '@/server/auth/config';
 import { getSchoolProfileForUser } from '@/server/services/user-preferences';
@@ -53,6 +54,13 @@ export default async function SettingsPage() {
             </Box>
           )}
         </Box>
+
+        {profile && (
+          <>
+            <Divider sx={{ my: 3 }} />
+            <DefaultRosterSetting />
+          </>
+        )}
 
         <Divider sx={{ my: 3 }} />
 

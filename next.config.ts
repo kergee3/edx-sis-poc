@@ -9,6 +9,13 @@ const nextConfig: NextConfig = {
   },
   turbopack: {},
 
+  // 名簿シード/初期化はサーバ実行時に public/poc-data/master-student-roster.xlsx を読む。
+  // public/ は既定では Function バンドルに含まれないため、該当ルートへ明示的に含める。
+  outputFileTracingIncludes: {
+    '/students': ['./public/poc-data/master-student-roster.xlsx'],
+    '/settings': ['./public/poc-data/master-student-roster.xlsx'],
+  },
+
   experimental: {
     serverActions: {
       bodySizeLimit: '4mb',
