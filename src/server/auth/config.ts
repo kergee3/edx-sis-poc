@@ -24,6 +24,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth(() => {
       sessionsTable: sessions,
       verificationTokensTable: verificationTokens,
     }),
+    // ローカル/セルフホストでホスト検証を通すため明示的に信頼する。
+    // Vercel 上では自動で true になるが、ローカル (localhost) では既定で false のため
+    // 未設定だと UntrustedHost エラーになる。
+    trustHost: true,
     session: { strategy: 'jwt' },
     secret: env.AUTH_SECRET,
     providers: [
