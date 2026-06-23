@@ -1,6 +1,7 @@
 import type { RosterEntry } from '@/server/repositories/students';
 import type { SchoolProfile } from '@/server/services/user-preferences';
 import type { CertificateView, StudentDetailView, StudentView } from '../types';
+import { buildStudentKey } from './student-key';
 
 const birthDateFormatter = new Intl.DateTimeFormat('ja-JP', {
   timeZone: 'Asia/Tokyo',
@@ -50,6 +51,7 @@ export function toView(entry: RosterEntry): StudentView {
 
   return {
     id: student.id,
+    key: buildStudentKey(enrollment),
     attendanceLabel,
     gradeClassLabel,
     birthDateMs: student.birthDate.getTime(),

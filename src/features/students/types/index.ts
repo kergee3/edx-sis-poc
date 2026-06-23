@@ -1,6 +1,8 @@
 /** 生徒一覧の表示用 ViewModel（Drizzle 行をそのまま UI に渡さない）。 */
 export interface StudentView {
   id: string;
+  /** 詳細URLの自然キー（学年-組-出席番号、例 '1-1-5'）。生成不能時は null（リンクを張らない） */
+  key: string | null;
   /** 出席番号（未設定は '-'） */
   attendanceLabel: string;
   /** 学年・組（例: '1年1組'） */

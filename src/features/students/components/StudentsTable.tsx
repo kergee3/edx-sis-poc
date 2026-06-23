@@ -121,10 +121,6 @@ export default function StudentsTable({ items }: StudentsTableProps) {
     return [...filtered].sort((a, b) => (a.birthDateMs - b.birthDateMs) * dir);
   }, [items, visibleGradeClass, visibleSex, sortDir]);
 
-  // 詳細ページに「今見えている順序」を引き継ぐためのナビ列（フィルタ＋並べ替え適用後の id 列）。
-  // 詳細側はこの順で前後/総数を出す。詳細側で名簿実在チェックするため改ざんは無害。
-  const seqParam = useMemo(() => rows.map((r) => r.id).join(','), [rows]);
-
   if (items.length === 0) {
     return (
       <Typography variant="body2" color="text.secondary" sx={{ py: 4, textAlign: 'center' }}>
@@ -199,20 +195,24 @@ export default function StudentsTable({ items }: StudentsTableProps) {
                 {/* 出席番号を押すと詳細ページへ。氏名/正式苗字セルの拡大ポップオーバーと
                     クリックが競合しないよう、対話要素の無いこの列を選択起点にする。 */}
                 <TableCell sx={{ px: CELL_PX, textAlign: 'center' }}>
-                  <Link
-                    href={`/students/${item.id}?seq=${encodeURIComponent(seqParam)}`}
-                    style={{ textDecoration: 'none' }}
-                    aria-label={`${item.gradeClassLabel} ${item.preferredFamilyName}${item.preferredGivenName} の詳細を開く`}
-                  >
-                    <Chip
-                      component="span"
-                      clickable
-                      size="small"
-                      variant="outlined"
-                      color="primary"
-                      label={item.attendanceLabel}
-                    />
-                  </Link>
+                  {item.key ? (
+                    <Link
+                      href={`/students/${item.key}`}
+                      style={{ textDecoration: 'none' }}
+                      aria-label={`${item.gradeClassLabel} ${item.preferredFamilyName}${item.preferredGivenName} の詳細を開く`}
+                    >
+                      <Chip
+                        component="span"
+                        clickable
+                        size="small"
+                        variant="outlined"
+                        color="primary"
+                        label={item.attendanceLabel}
+                      />
+                    </Link>
+                  ) : (
+                    <Chip size="small" variant="outlined" label={item.attendanceLabel} />
+                  )}
                 </TableCell>
                 <TableCell sx={{ px: CELL_PX, whiteSpace: 'nowrap' }}>{item.gradeClassLabel}</TableCell>
                 {/* 表示名（preferred・JIS文字）は通常フォント。フリガナは <ruby> で
