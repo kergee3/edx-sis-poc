@@ -42,7 +42,7 @@ export default async function StudentsPage() {
               sx={{ mt: 2, pl: 3, m: 0, '& li': { mt: 0.5 }, '& li:first-of-type': { mt: 0 } }}
             >
               <Typography component="li" variant="body2" color="text.secondary">
-                丸で囲まれた出席番号をクリックすると、該当する生徒の詳細を確認できます。さらに、在籍証明書も発行できます。
+                丸で囲まれた出席番号をクリックすると、該当する生徒の詳細を確認できます。さらに、在学証明書も発行できます。
               </Typography>
               <Typography component="li" variant="body2" color="text.secondary">
                 正式苗字は{' '}

@@ -78,7 +78,7 @@ export interface StudentDetailView {
 }
 
 /**
- * 在籍証明書の表示用 ViewModel。生徒（在籍）情報に学校プロフィールと発行日を合成する。
+ * 在学証明書の表示用 ViewModel。生徒（在籍）情報に学校プロフィールと発行日を合成する。
  * 日付は和暦（例: '令和7年6月5日'）に整形済み。
  */
 export interface CertificateView {

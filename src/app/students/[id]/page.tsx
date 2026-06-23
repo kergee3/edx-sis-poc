@@ -61,7 +61,7 @@ export default async function StudentDetailPage({
 
   const view = toDetailView(entry);
 
-  // 在籍証明書には学校プロフィール（学校名・住所・校長氏名）と発行日（本日）を合成する。
+  // 在学証明書には学校プロフィール（学校名・住所・校長氏名）と発行日（本日）を合成する。
   const school = await getSchoolProfileForUser(session.user.id, session.user.name ?? null);
   const certificate = toCertificateView(entry, school, new Date());
 

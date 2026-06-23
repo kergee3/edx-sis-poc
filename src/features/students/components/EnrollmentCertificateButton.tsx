@@ -63,7 +63,7 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 }
 
 /**
- * 在籍証明ボタン。押すと在籍証明書ダイアログを開く。
+ * 在学証明ボタン。押すと在学証明書ダイアログを開く。
  * 証明書には学校名・住所・校長氏名・発行日（本日・和暦）を含む。
  */
 export default function EnrollmentCertificateButton({
@@ -81,7 +81,7 @@ export default function EnrollmentCertificateButton({
         onClick={() => setOpen(true)}
         sx={{ whiteSpace: 'nowrap' }}
       >
-        在籍証明
+        在学証明
       </Button>
 
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
@@ -97,7 +97,7 @@ export default function EnrollmentCertificateButton({
               align="center"
               sx={{ letterSpacing: '0.5em', mb: 4, fontWeight: 'bold' }}
             >
-              在籍証明書
+              在学証明書
             </Typography>
 
             <Box sx={{ mb: 4 }}>
@@ -117,7 +117,7 @@ export default function EnrollmentCertificateButton({
             </Box>
 
             <Typography sx={{ mb: 5, lineHeight: 2 }}>
-              上記の者は、本校に在籍していることを証明します。
+              上記の者は、本校に在学していることを証明します。
             </Typography>
 
             {/* 発行日・学校名・校長名（証明者）。右寄せで証書の体裁に。 */}

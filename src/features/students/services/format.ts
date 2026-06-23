@@ -112,7 +112,7 @@ export function toDetailView(entry: RosterEntry): StudentDetailView {
 }
 
 /**
- * 在籍証明書用 ViewModel を組み立てる。生徒（在籍）に学校プロフィールと発行日を合成。
+ * 在学証明書用 ViewModel を組み立てる。生徒（在籍）に学校プロフィールと発行日を合成。
  * 発行日は呼び出し側で `new Date()`（本日）を渡す。日付は和暦に整形する。
  */
 export function toCertificateView(
