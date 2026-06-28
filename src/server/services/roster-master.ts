@@ -34,7 +34,7 @@ const SCHOOL_CODE = 'B999999999999'; // PoC 用の架空の学校コード（離
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-interface MasterEntry {
+export interface MasterEntry {
   grade: number;
   officialFamily: string;
   officialGiven: string;
@@ -62,7 +62,7 @@ function cellText(value: ExcelJS.CellValue): string {
 }
 
 /** xlsx を読み、ヘッダ行を除いた各生徒のマスタ項目を返す。 */
-async function readMasterEntries(): Promise<MasterEntry[]> {
+export async function readMasterEntries(): Promise<MasterEntry[]> {
   const buffer = await readFile(MASTER_ROSTER_PATH);
   // exceljs の load は ArrayBuffer も受け付ける。@types/node の NonSharedBuffer と
   // exceljs の Buffer 型の差を避けるため、素の ArrayBuffer を切り出して渡す。

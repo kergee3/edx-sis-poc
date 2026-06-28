@@ -71,6 +71,30 @@ export async function insertStudentsWithEnrollments(
 }
 
 /**
+ * 学齢簿マッピングの確定結果を反映する。正式氏名（姓・名）で一致する自分の生徒の
+ * 表示名（preferred）の姓を更新する。更新できた行数を返す（0 なら未一致）。
+ * 認可はクエリ条件（ownerUserId）に内包。
+ */
+export async function updatePreferredFamilyByOfficialName(
+  userId: string,
+  officialFamily: string,
+  officialGiven: string,
+  preferredFamily: string,
+): Promise<number> {
+  const result = await getTursoDb()
+    .update(students)
+    .set({ preferredFamilyName: preferredFamily, updatedAt: new Date() })
+    .where(
+      and(
+        eq(students.ownerUserId, userId),
+        eq(students.officialFamilyName, officialFamily),
+        eq(students.officialGivenName, officialGiven),
+      ),
+    );
+  return result.rowsAffected ?? 0;
+}
+
+/**
  * そのオーナー（校長）の名簿を丸ごと置き換える（既存を破棄してから新規投入）。
  * 単一トランザクションで原子的に行う。在籍は students の onDelete: cascade で消える。
  */

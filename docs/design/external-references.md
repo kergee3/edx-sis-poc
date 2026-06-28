@@ -25,3 +25,5 @@
 | 同上_更新履歴 | 文部科学省 | https://www.mext.go.jp/content/20260108-mtx_syoto02-000046887-5-5.xlsx | 2026-06-03 | 第4.0版 | 同上 | 版間の変更履歴 |
 | 初等中等教育におけるシステム間連携のための相互運用標準モデル Ver.6.00 | ICT CONNECT 21 | https://ictconnect21.jp/ict/wp-content/uploads/2026/03/PSE_interoperability_standard_V6p00.pdf | 2026-06-03 | Ver.6.00（2026-03-27） | 再配布条件不明。リンクのみ | 校務支援⇔学習eポータルの名簿連携（OneRoster/UUID）。掲載元 https://ictconnect21.jp/document/eportal/ |
 | OneRoster Japan Profile | 一般社団法人 日本1EdTech協会 | https://www.1edtechjapan.org/orjpp | 2026-06-03 | v1.2.1（2024-01-11） | © 1EdTech Japan Society。リンクのみ | users 等名簿項目の日本向け定義元 |
+| MJ文字情報一覧表 | 一般社団法人 文字情報技術促進協議会（IPA） | https://moji.or.jp/wp-content/uploads/2024/01/mji.00602.xlsx | 2026-06-28 | Ver.006.02（2024-01） | CC BY-SA 2.1 JP（IPA著作物である旨を明記） | 氏名のJIS X 0213マッピングの一次データ（UCS/IVS/X0213面区点/水準/同符号位置の異体字）。掲載元 https://moji.or.jp/mojikiban/mjlist/ |
+| MJ縮退マップ | 一般社団法人 文字情報技術促進協議会（IPA） | https://moji.or.jp/wp-content/mojikiban/oscdl/MJShrinkMap.1.2.0.json | 2026-06-28 | Ver.1.2.0（2018-01-26） | CC BY-SA 2.1 JP（IPA著作物である旨を明記） | 約6万MJ文字→約1万JIS X 0213文字の縮退対応（別符号位置の異体字）。JSON/XMLのみ（xlsx無し）。掲載元 https://moji.or.jp/mojikiban/map/ |

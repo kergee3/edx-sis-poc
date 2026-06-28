@@ -41,3 +41,7 @@ next-env.d.ts
 # Microsoft Office temporary / lock files
 ~$*
 
+# 外部の一次資料（MJ文字情報一覧表 xlsx / MJ縮退マップ json 等）はコミットしない。
+# docs/design/external-references.md の運用ルール参照。Turso へのインポート用の一時入力。
+/docs/ref-data/
+
