@@ -33,6 +33,25 @@ function defaultChoice(c: CharMapping): string {
   return c.raw; // non_kanji: 原字（カナ・記号等。JISで表示可能なことが多い）をそのまま
 }
 
+/** 原字の分類ラベル（JIS: 第N水準 / MJ特有文字 / 非漢字）。 */
+function roleLabel(c: CharMapping): string {
+  if (c.kind === 'in_x0213') return c.level ? `JIS: 第${c.level}水準` : 'JIS';
+  if (c.kind === 'needs_choice') return 'MJ特有文字';
+  return '非漢字';
+}
+
+/** 原字のコード表記（IVS付きは "U+xxxx_E01xx"、無しは "U+xxxx"）。 */
+function originalCode(raw: string): string {
+  const cps = Array.from(raw).map((ch) => ch.codePointAt(0) ?? 0);
+  const base = cps[0] ?? 0;
+  const baseHex = base.toString(16).toUpperCase().padStart(4, '0');
+  const vs = cps[1];
+  if (vs !== undefined && vs >= 0xe0100 && vs <= 0xe01ef) {
+    return `U+${baseHex}_${vs.toString(16).toUpperCase()}`;
+  }
+  return `U+${baseHex}`;
+}
+
 interface GakureiboImportProps {
   records: GakureiboRecord[];
 }
@@ -174,88 +193,97 @@ export default function GakureiboImport({ records }: GakureiboImportProps) {
         {current.familyMapping.chars.map((c, i) => (
           <Paper key={i} variant="outlined" sx={{ p: 1.5 }}>
             <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, flexWrap: 'wrap' }}>
-              {/* 原字（MJ） */}
-              <Box sx={{ textAlign: 'center', minWidth: 56 }}>
+              {/* 原字（MJ）の字形 */}
+              <Box sx={{ minWidth: 56, textAlign: 'center' }}>
                 <Typography sx={{ fontFamily: FONT_MJ, fontSize: '2rem', lineHeight: 1.1 }}>
                   {c.raw}
                 </Typography>
-                <Typography variant="caption" color="text.secondary">原字(MJ)</Typography>
               </Box>
 
               <Box sx={{ flex: 1, minWidth: 240 }}>
-                {c.kind === 'in_x0213' && (
-                  <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" useFlexGap>
-                    <Chip size="small" color="success" label="JIS X 0213 に定義あり" />
-                    <Chip size="small" variant="outlined" label={levelLabel(c.level)} />
-                    <Chip size="small" variant="outlined" label={`面区点 ${c.x0213}`} />
-                    <Typography variant="body2" color="text.secondary">そのまま使用</Typography>
-                  </Stack>
-                )}
-
-                {c.kind === 'needs_choice' && (
-                  <Box>
-                    <Typography variant="body2" color="warning.main" sx={{ mb: 0.5 }}>
-                      この字形は JIS X 0213 にありません。代表字・異体字から選んでください。
-                    </Typography>
-                    {c.candidates.length === 0 ? (
-                      <Typography variant="body2" color="text.secondary">
-                        候補がありません。下の欄に手入力してください。
-                      </Typography>
-                    ) : (
-                      <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap sx={{ mb: 1 }}>
-                        {c.candidates.map((cand, ci) => {
-                          const selected = (selections[i] ?? '') === cand.char && cand.char !== '';
-                          return (
-                            <Button
-                              key={ci}
-                              onClick={() => setCharChoice(i, cand.char)}
-                              variant={selected ? 'contained' : 'outlined'}
-                              sx={{ flexDirection: 'column', textTransform: 'none', py: 0.5, minWidth: 76 }}
-                            >
-                              {/* IVS 異体字も正しい字形で見せるため IPAmjexMincho で描画 */}
-                              <Box sx={{ fontFamily: FONT_MJ, fontSize: '1.6rem', lineHeight: 1.1 }}>
-                                {cand.char || '□'}
-                              </Box>
-                              <Box sx={{ fontSize: '0.65rem', opacity: 0.8 }}>
-                                {levelLabel(cand.level)}・{cand.isRepresentative ? '代表字' : '異体字'}
-                              </Box>
-                              <Box sx={{ fontSize: '0.6rem', opacity: 0.7 }}>
-                                {cand.ivs ? `U+${cand.ivs}` : cand.ucs}
-                              </Box>
-                            </Button>
-                          );
-                        })}
-                      </Stack>
-                    )}
-                    <TextField
-                      size="small"
-                      label="確定する字（手入力可）"
-                      value={selections[i] ?? ''}
-                      onChange={(e) => setCharChoice(i, e.target.value)}
-                      sx={{ width: 220 }}
-                    />
-                  </Box>
-                )}
-
-                {c.kind === 'non_kanji' && (
-                  <Box>
-                    <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
-                      <Chip size="small" color="default" label="非漢字（MJ 未収録）" />
-                      <Typography variant="body2" color="text.secondary">
-                        必要なら手入力で修正してください。
-                      </Typography>
-                    </Stack>
-                    <TextField
-                      size="small"
-                      label="確定する字"
-                      value={selections[i] ?? ''}
-                      onChange={(e) => setCharChoice(i, e.target.value)}
-                      sx={{ width: 220 }}
-                    />
-                  </Box>
-                )}
+                {/* 分類ラベル（塗りつぶしの丸枠チップ）＋ 原字のコード */}
+                <Chip
+                  size="small"
+                  color={
+                    c.kind === 'in_x0213'
+                      ? 'success'
+                      : c.kind === 'needs_choice'
+                        ? 'error'
+                        : 'default'
+                  }
+                  label={roleLabel(c)}
+                  sx={{ mb: 0.5 }}
+                />
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ display: 'block', mb: c.kind === 'in_x0213' ? 0 : 1 }}
+                >
+                  {originalCode(c.raw)}
+                </Typography>
               </Box>
             </Box>
+
+            {/* 「対応付け候補」〜「確定する字」はインデントせずカード左端に左寄せ */}
+            {c.kind === 'needs_choice' && (
+              <Box sx={{ mt: 1.5 }}>
+                <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 0.5 }}>
+                  対応付け候補
+                </Typography>
+                {c.candidates.length === 0 ? (
+                  <Typography variant="body2" color="text.secondary">
+                    候補がありません。下の欄に手入力してください。
+                  </Typography>
+                ) : (
+                  <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap sx={{ mb: 1 }}>
+                    {c.candidates.map((cand, ci) => {
+                      const selected = (selections[i] ?? '') === cand.char && cand.char !== '';
+                      return (
+                        <Button
+                          key={ci}
+                          onClick={() => setCharChoice(i, cand.char)}
+                          variant={selected ? 'contained' : 'outlined'}
+                          sx={{ flexDirection: 'column', textTransform: 'none', py: 0.5, minWidth: 76 }}
+                        >
+                          {/* IVS 異体字も正しい字形で見せるため IPAmjexMincho で描画 */}
+                          <Box sx={{ fontFamily: FONT_MJ, fontSize: '1.6rem', lineHeight: 1.1 }}>
+                            {cand.char || '□'}
+                          </Box>
+                          <Box sx={{ fontSize: '0.65rem', opacity: 0.8 }}>
+                            {levelLabel(cand.level)}・{cand.isRepresentative ? '代表字' : '異体字'}
+                          </Box>
+                          <Box sx={{ fontSize: '0.6rem', opacity: 0.7 }}>
+                            {cand.ivs ? `U+${cand.ivs}` : cand.ucs}
+                          </Box>
+                        </Button>
+                      );
+                    })}
+                  </Stack>
+                )}
+                <TextField
+                  size="small"
+                  label="確定する字（手入力可）"
+                  value={selections[i] ?? ''}
+                  onChange={(e) => setCharChoice(i, e.target.value)}
+                  sx={{ width: 220 }}
+                />
+              </Box>
+            )}
+
+            {c.kind === 'non_kanji' && (
+              <Box sx={{ mt: 1.5 }}>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                  必要なら手入力で修正してください。
+                </Typography>
+                <TextField
+                  size="small"
+                  label="確定する字"
+                  value={selections[i] ?? ''}
+                  onChange={(e) => setCharChoice(i, e.target.value)}
+                  sx={{ width: 220 }}
+                />
+              </Box>
+            )}
           </Paper>
         ))}
       </Stack>
