@@ -13,7 +13,7 @@ import { buildRosterFromMaster } from './roster-master';
 /**
  * そのユーザ（校長）の名簿が空なら、PoC 用の初期名簿を投入する。冪等。
  *
- * 正本は public/poc-data/master-student-roster.xlsx（[roster-master.ts](./roster-master.ts)）。
+ * 正本は public/poc-data/initial-student-roster.xlsx の v2 シート（[roster-master.ts](./roster-master.ts)）。
  * xlsx の読み込みに失敗したときは、新規ユーザでも名簿が空にならないよう
  * 旧ハードコード（[students-seed.ts](./students-seed.ts)）へフォールバックする。
  * 失敗してもページ表示は続行できるよう、ここで握りつぶしてログのみ残す。
@@ -44,12 +44,13 @@ export async function ensureSeededForUser(userId: string): Promise<void> {
 }
 
 /**
- * 名簿を「マスタ名簿 xlsx」の内容で初期化し直す（既存名簿は破棄）。
- * 設定ページの「既定の名簿に設定する」から呼ぶ。xlsx 読み込みに失敗したら例外を投げ、
- * 呼び出し側（Server Action）がエラーを利用者に返せるようにする（ここではフォールバックしない）。
+ * 名簿を初期名簿 xlsx の内容で初期化し直す（既存名簿は破棄）。
+ * 設定ページの「名簿の初期化」から呼ぶ。sheetName でシートを選べる（未指定なら先頭シート）。
+ * xlsx 読み込みに失敗したら例外を投げ、呼び出し側（Server Action）がエラーを利用者に返せる
+ * ようにする（ここではフォールバックしない）。
  */
-export async function resetRosterToMaster(userId: string): Promise<void> {
-  const { studentRows, enrollmentRows } = await buildRosterFromMaster(userId);
+export async function resetRosterToMaster(userId: string, sheetName?: string): Promise<void> {
+  const { studentRows, enrollmentRows } = await buildRosterFromMaster(userId, { sheetName });
   await replaceRosterForOwner(userId, studentRows, enrollmentRows);
 }
 

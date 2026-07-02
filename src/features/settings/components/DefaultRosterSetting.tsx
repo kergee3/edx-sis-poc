@@ -10,36 +10,52 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
   Snackbar,
   Typography,
 } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import { resetRosterToDefaultAction } from '../actions';
 
+interface DefaultRosterSettingProps {
+  /** 初期名簿 xlsx のシート名（ファイル内の並び順。先頭が既定）。 */
+  sheetNames: string[];
+}
+
 /**
- * 「既定の名簿に設定する」設定。
- * マスタ名簿 xlsx（public/poc-data/master-student-roster.xlsx）の内容で名簿を初期化し直す。
+ * 「名簿の初期化」設定。
+ * 初期名簿 xlsx（public/poc-data/initial-student-roster.xlsx）から選んだシートの内容で
+ * 名簿を初期化し直す。既定は先頭のシート（現在は "v2"）。
  * 既存名簿を破棄する破壊的操作のため、実行前に確認ダイアログを挟む。
  */
-export default function DefaultRosterSetting() {
+export default function DefaultRosterSetting({ sheetNames }: DefaultRosterSettingProps) {
+  const [sheet, setSheet] = useState(sheetNames[0] ?? '');
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [snack, setSnack] = useState<{ severity: 'success' | 'error'; message: string } | null>(
     null,
   );
   const [isPending, startTransition] = useTransition();
 
+  const handleSheetChange = (e: SelectChangeEvent) => setSheet(e.target.value);
+
   const handleConfirm = () => {
     startTransition(async () => {
-      const result = await resetRosterToDefaultAction();
+      const result = await resetRosterToDefaultAction(sheet || undefined);
       setConfirmOpen(false);
       if (result.ok) {
-        setSnack({ severity: 'success', message: '既定の名簿で初期化しました' });
+        setSnack({ severity: 'success', message: `「${sheet}」で名簿を初期化しました` });
         return;
       }
       const message =
         result.error === 'unauthorized'
           ? 'サインインが必要です'
-          : '名簿の初期化に失敗しました。時間をおいて再度お試しください';
+          : result.error === 'invalid_input'
+            ? '選択したシートが見つかりませんでした。ページを再読み込みしてください'
+            : '名簿の初期化に失敗しました。時間をおいて再度お試しください';
       setSnack({ severity: 'error', message });
     });
   };
@@ -53,23 +69,50 @@ export default function DefaultRosterSetting() {
         </Typography>
       </Box>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        既定の名簿（マスタ名簿）の内容で名簿を作り直します。現在の名簿は破棄されます。
+        初期名簿ファイルの選んだシートの内容で名簿を作り直します。現在の名簿は破棄されます。
       </Typography>
-      <Button
-        variant="outlined"
-        color="error"
-        startIcon={<GroupAddIcon />}
-        onClick={() => setConfirmOpen(true)}
-        loading={isPending}
-      >
-        既定の名簿に設定する
-      </Button>
+
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+        <FormControl size="small" sx={{ minWidth: 200 }} disabled={sheetNames.length === 0 || isPending}>
+          <InputLabel id="roster-sheet-label">名簿シート</InputLabel>
+          <Select
+            labelId="roster-sheet-label"
+            label="名簿シート"
+            value={sheet}
+            onChange={handleSheetChange}
+          >
+            {sheetNames.map((name, i) => (
+              <MenuItem key={name} value={name}>
+                {name}
+                {i === 0 ? '（既定）' : ''}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <Button
+          variant="outlined"
+          color="error"
+          startIcon={<GroupAddIcon />}
+          onClick={() => setConfirmOpen(true)}
+          loading={isPending}
+          disabled={sheet === ''}
+        >
+          この名簿で初期化する
+        </Button>
+      </Box>
+
+      {sheetNames.length === 0 && (
+        <Typography variant="caption" color="error" sx={{ display: 'block', mt: 1 }}>
+          初期名簿ファイルのシートを読み込めませんでした。
+        </Typography>
+      )}
 
       <Dialog open={confirmOpen} onClose={() => (isPending ? undefined : setConfirmOpen(false))}>
-        <DialogTitle>既定の名簿に設定しますか？</DialogTitle>
+        <DialogTitle>名簿を初期化しますか？</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            現在の名簿をすべて破棄し、既定の名簿（マスタ名簿）の内容で作り直します。
+            現在の名簿をすべて破棄し、シート「{sheet}」の内容で作り直します。
             この操作は元に戻せません。
           </DialogContentText>
         </DialogContent>

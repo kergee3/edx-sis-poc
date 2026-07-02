@@ -5,6 +5,7 @@ import { auth } from '@/server/auth/config';
 import { logger } from '@/lib/logging';
 import { updateSchoolProfileForUser } from '@/server/services/user-preferences';
 import { resetRosterToMaster } from '@/server/services/students';
+import { listRosterSheetNames } from '@/server/services/roster-master';
 import { schoolProfileInputSchema, type SchoolProfileInput } from './schema/school-profile';
 
 export type SaveSchoolProfileError = 'unauthorized' | 'invalid_input' | 'unknown';
@@ -48,27 +49,35 @@ export async function saveSchoolProfileAction(
   return { ok: true, values: parsed.data };
 }
 
-export type ResetRosterError = 'unauthorized' | 'unknown';
+export type ResetRosterError = 'unauthorized' | 'invalid_input' | 'unknown';
 
 export type ResetRosterResult =
   | { ok: true }
   | { ok: false; error: ResetRosterError };
 
 /**
- * 名簿を「マスタ名簿 xlsx」の内容で初期化し直す（既存名簿は破棄）。
- * 設定ページの「既定の名簿に設定する」ボタンから呼ぶ。
+ * 名簿を初期名簿 xlsx の内容で初期化し直す（既存名簿は破棄）。
+ * 設定ページの「名簿の初期化」ボタンから呼ぶ。sheetName でシートを選べる
+ * （未指定なら先頭シート）。クライアントは信用せず、実在するシート名かをここで検証する。
  */
-export async function resetRosterToDefaultAction(): Promise<ResetRosterResult> {
+export async function resetRosterToDefaultAction(sheetName?: string): Promise<ResetRosterResult> {
   const session = await auth();
   if (!session?.user?.id) {
     return { ok: false, error: 'unauthorized' };
   }
 
   try {
-    await resetRosterToMaster(session.user.id);
+    if (sheetName !== undefined) {
+      const available = await listRosterSheetNames();
+      if (!available.includes(sheetName)) {
+        return { ok: false, error: 'invalid_input' };
+      }
+    }
+    await resetRosterToMaster(session.user.id, sheetName);
   } catch (err) {
     logger.error('settings.reset_roster.failed', {
       userId: session.user.id,
+      sheetName: sheetName ?? null,
       error: err instanceof Error ? err.message : String(err),
     });
     return { ok: false, error: 'unknown' };

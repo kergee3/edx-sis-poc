@@ -7,9 +7,11 @@ import type {
 } from '@/server/db/turso/schema/students';
 
 /**
- * 「マスタ名簿」xlsx（public/poc-data/master-student-roster.xlsx）を正本として
+ * 「初期名簿」xlsx（public/poc-data/initial-student-roster.xlsx）を正本として
  * 初期名簿（生徒＋在籍）を組み立てる。設定ページの「既定の名簿に設定する」と
  * 新規ログイン時のシード（[students.ts](./students.ts) の ensureSeededForUser）の双方から使う。
+ *
+ * xlsx には `v2` / `v1` の 2 シートがあり、先頭の `v2` シートを使う。
  *
  * xlsx の列（1始まり）:
  *   1=学年 2=正式氏名(姓) 3=正式氏名(名) 4=表示名(姓) 5=表示名(名)
@@ -27,7 +29,7 @@ const MASTER_ROSTER_PATH = path.join(
   process.cwd(),
   'public',
   'poc-data',
-  'master-student-roster.xlsx',
+  'initial-student-roster.xlsx',
 );
 
 const SCHOOL_CODE = 'B999999999999'; // PoC 用の架空の学校コード（離島の中学校）
@@ -61,8 +63,8 @@ function cellText(value: ExcelJS.CellValue): string {
   return '';
 }
 
-/** xlsx を読み、ヘッダ行を除いた各生徒のマスタ項目を返す。 */
-export async function readMasterEntries(): Promise<MasterEntry[]> {
+/** initial-student-roster.xlsx を読み込み Workbook を返す（共通処理）。 */
+async function loadRosterWorkbook(): Promise<ExcelJS.Workbook> {
   const buffer = await readFile(MASTER_ROSTER_PATH);
   // exceljs の load は ArrayBuffer も受け付ける。@types/node の NonSharedBuffer と
   // exceljs の Buffer 型の差を避けるため、素の ArrayBuffer を切り出して渡す。
@@ -72,9 +74,31 @@ export async function readMasterEntries(): Promise<MasterEntry[]> {
   );
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.load(arrayBuffer);
+  return workbook;
+}
 
-  const sheet = workbook.worksheets[0];
-  if (!sheet) throw new Error('master-student-roster.xlsx: シートが見つかりません');
+/**
+ * 初期名簿 xlsx のシート名を、ファイル内の並び順で返す（先頭が既定シート。現在は "v2"）。
+ * 設定ページ「名簿の初期化」のシート選択肢として使う。今後シートが増えても先頭が既定。
+ */
+export async function listRosterSheetNames(): Promise<string[]> {
+  const workbook = await loadRosterWorkbook();
+  return workbook.worksheets.map((w) => w.name);
+}
+
+/**
+ * xlsx を読み、ヘッダ行を除いた各生徒のマスタ項目を返す。
+ * sheetName 未指定時は先頭シート（既定）を使う。
+ */
+export async function readMasterEntries(sheetName?: string): Promise<MasterEntry[]> {
+  const workbook = await loadRosterWorkbook();
+
+  const sheet = sheetName ? workbook.getWorksheet(sheetName) : workbook.worksheets[0];
+  if (!sheet) {
+    throw new Error(
+      `initial-student-roster.xlsx: シート「${sheetName ?? '(先頭)'}」が見つかりません`,
+    );
+  }
 
   const entries: MasterEntry[] = [];
   sheet.eachRow((row, rowNumber) => {
@@ -96,7 +120,7 @@ export async function readMasterEntries(): Promise<MasterEntry[]> {
   });
 
   if (entries.length === 0) {
-    throw new Error('master-student-roster.xlsx: 生徒データが 0 件です');
+    throw new Error(`initial-student-roster.xlsx: シート「${sheet.name}」に生徒データが 0 件です`);
   }
   return entries;
 }
@@ -137,17 +161,23 @@ function scatteredBirthDate(
   return new Date(startMs + offsetDays * DAY_MS);
 }
 
+export interface BuildRosterOptions {
+  /** 使用するシート名。未指定なら先頭シート（既定。現在は "v2"）。 */
+  sheetName?: string;
+  /** 年度・生年月日の基準日（既定 = 実行時の現在日時）。 */
+  now?: Date;
+}
+
 /**
- * マスタ名簿 xlsx から、指定オーナー（校長 = users.id）向けの初期名簿
+ * 初期名簿 xlsx から、指定オーナー（校長 = users.id）向けの初期名簿
  * （生徒＋在籍）を組み立てる。xlsx の読み込み・解釈に失敗した場合は例外を投げる。
- *
- * @param now 年度・生年月日の基準日（既定 = 実行時の現在日時）。
  */
 export async function buildRosterFromMaster(
   ownerUserId: string,
-  now: Date = new Date(),
+  options: BuildRosterOptions = {},
 ): Promise<{ studentRows: StudentInsert[]; enrollmentRows: StudentEnrollmentInsert[] }> {
-  const entries = await readMasterEntries();
+  const { sheetName, now = new Date() } = options;
+  const entries = await readMasterEntries(sheetName);
   const fiscalYear = currentFiscalYear(now);
 
   // 学年ごとに件数を数え、学年内の並び順（= 出席番号）と生年月日の散らばりに使う。

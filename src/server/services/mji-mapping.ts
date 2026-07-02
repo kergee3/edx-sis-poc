@@ -214,6 +214,10 @@ async function collectCandidates(row: MjiCharacterRow): Promise<X0213Candidate[]
   const repChar = out.some((c) => c.char === baseChar) ? baseChar : (out[0]?.char ?? '');
   for (const c of out) c.isRepresentative = c.char === repChar;
 
+  // 代表字を第一候補にする（UI の既定確定文字＝先頭候補になる）。
+  // sort は安定なので、残りの異体字は元の収集順を保つ。
+  out.sort((a, b) => Number(b.isRepresentative) - Number(a.isRepresentative));
+
   return out;
 }
 

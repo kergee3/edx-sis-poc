@@ -14,12 +14,23 @@ import DefaultRosterSetting from '@/features/settings/components/DefaultRosterSe
 import NavigationPositionSetting from '@/features/settings/components/NavigationPositionSetting';
 import { auth } from '@/server/auth/config';
 import { getSchoolProfileForUser } from '@/server/services/user-preferences';
+import { listRosterSheetNames } from '@/server/services/roster-master';
 
 export default async function SettingsPage() {
   const session = await auth();
   const profile = session?.user?.id
     ? await getSchoolProfileForUser(session.user.id, session.user.name ?? null)
     : null;
+
+  // 名簿初期化のシート選択肢（先頭が既定）。読み込みに失敗しても設定ページは表示する。
+  let rosterSheetNames: string[] = [];
+  if (profile) {
+    try {
+      rosterSheetNames = await listRosterSheetNames();
+    } catch {
+      rosterSheetNames = [];
+    }
+  }
 
   return (
     <Card>
@@ -58,7 +69,7 @@ export default async function SettingsPage() {
         {profile && (
           <>
             <Divider sx={{ my: 3 }} />
-            <DefaultRosterSetting />
+            <DefaultRosterSetting sheetNames={rosterSheetNames} />
           </>
         )}
 
