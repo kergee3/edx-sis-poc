@@ -22,7 +22,8 @@ import {
 } from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import Link from 'next/link';
-import { FONT_MJ } from '@/theme/fonts';
+import { FONT_MJ, displayFontFamily } from '@/theme/fonts';
+import { useSettings } from '@/contexts/settings-context';
 import type { StudentView } from '../types';
 import FamilyNameZoom from './FamilyNameZoom';
 
@@ -91,6 +92,9 @@ function ColumnFilter({
 }
 
 export default function StudentsTable({ items }: StudentsTableProps) {
+  const { displayFont } = useSettings();
+  const nameFont = displayFontFamily(displayFont);
+
   const gradeClassOptions = useMemo(
     () => Array.from(new Set(items.map((i) => i.gradeClassLabel))),
     [items],
@@ -219,7 +223,7 @@ export default function StudentsTable({ items }: StudentsTableProps) {
                     姓・名それぞれの漢字に読みを対応付ける（アクセシビリティ／意味的対応）。
                     <rp> は ruby 非対応ブラウザ向けの括弧フォールバック。 */}
                 <TableCell sx={{ px: CELL_PX, whiteSpace: 'nowrap' }}>
-                  <Box component="span" sx={{ fontSize: '1.05rem', lineHeight: 1.4 }}>
+                  <Box component="span" sx={{ fontFamily: nameFont, fontSize: '1.05rem', lineHeight: 1.4 }}>
                     <Box component="ruby">
                       {item.preferredFamilyName}
                       <rp>（</rp>

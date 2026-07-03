@@ -63,6 +63,14 @@ export default async function RootLayout({
         {/* 氏名表示用の IPAmjexMincho Web フォント（CDN 配信の 256 サブセット CSS） */}
         <link rel="preconnect" href={IPAMJEX_FONT_ORIGIN} crossOrigin="anonymous" />
         <link rel="stylesheet" href={IPAMJEX_FONT_CSS_URL} />
+        {/* 表示名（JIS文字）用の Noto Web フォント（Google Fonts 配信）。
+            ゴシック（Sans）／明朝（Serif）をユーザ設定で切り替えるため両方読み込む。 */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;700&display=swap"
+        />
       </head>
       <body>
         <AppRouterCacheProvider>

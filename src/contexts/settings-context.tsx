@@ -1,18 +1,25 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { DEFAULT_DISPLAY_FONT, type DisplayFont } from '@/theme/fonts';
 
 export type NavigationPosition = 'auto' | 'top' | 'left' | 'bottom';
+
+const DISPLAY_FONTS: DisplayFont[] = ['sans', 'serif'];
 
 interface SettingsContextType {
   navigationPosition: NavigationPosition;
   setNavigationPosition: (position: NavigationPosition) => void;
+  /** 表示名（JIS文字）用フォント。ゴシック（sans）／明朝（serif）。既定は sans。 */
+  displayFont: DisplayFont;
+  setDisplayFont: (font: DisplayFont) => void;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [navigationPosition, setNavigationPositionState] = useState<NavigationPosition>('auto');
+  const [displayFont, setDisplayFontState] = useState<DisplayFont>(DEFAULT_DISPLAY_FONT);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -22,12 +29,21 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setNavigationPositionState(savedPosition);
     }
+    const savedFont = localStorage.getItem('displayFont') as DisplayFont | null;
+    if (savedFont && DISPLAY_FONTS.includes(savedFont)) {
+      setDisplayFontState(savedFont);
+    }
     setIsLoaded(true);
   }, []);
 
   const setNavigationPosition = (position: NavigationPosition) => {
     setNavigationPositionState(position);
     localStorage.setItem('navigationPosition', position);
+  };
+
+  const setDisplayFont = (font: DisplayFont) => {
+    setDisplayFontState(font);
+    localStorage.setItem('displayFont', font);
   };
 
   if (!isLoaded) {
@@ -39,6 +55,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       value={{
         navigationPosition,
         setNavigationPosition,
+        displayFont,
+        setDisplayFont,
       }}
     >
       {children}

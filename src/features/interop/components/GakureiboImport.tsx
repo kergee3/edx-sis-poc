@@ -17,7 +17,8 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import SaveIcon from '@mui/icons-material/Save';
-import { FONT_MJ } from '@/theme/fonts';
+import { FONT_MJ, displayFontFamily } from '@/theme/fonts';
+import { useSettings } from '@/contexts/settings-context';
 import type { CharMapping, JisLevel } from '@/server/services/mji-mapping';
 import type { GakureiboRecord } from '@/server/services/gakureibo-import';
 import { applyMappedFamilyAction } from '../actions';
@@ -57,6 +58,8 @@ interface GakureiboImportProps {
 }
 
 export default function GakureiboImport({ records }: GakureiboImportProps) {
+  const { displayFont } = useSettings();
+  const nameFont = displayFontFamily(displayFont);
   const [idx, setIdx] = useState(0);
   const [prevIdx, setPrevIdx] = useState(-1);
   const [selections, setSelections] = useState<string[]>([]);
@@ -170,7 +173,7 @@ export default function GakureiboImport({ records }: GakureiboImportProps) {
           </Box>
           <Box>
             <Typography variant="caption" color="text.secondary">フリガナ</Typography>
-            <Typography>
+            <Typography sx={{ fontFamily: nameFont }}>
               {current.kanaFamily}　{current.kanaGiven}
             </Typography>
           </Box>
@@ -180,7 +183,9 @@ export default function GakureiboImport({ records }: GakureiboImportProps) {
           </Box>
           <Box>
             <Typography variant="caption" color="text.secondary">現在の表示名（姓）</Typography>
-            <Typography>{current.currentPreferredFamily ?? '-'}</Typography>
+            <Typography sx={{ fontFamily: nameFont }}>
+              {current.currentPreferredFamily ?? '-'}
+            </Typography>
           </Box>
         </Stack>
       </Paper>
@@ -265,7 +270,7 @@ export default function GakureiboImport({ records }: GakureiboImportProps) {
                   label="確定する字（手入力可）"
                   value={selections[i] ?? ''}
                   onChange={(e) => setCharChoice(i, e.target.value)}
-                  sx={{ width: 220 }}
+                  sx={{ width: 220, '& input': { fontFamily: nameFont, fontSize: '1.6rem' } }}
                 />
               </Box>
             )}
@@ -280,7 +285,7 @@ export default function GakureiboImport({ records }: GakureiboImportProps) {
                   label="確定する字"
                   value={selections[i] ?? ''}
                   onChange={(e) => setCharChoice(i, e.target.value)}
-                  sx={{ width: 220 }}
+                  sx={{ width: 220, '& input': { fontFamily: nameFont, fontSize: '1.6rem' } }}
                 />
               </Box>
             )}
@@ -291,7 +296,7 @@ export default function GakureiboImport({ records }: GakureiboImportProps) {
       {/* 確定プレビュー */}
       <Paper variant="outlined" sx={{ p: 2, mb: 2, bgcolor: 'action.hover' }}>
         <Typography variant="caption" color="text.secondary">確定する表示名（JIS）</Typography>
-        <Typography sx={{ fontSize: '1.5rem' }}>
+        <Typography sx={{ fontFamily: nameFont, fontSize: '1.6rem' }}>
           {assembledFamily || '（未確定）'}　{current.preferredGiven}
         </Typography>
       </Paper>

@@ -11,6 +11,7 @@ import AppFooter from '@/components/layout/AppFooter';
 import SignInButton from '@/features/auth/components/SignInButton';
 import SchoolProfileForm from '@/features/settings/components/SchoolProfileForm';
 import DefaultRosterSetting from '@/features/settings/components/DefaultRosterSetting';
+import DisplayFontSetting from '@/features/settings/components/DisplayFontSetting';
 import NavigationPositionSetting from '@/features/settings/components/NavigationPositionSetting';
 import { auth } from '@/server/auth/config';
 import { getSchoolProfileForUser } from '@/server/services/user-preferences';
@@ -72,6 +73,10 @@ export default async function SettingsPage() {
             <DefaultRosterSetting sheetNames={rosterSheetNames} />
           </>
         )}
+
+        <Divider sx={{ my: 3 }} />
+
+        <DisplayFontSetting />
 
         <Divider sx={{ my: 3 }} />
 
