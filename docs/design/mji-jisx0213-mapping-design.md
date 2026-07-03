@@ -7,6 +7,10 @@
 >
 > 調査日: 2026-06-28 ／ 一次資料は [external-references.md](external-references.md) の索引参照（資料ファイルは repo に長期保持しない）。
 
+> **【方針改定 2026-07-03】変換先は JIS X 0213 の「基底文字（VS なしの符号位置）」に限定する。**
+> 同符号位置の **IVS 異体字は候補に出さず、保存もしない**。理由: (1) IVD はコレクション間の字形対応を定義しておらず、Moji_Joho→Adobe-Japan1 の付け替えに公式・機械可読な根拠が無い、(2) 受け側の校務・学習支援アプリの多くが IVS 非対応（照合・検索・印字で VS が落ちる/化ける）、(3) 両コレクションが重なる範囲でも約 3,771 符号位置で多対1の縮退が構造的に不可避。定量と根拠は [mj_to_jisx0213_conversion_report.md](mj_to_jisx0213_conversion_report.md)。
+> 本書のうち「同符号位置の IVS 異体字を候補にする／IVS 字形を保存する」とある記述は、本改定で**基底文字のみを候補・保存対象とする**よう読み替える（該当箇所に個別注記）。実装では `collectCandidates`（[src/server/services/mji-mapping.ts](../../src/server/services/mji-mapping.ts)）が `ivs != null` の候補を除外する。
+
 ## 0. 目的とスコープ
 
 - 入力: 学齢簿由来の苗字（漢字。MJ特有文字＝IVS 付き符号位置を含みうる）。
@@ -15,7 +19,7 @@
   1. 指定文字が **JIS X 0213 に定義されているか**の判定。
   2. 定義されていれば、**面区点コードから JIS 第1〜4水準**を取得。
   3. 文字の**代表字**を取得。
-  4. 代表字に対する**異体字（JIS X 0213 にあるもの）の候補リスト**を取得。
+  4. 代表字に対する**異体字（JIS X 0213 にある基底文字）の候補リスト**を取得（**IVS 異体字は含めない**。冒頭の方針改定を参照）。
   5. MJ にも無い文字は **非漢字**として扱う。
 - 自動で一意に確定できない文字（0213 に無く、代表字・異体字にも 0213 該当が複数/無い）は、**最終判断を学校事務（人手）に委ねる**。本書は候補提示までを担う。
 - スコープ外: 実装（Drizzle スキーマの確定、インポートスクリプト、lookup サービス、UI）は後続作業。本書はそのインプット。
@@ -189,7 +193,7 @@ function jisLevel(menKuTen: string | null): 1 | 2 | 3 | 4 | null {
    - 0213 にある → **その文字自身**（包摂上の代表）を採用。
    - 0213 に無い → `mji_shrink_candidates` を `priority` 昇順で見て、最上位候補の `target_ucs` / `target_x0213` を代表字とする。
 6. **異体字候補リスト（0213 にあるもの）の収集**（要件④）: 代表字だけでなく、**代表字の異体字で 0213 にある漢字**も候補にする。
-   - **(a) 同一符号位置**: `mji_characters WHERE corresponding_ucs = <当該D> AND x0213 IS NOT NULL`。**面区点が同じでも IVS 字形が異なれば別候補**にする（例: 藤 1-38-03 に対し 藤・藤󠄃・藤󠄄・藤󠄅）。実装UCSのある字は基底 JIS 字（藤）、IVS のみの字は IVS 字形を候補値にする。重複排除は面区点ではなく**字形（保存値）**で行う。
+   - **(a) 同一符号位置**: `mji_characters WHERE corresponding_ucs = <当該D> AND x0213 IS NOT NULL` のうち、**実装UCSを持つ基底 JIS 字のみ**を候補にする（例: 藤 1-38-03 → 藤）。同符号位置の **IVS 異体字（藤󠄃・藤󠄄・藤󠄅 等）は候補にしない**（冒頭の方針改定。[mj_to_jisx0213_conversion_report.md](mj_to_jisx0213_conversion_report.md)。実装は `collectCandidates` が `ivs != null` を除外）。重複排除は面区点ではなく**字形（保存値）**で行う。
    - **(b) 自身の縮退候補（＝代表字）**: 当該 `mj_id` の `mji_shrink_candidates`（`priority` 昇順）。
    - **(c) 代表字の異体字（`via='rep_variant'`）**: 代表字（(a)の基底 UCS と (b)の `target_ucs`）を中心に縮退グラフを 1 ホップ辿る — 同符号位置 / 逆引き（その代表字に縮退してくる字）/ 前方縮退（その代表字自身がさらに縮退する先）のうち 0213 にあるもの。
    - 例: 斉󠄃 → 斉(代表字)＋齊・亝、齋󠄄 → 齋(代表字)＋斎。**重複（同一 0213 面区点）を畳んで** (a)→(b)→(c) の順に並べ、事務に提示。
@@ -226,7 +230,7 @@ type X0213Candidate = {
 - **E 列が空（IVS のみの図形）**: 裸符号位置では引けないので IVS キー照合を先に行う（§5-2 の順序が重要）。
 - **`implemented_ucs`（E 列）の重複可能性**: 同一の裸符号位置を持つ図形が複数ありうる。照合は基本 IVS 優先で一意化し、裸符号位置のみで複数ヒットした場合は代表（包摂・水準で最優先）を選ぶか事務へ提示する。
 - **包摂（高/髙）**: 別符号位置でも同一面区点になりうる。0213 該当として扱い、表示上の差はフォント（IPAmjexMincho）で吸収する点に留意。
-- **IVS 字形を選んだ場合の保存値**: 同符号位置の IVS 異体字（例 藤󠄃=85E4_E0103）を選ぶと、表示名(姓)に **IVS 字形そのもの**を保存する（面区点で 0213 にアンカーされる）。IVS 非対応の連携先では基底字（藤）へ自然に縮退する。OneRoster 等で IVS を外したいときは出力時に VS を除去する（将来対応）。
+- **IVS 異体字は候補にも保存対象にもしない（方針改定）**: 変換先は JIS X 0213 の**基底文字（VS なし）に限定**する。同符号位置の IVS 異体字（例 藤󠄃=85E4_E0103）は候補から除外し、表示名(姓)には**基底字（藤）**を保存する。理由・定量は [mj_to_jisx0213_conversion_report.md](mj_to_jisx0213_conversion_report.md)（受け側アプリの IVS 非対応、コレクション間対応の不在、多対1縮退の不可避）。原字形の可逆性は「原 MJ 文字図形名を別フィールドに保持」で担保する方針（同報告 §6.5、将来対応）。
 - **非漢字**: 々・〆・記号類は面1区1〜13に入り `jis_level=null`。苗字では稀だが `non_kanji` 経路で扱う。
 - **版差**: mji Ver.006.02 と 縮退マップ Ver.1.2.0 は基準とした一覧表の版が異なりうる。`mji_shrink_candidates.mj_id` に外部キーを張らずインデックスのみとし、突き合わせ不能な `mj_id` はインポート時にログ集計する。
 - **入力正規化の揺れ**: 同一字に対し NFC/SVS/IVS が混在しうる。照合前に書記素単位で正規化方針を固定する（VS は保持、結合は行わない）。
@@ -243,7 +247,9 @@ type X0213Candidate = {
 - [x] **repository / service**: [src/server/repositories/mji.ts](../../src/server/repositories/mji.ts)（Drizzle クエリ）＋ [src/server/services/mji-mapping.ts](../../src/server/services/mji-mapping.ts)（§5 のパイプライン・`jisLevel()`・`mapSurname()`・ViewModel）。
 - [x] **UI**: 学齢簿を 1 件ずつ確認するデータ連携画面 [src/app/interop/page.tsx](../../src/app/interop/page.tsx) ＋ [src/features/interop/components/GakureiboImport.tsx](../../src/features/interop/components/GakureiboImport.tsx)。氏（姓）の各字を 0213 判定・候補提示し、事務が選択 → [src/features/interop/actions.ts](../../src/features/interop/actions.ts) の `applyMappedFamilyAction` で students の表示名(姓)に保存（正式氏名一致で update）。学齢簿ソースは PoC のマスタ名簿 [src/server/services/gakureibo-import.ts](../../src/server/services/gakureibo-import.ts)。
 
-> 実データ確認（マスタ名簿の苗字）: 𠮷(1-21-40)・𡈽(1-15-34)・邉(1-78-21)・﨑(1-47-82) は 0213 に**そのまま**存在。IVS 異体字 斉󠄃→斉 / 齋󠄄→齋 / 藤󠄆→藤 は「要選択（同符号位置）」、氏に紛れたカナ（タ/モ/リ）は「非漢字」として正しく分岐する。
+> 実データ確認（マスタ名簿の苗字）: 𠮷(1-21-40)・𡈽(1-15-34)・邉(1-78-21)・﨑(1-47-82) は 0213 に**そのまま**存在。IVS を含む入力 斉󠄃 / 齋󠄄 / 藤󠄆 は「要選択」となり、**基底字 斉 / 齋 / 藤 を候補に提示**（同符号位置の IVS 異体字は候補から除外。方針改定）。氏に紛れたカナ（タ/モ/リ）は「非漢字」として正しく分岐する。
+
+> **方針改定の反映（2026-07-03）**: 候補収集 `collectCandidates` は `ivs != null` の IVS 異体字を除外し、基底文字（代表字・別符号位置の基底字）のみを候補にするよう更新済み（冒頭バナー／[mj_to_jisx0213_conversion_report.md](mj_to_jisx0213_conversion_report.md) 参照）。
 
 ### 投入実績（`npm run db:import:mji` 検証ログ）
 
@@ -259,6 +265,6 @@ type X0213Candidate = {
 - 水準導出: 面2 の行が全て `jis_level=4`、面1区1〜13 の行が漢字でない（`jis_level IS NULL`）ことを集計で確認。
 - 往復テスト（代表的苗字）:
   - 高(`U+9AD8`)・髙(`U+9AD9`) → ともに 0213（`1-25-66`）として解決（①②, 包摂）。
-  - 齊󠄃(`9F4A_E0103`, 0213外) → 同一符号位置の 齊(`9F4A_E0102`,`1-83-78`) を異体字候補に提示（③④, 同符号位置）。
+  - 齊󠄃(`9F4A_E0103`, 0213外) → 同一符号位置の**基底字 齊(`U+9F4A`,`1-83-78`)** を候補に提示（③④, 同符号位置。IVS 異体字は除外）。
   - 斉/齊/齋/斎（別符号位置）→ 縮退マップ経由で相互の 0213 候補を提示（③④, 別符号位置）。
   - MJ に無い文字 → `non_kanji`（⑤）。
