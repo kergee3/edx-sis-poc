@@ -6,6 +6,7 @@ import AppFooter from '@/components/layout/AppFooter';
 import SignInButton from '@/features/auth/components/SignInButton';
 import StudentDetail from '@/features/students/components/StudentDetail';
 import StudentDetailNav from '@/features/students/components/StudentDetailNav';
+import StudentDisplayNameEditor from '@/features/students/components/StudentDisplayNameEditor';
 import EnrollmentCertificateButton from '@/features/students/components/EnrollmentCertificateButton';
 import { toCertificateView, toDetailView } from '@/features/students/services/format';
 import {
@@ -14,6 +15,7 @@ import {
   parseStudentKey,
 } from '@/features/students/services/student-key';
 import { listRosterForUser } from '@/server/services/students';
+import { buildMappingRecordFromRoster } from '@/server/services/gakureibo-import';
 import { getSchoolProfileForUser } from '@/server/services/user-preferences';
 import { auth } from '@/server/auth/config';
 
@@ -62,6 +64,9 @@ export default async function StudentDetailPage({
 
   const view = toDetailView(entry);
 
+  // 表示名（姓）編集ダイアログ用に、正式氏名 → JIS X 0213 の写像を組み立てる。
+  const mappingRecord = await buildMappingRecordFromRoster(entry);
+
   // 在学証明書には学校プロフィール（学校名・住所・校長氏名）と発行日（本日）を合成する。
   const school = await getSchoolProfileForUser(session.user.id, session.user.name ?? null);
   const certificate = toCertificateView(entry, school, new Date());
@@ -77,13 +82,14 @@ export default async function StudentDetailPage({
           </Link>
         </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 1, mb: 1, flexWrap: 'wrap' }}>
           <StudentDetailNav
             prevKey={prevKey}
             nextKey={nextKey}
             position={index + 1}
             total={roster.length}
           />
+          <StudentDisplayNameEditor record={mappingRecord} />
           <Box sx={{ ml: 'auto' }}>
             <EnrollmentCertificateButton certificate={certificate} />
           </Box>
