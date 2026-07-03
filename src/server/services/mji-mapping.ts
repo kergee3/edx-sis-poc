@@ -208,17 +208,25 @@ async function collectCandidates(row: MjiCharacterRow): Promise<X0213Candidate[]
     }
   }
 
+  // IVS 異体字（同符号位置・VS 付き）は表示名に採用しない。変換先を JIS X 0213 の
+  // 基底文字（VS なしの符号位置）に限定する方針のため
+  // （docs/design/mj_to_jisx0213_conversion_report.md §5）。
+  // 代表字・別符号位置の基底字（ivs == null）のみを候補に残す。
+  const baseCandidates = out.filter((c) => !c.ivs);
+
   // 代表字（最有力の 1 字）を決めて印を付ける:
   //   入力の同符号位置の基底字が 0213 にあればそれ、無ければ先頭候補。それ以外は異体字。
   const baseChar = ucsToChar(row.correspondingUcs);
-  const repChar = out.some((c) => c.char === baseChar) ? baseChar : (out[0]?.char ?? '');
-  for (const c of out) c.isRepresentative = c.char === repChar;
+  const repChar = baseCandidates.some((c) => c.char === baseChar)
+    ? baseChar
+    : (baseCandidates[0]?.char ?? '');
+  for (const c of baseCandidates) c.isRepresentative = c.char === repChar;
 
   // 代表字を第一候補にする（UI の既定確定文字＝先頭候補になる）。
   // sort は安定なので、残りの異体字は元の収集順を保つ。
-  out.sort((a, b) => Number(b.isRepresentative) - Number(a.isRepresentative));
+  baseCandidates.sort((a, b) => Number(b.isRepresentative) - Number(a.isRepresentative));
 
-  return out;
+  return baseCandidates;
 }
 
 /** 1 書記素を JIS X 0213 へ写像する。 */
