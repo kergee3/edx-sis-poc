@@ -21,6 +21,7 @@
 | [gakureibo-acceptance-data-items.md](gakureibo-acceptance-data-items.md) | 学校受入に必要な最小限データ項目（入学・転入学）。学齢簿 標準仕様書からの抽出・整理 |
 | [koumu-eportal-student-data-model.md](koumu-eportal-student-data-model.md) | 校務支援システムと学習eポータルにおける児童生徒情報の持ち方。§5.0 に**文字集合の分類（JIS文字／MJ文字／MJ特有文字）の用語定義（正本）** |
 | [student-schema-design.md](student-schema-design.md) | 児童生徒スキーマ設計（あるべき持ち方とステージ別データ充足）。論理モデル＋Drizzle＋OneRoster写像 |
+| [oneroster-export-design.md](oneroster-export-design.md) | OneRoster v1.2 Japan Profile の名簿 ZIP 出力（生徒一覧の「OneRoster出力」）の設計・実装メモ。CSV写像・合成した属性の列挙 |
 | [mji-jisx0213-mapping-design.md](mji-jisx0213-mapping-design.md) | MJ文字（IVS）→ JIS X 0213 マッピング設計。`official_*`→`preferred_*` の文字正規化。MJ文字情報一覧表＋MJ縮退マップを Turso 参照テーブル化し、0213定義判定/水準/代表字/異体字候補/非漢字判定を行う |
 | [external-references.md](external-references.md) | 外部の一次資料（政府の標準仕様書 PDF/xlsx 等）へのリンク索引。資料ファイルは repo に保持せずリンクのみ |
 

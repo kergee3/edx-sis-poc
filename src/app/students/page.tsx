@@ -1,6 +1,7 @@
 import { Box, Button, Card, CardContent, Link, Typography } from '@mui/material';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import ImportExportIcon from '@mui/icons-material/ImportExport';
 import AppFooter from '@/components/layout/AppFooter';
 import SignInButton from '@/features/auth/components/SignInButton';
 import StudentsTable from '@/features/students/components/StudentsTable';
@@ -30,17 +31,30 @@ export default async function StudentsPage() {
               sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}
             >
               <TransferStudentButton />
-              {/* GET ダウンロード。Server Component から Next の Link を component に渡すと
-                  関数が渡せずエラーになるため、素の <a>（component="a"）で受ける。 */}
-              <Button
-                component="a"
-                href="/api/students/export"
-                variant="outlined"
-                size="small"
-                startIcon={<FileDownloadIcon />}
-              >
-                Excel出力
-              </Button>
+              {/* 右端の出力ボタン群。GET ダウンロード。Server Component から Next の Link を
+                  component に渡すと関数が渡せずエラーになるため、素の <a>（component="a"）で受ける。 */}
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Button
+                  component="a"
+                  href="/api/students/oneroster"
+                  variant="outlined"
+                  size="small"
+                  startIcon={<ImportExportIcon />}
+                  sx={{ textTransform: 'none' }}
+                >
+                  OneRoster出力
+                </Button>
+                <Button
+                  component="a"
+                  href="/api/students/export"
+                  variant="outlined"
+                  size="small"
+                  startIcon={<FileDownloadIcon />}
+                  sx={{ textTransform: 'none' }}
+                >
+                  Excel出力
+                </Button>
+              </Box>
             </Box>
             <StudentsTable items={(await listRosterForUser(session.user.id)).map(toView)} />
             <Box
