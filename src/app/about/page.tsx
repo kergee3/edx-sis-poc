@@ -31,8 +31,41 @@ const techStack = [
   },
   { title: 'データベース', items: ['Drizzle ORM', 'Turso / SQLite'] },
   { title: '認証', items: ['Auth.js', 'Google', 'LINE'] },
-  { title: 'Web フォント', items: ['IPAmjexMincho'] },
+  { title: 'Web フォント', items: ['IPAmjexMincho', 'Noto Sans JP', 'Noto Serif JP'] },
   { title: 'インフラ', items: ['Vercel'] },
+] as const;
+
+/**
+ * 外部参照している技術仕様の一次資料。詳細な索引（版・取得日・ライセンス等）は
+ * docs/design/external-references.md を参照。リンクは deep file ではなく
+ * 掲載元ページを優先（原典の最新版を辿れるように）。
+ */
+const referencedSpecs = [
+  {
+    name: '就学事務システム（学齢簿編製等）標準仕様書【第4.0版】',
+    issuer: '文部科学省',
+    url: 'https://www.mext.go.jp/a_menu/shotou/shugaku/detail/1309979_00014.htm',
+  },
+  {
+    name: '初等中等教育におけるシステム間連携のための相互運用標準モデル Ver.6.00',
+    issuer: 'ICT CONNECT 21',
+    url: 'https://ictconnect21.jp/document/eportal/',
+  },
+  {
+    name: 'OneRoster Japan Profile',
+    issuer: '一般社団法人 日本1EdTech協会',
+    url: 'https://www.1edtechjapan.org/orjpp',
+  },
+  {
+    name: 'MJ文字情報一覧表',
+    issuer: '文字情報技術促進協議会（IPA）',
+    url: 'https://moji.or.jp/mojikiban/mjlist/',
+  },
+  {
+    name: 'MJ縮退マップ',
+    issuer: '文字情報技術促進協議会（IPA）',
+    url: 'https://moji.or.jp/mojikiban/map/',
+  },
 ] as const;
 
 export default function AboutPage() {
@@ -94,28 +127,20 @@ export default function AboutPage() {
 
         <Box sx={{ my: 3 }}>
           <Typography variant="h6" gutterBottom>
-            対応デバイス
+            参照技術仕様
           </Typography>
-          <List dense>
-            <ListItem>
-              <ListItemIcon>
-                <Computer />
-              </ListItemIcon>
-              <ListItemText primary="Windows PC / macOS / Chromebook" />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <PhoneIphone />
-              </ListItemIcon>
-              <ListItemText primary="iPhone / Android スマートフォン" />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <Tablet />
-              </ListItemIcon>
-              <ListItemText primary="iPad / Android タブレット" />
-            </ListItem>
-          </List>
+          <Box component="ul" sx={{ pl: 3, my: 1 }}>
+            {referencedSpecs.map((spec) => (
+              <Typography key={spec.name} component="li" variant="body2" sx={{ mb: 1 }}>
+                <Link href={spec.url} target="_blank" rel="noopener noreferrer">
+                  {spec.name}
+                </Link>
+                <Typography component="span" color="text.secondary">
+                  {' '}— {spec.issuer}
+                </Typography>
+              </Typography>
+            ))}
+          </Box>
         </Box>
 
         <Divider sx={{ my: 3 }} />
@@ -142,6 +167,34 @@ export default function AboutPage() {
               </Box>
             ))}
           </Stack>
+        </Box>
+
+        <Divider sx={{ my: 3 }} />
+
+        <Box sx={{ my: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            対応デバイス
+          </Typography>
+          <List dense>
+            <ListItem>
+              <ListItemIcon>
+                <Computer />
+              </ListItemIcon>
+              <ListItemText primary="Windows PC / macOS / Chromebook" />
+            </ListItem>
+            <ListItem>
+              <ListItemIcon>
+                <PhoneIphone />
+              </ListItemIcon>
+              <ListItemText primary="iPhone / Android スマートフォン" />
+            </ListItem>
+            <ListItem>
+              <ListItemIcon>
+                <Tablet />
+              </ListItemIcon>
+              <ListItemText primary="iPad / Android タブレット" />
+            </ListItem>
+          </List>
         </Box>
 
         <AppFooter />
