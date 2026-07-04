@@ -129,7 +129,7 @@ export async function readMasterEntries(sheetName?: string): Promise<MasterEntry
  * 「現在の年度」（4月始まり）。現在月が4月以降ならその年、3月以前なら前年。
  * 例: 2026-06 → 2026 年度、2026-02 → 2025 年度。
  */
-function currentFiscalYear(now: Date): number {
+export function currentFiscalYear(now: Date): number {
   // getMonth(): 0=1月 … 3=4月。
   return now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1;
 }
@@ -139,7 +139,10 @@ function currentFiscalYear(now: Date): number {
  * 学年相当の児童生徒は 4/2 〜 翌 4/1 生まれ。
  * 例: 2026 年度の中1（grade=1）→ 2013-04-02 〜 2014-04-01。
  */
-function birthWindow(fiscalYear: number, grade: number): { startMs: number; endMs: number } {
+export function birthWindow(
+  fiscalYear: number,
+  grade: number,
+): { startMs: number; endMs: number } {
   const startMs = Date.UTC(fiscalYear - 12 - grade, 3, 2); // 4/2
   const endMs = Date.UTC(fiscalYear - 11 - grade, 3, 1); // 翌 4/1
   return { startMs, endMs };

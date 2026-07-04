@@ -44,6 +44,21 @@ export async function findX0213VariantsByCorrespondingUcs(
     .where(and(eq(mjiCharacters.correspondingUcs, ucs), isNotNull(mjiCharacters.x0213)));
 }
 
+/**
+ * 同一符号位置（correspondingUcs 一致）の IVS 異体字（ivs 付き図形）を全て返す。
+ * findX0213VariantsByCorrespondingUcs と違い 0213 収録の有無は問わない（正式氏名は
+ * MJ特有の字形をそのまま採るため）。転入生の正式苗字生成で、基底漢字の異体字グリフを
+ * ランダムに選ぶために使う。
+ */
+export async function findIvsVariantsByCorrespondingUcs(
+  ucs: string,
+): Promise<MjiCharacterRow[]> {
+  return getTursoDb()
+    .select()
+    .from(mjiCharacters)
+    .where(and(eq(mjiCharacters.correspondingUcs, ucs), isNotNull(mjiCharacters.ivs)));
+}
+
 /** ある MJ文字の縮退候補（別符号位置の異体字含む）を priority 昇順で返す。 */
 export async function findShrinkCandidatesByMjId(
   mjId: string,

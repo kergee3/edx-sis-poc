@@ -4,6 +4,7 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import AppFooter from '@/components/layout/AppFooter';
 import SignInButton from '@/features/auth/components/SignInButton';
 import StudentsTable from '@/features/students/components/StudentsTable';
+import TransferStudentButton from '@/features/students/components/TransferStudentButton';
 import { toView } from '@/features/students/services/format';
 import { listRosterForUser } from '@/server/services/students';
 import { auth } from '@/server/auth/config';
@@ -23,7 +24,12 @@ export default async function StudentsPage() {
 
         {session?.user?.id ? (
           <>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1.5 }}>
+            {/* タイトル下の操作行。左端＝[転入]（生徒追加）、右端＝[Excel出力]で
+                同じ行にベースラインを揃える。 */}
+            <Box
+              sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}
+            >
+              <TransferStudentButton />
               {/* GET ダウンロード。Server Component から Next の Link を component に渡すと
                   関数が渡せずエラーになるため、素の <a>（component="a"）で受ける。 */}
               <Button
