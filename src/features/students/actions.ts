@@ -8,7 +8,8 @@ import {
   commitTransferStudent,
   type TransferStudentDraft,
 } from '@/server/services/transfer-student';
-import { transferStudentDraftSchema } from './schema';
+import { transferOutStudent } from '@/server/services/students';
+import { transferStudentDraftSchema, transferOutStudentSchema } from './schema';
 
 /**
  * 転入生の下書き生成 / 登録の Server Action（薄い受け口）。実処理は
@@ -56,6 +57,37 @@ export async function commitTransferStudentAction(
     return { ok: true };
   } catch (err) {
     logger.error('transfer.commit.failed', {
+      userId: session.user.id,
+      error: err instanceof Error ? err.message : String(err),
+    });
+    return { ok: false, error: 'unknown' };
+  }
+}
+
+export type TransferOutError = 'unauthorized' | 'invalid_input' | 'not_found' | 'unknown';
+export type TransferOutResult = { ok: true } | { ok: false; error: TransferOutError };
+
+/**
+ * 転出の Server Action（薄い受け口）。実処理は server/services/students.ts の
+ * transferOutStudent（在籍を transferred_out にし転出日を記録する論理処理）へ委譲する。
+ * studentId はクライアント値だが、認可はサービス／repository 側で auth() の userId と
+ * 突き合わせる（他人の生徒は転出できない）。
+ */
+export async function transferOutStudentAction(studentId: string): Promise<TransferOutResult> {
+  const session = await auth();
+  if (!session?.user?.id) return { ok: false, error: 'unauthorized' };
+
+  const parsed = transferOutStudentSchema.safeParse({ studentId });
+  if (!parsed.success) return { ok: false, error: 'invalid_input' };
+
+  try {
+    const removed = await transferOutStudent(session.user.id, parsed.data.studentId);
+    if (removed === 0) return { ok: false, error: 'not_found' };
+    // 生徒一覧（RSC）の名簿が減るのでキャッシュを無効化
+    revalidatePath('/students');
+    return { ok: true };
+  } catch (err) {
+    logger.error('transfer.out.failed', {
       userId: session.user.id,
       error: err instanceof Error ? err.message : String(err),
     });

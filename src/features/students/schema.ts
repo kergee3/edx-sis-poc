@@ -19,3 +19,13 @@ export const transferStudentDraftSchema = z.object({
 });
 
 export type TransferStudentDraftInput = z.infer<typeof transferStudentDraftSchema>;
+
+/**
+ * 転出（生徒削除）の Server Action の入力。生徒 id（UUID v4）のみ。認可はサーバ側で
+ * auth() の userId と突き合わせる（クライアントの id だけでは他人の生徒は消せない）。
+ */
+export const transferOutStudentSchema = z.object({
+  studentId: z.string().uuid(),
+});
+
+export type TransferOutStudentInput = z.infer<typeof transferOutStudentSchema>;

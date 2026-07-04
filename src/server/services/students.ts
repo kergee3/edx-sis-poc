@@ -4,9 +4,11 @@ import {
   findRosterByOwner,
   findStudentByIdForOwner,
   insertStudentsWithEnrollments,
+  markStudentTransferredOut,
   replaceRosterForOwner,
   type RosterEntry,
 } from '@/server/repositories/students';
+import { ENROLLMENT_STATUS } from '@/server/db/turso/schema/students';
 import { buildSeedRoster } from './students-seed';
 import { buildRosterFromMaster } from './roster-master';
 
@@ -64,7 +66,21 @@ export async function resetRosterToMaster(userId: string, sheetName?: string): P
  */
 export async function listRosterForUser(userId: string): Promise<RosterEntry[]> {
   await ensureSeededForUser(userId);
-  return findRosterByOwner(userId);
+  const roster = await findRosterByOwner(userId);
+  // 転出者は名簿一覧・詳細ナビから除外する（記録は DB に残るが在籍名簿には出さない）。
+  return roster.filter(
+    (e) => e.enrollment?.enrollmentStatus !== ENROLLMENT_STATUS.transferredOut,
+  );
+}
+
+/**
+ * 転出（論理処理）。生徒 1 名の在籍を transferred_out にし、転出日を記録する。行は消さず、
+ * 記録として残す。認可は repository のクエリ条件（ownerUserId）に内包し、自分の生徒でなければ
+ * 0 行になる。転出者は listRosterForUser で名簿一覧から除外され、出席番号は欠番になる。
+ * 更新できた行数を返す（0 なら該当なし＝未在籍/他人の生徒）。
+ */
+export async function transferOutStudent(userId: string, studentId: string): Promise<number> {
+  return markStudentTransferredOut(userId, studentId, new Date());
 }
 
 /**

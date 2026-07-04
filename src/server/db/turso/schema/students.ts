@@ -89,6 +89,17 @@ export const studentEnrollments = sqliteTable(
   (t) => [index('student_enrollments_student_idx').on(t.studentId)],
 );
 
+/**
+ * enrollment_status の取りうる値（増分1では在籍中／転出のみ扱う）。
+ * 名簿一覧は enrolled のみを表示し、転出者は転出日つきで記録として残す（物理削除しない）。
+ */
+export const ENROLLMENT_STATUS = {
+  enrolled: 'enrolled',
+  transferredOut: 'transferred_out',
+} as const;
+
+export type EnrollmentStatus = (typeof ENROLLMENT_STATUS)[keyof typeof ENROLLMENT_STATUS];
+
 export type StudentRow = typeof students.$inferSelect;
 export type StudentInsert = typeof students.$inferInsert;
 export type StudentEnrollmentRow = typeof studentEnrollments.$inferSelect;

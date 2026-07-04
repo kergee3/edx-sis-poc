@@ -7,6 +7,7 @@ import SignInButton from '@/features/auth/components/SignInButton';
 import StudentDetail from '@/features/students/components/StudentDetail';
 import StudentDetailNav from '@/features/students/components/StudentDetailNav';
 import StudentDisplayNameEditor from '@/features/students/components/StudentDisplayNameEditor';
+import TransferOutStudentButton from '@/features/students/components/TransferOutStudentButton';
 import EnrollmentCertificateButton from '@/features/students/components/EnrollmentCertificateButton';
 import { toCertificateView, toDetailView } from '@/features/students/services/format';
 import {
@@ -90,6 +91,7 @@ export default async function StudentDetailPage({
             total={roster.length}
           />
           <StudentDisplayNameEditor record={mappingRecord} />
+          <TransferOutStudentButton studentId={entry.student.id} view={view} />
           <Box sx={{ ml: 'auto' }}>
             <EnrollmentCertificateButton certificate={certificate} />
           </Box>
