@@ -20,7 +20,7 @@
 - DB: Turso (SQLite, 東京 NRT) への一本化
 - UI: MUI Theme
 
-`home`、`students`、`interop` はプレースホルダ表示のみのスキャフォールドです。業務ロジックは未着手です。`students` は生徒一覧、転入/転出/編集、在学/成績証明書発行を担う予定です。`interop` は学齢簿インポート、OneRoster 入出力を担う予定です。業務ドメインの設計は `docs/design/` を参照してください。
+`home` はプレースホルダ表示のみのスキャフォールドです。`students` は生徒一覧、転入/転出/編集、在学/成績証明書発行、表示名（姓）の JIS X 0213 マッピング、OneRoster 出力を実装済みです（データ連携は当初 `interop` ページで試作しましたが `students` へ統合しました）。業務ドメインの設計は `docs/design/` を参照してください。
 
 重要: このリポジトリは別アプリ (`life-todo`: todo / routines / packing) からの fork が出発点です。旧アプリの名残が一部残っています。`todo` / `routines` / `packing` / `data-transfer` / `memo` といった機能は現存しません。ドキュメントやコメントにこれらが出てきたら旧記述として扱ってください。
 
@@ -132,7 +132,7 @@ server/db
 
 Server Action (`features/*/actions.ts`) は薄い受け口に保ち、実処理は `server/services` へ委譲してください。Route Handler (`app/api/**/route.ts`) は Webhook / 外部公開 API 用途を基本とし、内部更新は原則 Server Action を使います。`middleware.ts` はログイン要否の判定に留め、リソース単位の認可は service / Server Action 側で行います。UI 層から Drizzle、DB クライアント、外部 SaaS SDK を直接呼ばないでください。
 
-現在の `src/features/` は、`auth` と `login-history` が実装済み、`home` / `students` / `interop` は placeholder component のみです。
+現在の `src/features/` は、`auth` / `login-history` / `bug-report` / `students` が実装済み、`home` は placeholder component のみです。
 
 ## コーディング規約
 
@@ -203,7 +203,7 @@ Auth.js v5 + DrizzleAdapter で Google と LINE の 2 プロバイダを `provid
 
 左メニュー / ボトムナビに項目を追加するときは `src/app/ClientLayout.tsx` の `navigationItems` 配列にエントリを足してください。ログイン必須なら `requiresAuth: true` を付けます。登録場所はこの配列に集約されています。
 
-現在のエントリは、ホーム (`/home`, 公開)、生徒一覧 (`/students`, 認証必須)、データ連携 (`/interop`, 認証必須) です。
+現在のエントリは、ホーム (`/home`, 公開)、生徒一覧 (`/students`, 認証必須) です。
 
 ## IPAmjexMincho Web フォント（外部配信を利用）
 
@@ -240,7 +240,7 @@ Auth.js v5 + DrizzleAdapter で Google と LINE の 2 プロバイダを `provid
 
 ## スコープの健全性
 
-`home` / `students` / `interop` はプレースホルダです。業務機能に着手するときは `src/features/login-history/` を参照実装として、`actions.ts`、schema、services、`format.ts` の `toView()`、components を同じ構造で起こしてください。
+`home` はプレースホルダです。業務機能に着手するときは `src/features/login-history/` や実装済みの `src/features/students/` を参照実装として、`actions.ts`、schema、services、`format.ts` の `toView()`、components を同じ構造で起こしてください。
 
 将来の機能を先回りしてスキャフォールドせず、今やる 1 機能に集中してください。依存追加は事前に確認してください。テスト導入時に `vitest` 一式 + `@playwright/test`、フォーム本格化時に `react-hook-form` + `@hookform/resolvers` を初回利用時にまとめて install する前提は docs 上の未決事項です。
 

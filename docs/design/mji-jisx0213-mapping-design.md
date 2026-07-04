@@ -180,7 +180,7 @@ function jisLevel(menKuTen: string | null): 1 | 2 | 3 | 4 | null {
 
 ## 5. 処理パイプライン（service 層）
 
-レイヤ責務は [architecture-guidelines.md](architecture-guidelines.md) に準拠（UI → `features/*` → `server/services` → `server/repositories`）。文字照合・縮退ロジックは `server/services`（例 `server/services/mji-mapping.ts`）に置き、Drizzle クエリは `server/repositories/mji.ts` に閉じる。UI（事務の手動選択）は `features/interop` もしくは新ドメインの `features/*`。
+レイヤ責務は [architecture-guidelines.md](architecture-guidelines.md) に準拠（UI → `features/*` → `server/services` → `server/repositories`）。文字照合・縮退ロジックは `server/services`（例 `server/services/mji-mapping.ts`）に置き、Drizzle クエリは `server/repositories/mji.ts` に閉じる。UI（事務の手動選択）は `features/students`（生徒詳細・転入の表示名編集）に置く。
 
 苗字 1 文字ごとに次を実行する:
 
@@ -250,7 +250,7 @@ type X0213Candidate = {
   - 縮退マップ: `MJShrinkMap.1.2.0.json` を `JSON.parse` し、5 区分の候補配列を 1 候補＝1 行に展開。
   - 一次データは `docs/ref-data/`（repo 非追跡。`.gitignore` 済み）に置き、インポート時のみ読む。
 - [x] **repository / service**: [src/server/repositories/mji.ts](../../src/server/repositories/mji.ts)（Drizzle クエリ）＋ [src/server/services/mji-mapping.ts](../../src/server/services/mji-mapping.ts)（§5 のパイプライン・`jisLevel()`・`mapSurname()`・ViewModel）。
-- [x] **UI**: 学齢簿を 1 件ずつ確認するデータ連携画面 [src/app/interop/page.tsx](../../src/app/interop/page.tsx) ＋ [src/features/interop/components/GakureiboImport.tsx](../../src/features/interop/components/GakureiboImport.tsx)。氏（姓）の各字を 0213 判定・候補提示し、事務が選択 → [src/features/interop/actions.ts](../../src/features/interop/actions.ts) の `applyMappedFamilyAction` で students の表示名(姓)に保存（正式氏名一致で update）。学齢簿ソースは PoC のマスタ名簿 [src/server/services/gakureibo-import.ts](../../src/server/services/gakureibo-import.ts)。
+- [x] **UI**: 生徒詳細・転入の表示名（姓）編集 [src/features/students/components/FamilyMappingFields.tsx](../../src/features/students/components/FamilyMappingFields.tsx)（[StudentDisplayNameEditor](../../src/features/students/components/StudentDisplayNameEditor.tsx) / [TransferDisplayNameEditor](../../src/features/students/components/TransferDisplayNameEditor.tsx) から利用）。氏（姓）の各字を 0213 判定・候補提示し、事務が選択 → [src/features/students/actions.ts](../../src/features/students/actions.ts) の `applyMappedFamilyAction` で students の表示名(姓)に保存（正式氏名一致で update）。編集用レコードは [src/server/services/gakureibo-import.ts](../../src/server/services/gakureibo-import.ts) の `buildMappingRecordFromRoster` で組み立てる。<br>（当初は学齢簿を 1 件ずつ確認する `interop` データ連携画面として試作したが、生徒詳細・転入へ統合しページは廃止した。）
 
 > 実データ確認（マスタ名簿の苗字）: 𠮷(1-21-40)・𡈽(1-15-34)・邉(1-78-21)・﨑(1-47-82) は 0213 に**そのまま**存在。IVS を含む入力 斉󠄃 / 齋󠄄 / 藤󠄆 は「要選択」となり、**基底字 斉 / 齋 / 藤 を候補に提示**（同符号位置の IVS 異体字は候補から除外。方針改定）。**図形自体が 0213 の IVS 入力（芦=`82A6_E0109`, 第1水準）も同様に基底字 芦 へ寄せる要選択**とし、旧来の `in_x0213`（IVS 字形を既定確定）ではなくする（§5-3）。氏に紛れたカナ（タ/モ/リ）は「非漢字」として正しく分岐する。
 

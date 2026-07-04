@@ -29,3 +29,16 @@ export const transferOutStudentSchema = z.object({
 });
 
 export type TransferOutStudentInput = z.infer<typeof transferOutStudentSchema>;
+
+/**
+ * 表示名（姓）マッピングの確定を students に保存する Server Action の入力。
+ * 正式氏名（officialFamily/officialGiven）で対象生徒を一致させ、preferredFamily を更新する。
+ * userId はクライアントを信用せず Server Action 側で auth() から取得するのでここには含めない。
+ */
+export const applyMappedFamilyInputSchema = z.object({
+  officialFamily: z.string().min(1).max(50),
+  officialGiven: z.string().min(1).max(50),
+  preferredFamily: z.string().min(1).max(50),
+});
+
+export type ApplyMappedFamilyInput = z.infer<typeof applyMappedFamilyInputSchema>;

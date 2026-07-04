@@ -12,7 +12,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import FamilyMappingFields, {
   defaultChoice,
   type MappingRecordView,
-} from '@/features/interop/components/FamilyMappingFields';
+} from './FamilyMappingFields';
 
 interface TransferDisplayNameEditorProps {
   /** 編集対象（転入生の下書き＋正式苗字の JIS X 0213 写像）から組み立てたビュー。 */

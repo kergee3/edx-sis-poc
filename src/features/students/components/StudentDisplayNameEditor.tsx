@@ -11,12 +11,12 @@ import {
   DialogTitle,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
-import { applyMappedFamilyAction } from '@/features/interop/actions';
-import { applyMappedFamilyErrorMessage } from '@/features/interop/error-messages';
+import { applyMappedFamilyAction } from '../actions';
+import { applyMappedFamilyErrorMessage } from '../error-messages';
 import FamilyMappingFields, {
   defaultChoice,
   type MappingRecordView,
-} from '@/features/interop/components/FamilyMappingFields';
+} from './FamilyMappingFields';
 
 interface StudentDisplayNameEditorProps {
   /** この生徒の正式氏名（姓）マッピング。正式氏名は DB 値なので action が同一行に一致する。 */

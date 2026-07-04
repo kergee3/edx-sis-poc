@@ -25,7 +25,7 @@ import {
 } from '../actions';
 import type { TransferStudentDraft } from '@/server/services/transfer-student';
 import type { SurnameMapping } from '@/server/services/mji-mapping';
-import type { MappingRecordView } from '@/features/interop/components/FamilyMappingFields';
+import type { MappingRecordView } from './FamilyMappingFields';
 import TransferDisplayNameEditor from './TransferDisplayNameEditor';
 import {
   generateTransferErrorMessage,

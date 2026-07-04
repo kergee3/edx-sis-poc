@@ -7,8 +7,8 @@ import type { CharMapping, JisLevel, SurnameMapping } from '@/server/services/mj
 
 /**
  * 表示名（姓）の JIS X 0213 マッピングを編集する対象 1 件のビュー。
- * interop の学齢簿 1 レコード / 生徒詳細の 1 名の両方で共通利用する
- * （GakureiboRecord はこの型を構造的に満たす）。
+ * 生徒詳細（1 名）と転入（下書き 1 件）の両方で共通利用する
+ * （gakureibo-import の GakureiboRecord もこの型を構造的に満たす）。
  */
 export interface MappingRecordView {
   grade: number;

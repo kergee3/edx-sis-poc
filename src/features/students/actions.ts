@@ -8,9 +8,15 @@ import {
   commitTransferStudent,
   type TransferStudentDraft,
 } from '@/server/services/transfer-student';
-import { transferOutStudent } from '@/server/services/students';
+import { transferOutStudent, ensureSeededForUser } from '@/server/services/students';
+import { updatePreferredFamilyByOfficialName } from '@/server/repositories/students';
 import { mapSurname, type SurnameMapping } from '@/server/services/mji-mapping';
-import { transferStudentDraftSchema, transferOutStudentSchema } from './schema';
+import {
+  transferStudentDraftSchema,
+  transferOutStudentSchema,
+  applyMappedFamilyInputSchema,
+  type ApplyMappedFamilyInput,
+} from './schema';
 
 /**
  * 転入生の下書き生成 / 登録の Server Action（薄い受け口）。実処理は
@@ -93,6 +99,45 @@ export async function transferOutStudentAction(studentId: string): Promise<Trans
     return { ok: true };
   } catch (err) {
     logger.error('transfer.out.failed', {
+      userId: session.user.id,
+      error: err instanceof Error ? err.message : String(err),
+    });
+    return { ok: false, error: 'unknown' };
+  }
+}
+
+export type ApplyMappedFamilyError = 'unauthorized' | 'invalid_input' | 'not_found' | 'unknown';
+export type ApplyMappedFamilyResult = { ok: true } | { ok: false; error: ApplyMappedFamilyError };
+
+/**
+ * 表示名（姓）マッピングで確定した姓を、対応する生徒（正式氏名で一致）に保存する
+ * Server Action（薄い受け口）。生徒詳細の表示名編集で 1 件ずつ確認しながら保存する想定。
+ * 実処理は repository（updatePreferredFamilyByOfficialName）へ委譲する。
+ */
+export async function applyMappedFamilyAction(
+  input: ApplyMappedFamilyInput,
+): Promise<ApplyMappedFamilyResult> {
+  const session = await auth();
+  if (!session?.user?.id) return { ok: false, error: 'unauthorized' };
+
+  const parsed = applyMappedFamilyInputSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: 'invalid_input' };
+
+  try {
+    await ensureSeededForUser(session.user.id);
+    const updated = await updatePreferredFamilyByOfficialName(
+      session.user.id,
+      parsed.data.officialFamily,
+      parsed.data.officialGiven,
+      parsed.data.preferredFamily,
+    );
+    if (updated === 0) return { ok: false, error: 'not_found' };
+
+    // 生徒一覧の表示名が変わるのでキャッシュを無効化
+    revalidatePath('/students');
+    return { ok: true };
+  } catch (err) {
+    logger.error('students.apply_mapped_family.failed', {
       userId: session.user.id,
       error: err instanceof Error ? err.message : String(err),
     });
