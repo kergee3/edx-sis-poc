@@ -9,6 +9,7 @@ import {
   type TransferStudentDraft,
 } from '@/server/services/transfer-student';
 import { transferOutStudent } from '@/server/services/students';
+import { mapSurname, type SurnameMapping } from '@/server/services/mji-mapping';
 import { transferStudentDraftSchema, transferOutStudentSchema } from './schema';
 
 /**
@@ -19,7 +20,7 @@ import { transferStudentDraftSchema, transferOutStudentSchema } from './schema';
 
 export type GenerateTransferError = 'unauthorized' | 'unknown';
 export type GenerateTransferResult =
-  | { ok: true; draft: TransferStudentDraft }
+  | { ok: true; draft: TransferStudentDraft; familyMapping: SurnameMapping }
   | { ok: false; error: GenerateTransferError };
 
 export async function generateTransferStudentAction(): Promise<GenerateTransferResult> {
@@ -28,7 +29,11 @@ export async function generateTransferStudentAction(): Promise<GenerateTransferR
 
   try {
     const draft = await generateTransferStudentDraft(session.user.id);
-    return { ok: true, draft };
+    // 転入時に表示名（姓）を編集できるよう、正式苗字（MJ）→ JIS X 0213 の写像も併せて返す。
+    // 写像は officialFamily のみに依存するので draft には含めず、兄弟フィールドで返す
+    // （commit の入力スキーマ transferStudentDraftSchema を汚さないため）。
+    const familyMapping = await mapSurname(draft.officialFamily);
+    return { ok: true, draft, familyMapping };
   } catch (err) {
     logger.error('transfer.generate.failed', {
       userId: session.user.id,

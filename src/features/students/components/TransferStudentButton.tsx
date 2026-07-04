@@ -24,6 +24,9 @@ import {
   commitTransferStudentAction,
 } from '../actions';
 import type { TransferStudentDraft } from '@/server/services/transfer-student';
+import type { SurnameMapping } from '@/server/services/mji-mapping';
+import type { MappingRecordView } from '@/features/interop/components/FamilyMappingFields';
+import TransferDisplayNameEditor from './TransferDisplayNameEditor';
 import {
   generateTransferErrorMessage,
   commitTransferErrorMessage,
@@ -62,6 +65,8 @@ export default function TransferStudentButton() {
 
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState<TransferStudentDraft | null>(null);
+  // 表示名（姓）編集用の写像。draft と 1:1 で generate のたびに差し替える。
+  const [familyMapping, setFamilyMapping] = useState<SurnameMapping | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -71,15 +76,34 @@ export default function TransferStudentButton() {
       const res = await generateTransferStudentAction();
       if (res.ok) {
         setDraft(res.draft);
+        setFamilyMapping(res.familyMapping);
       } else {
         setDraft(null);
+        setFamilyMapping(null);
         setError(generateTransferErrorMessage(res.error));
       }
     });
   };
 
+  // 下書き＋写像から表示名（姓）編集用のビューを組み立てる（DB 未登録なので commit まで保存しない）。
+  const editRecord: MappingRecordView | null =
+    draft && familyMapping
+      ? {
+          grade: draft.grade,
+          officialFamily: draft.officialFamily,
+          officialGiven: draft.officialGiven,
+          preferredGiven: draft.preferredGiven,
+          kanaFamily: draft.kanaFamily,
+          kanaGiven: draft.kanaGiven,
+          sex: draft.sex,
+          familyMapping,
+          currentPreferredFamily: draft.preferredFamily,
+        }
+      : null;
+
   const openDialog = () => {
     setDraft(null);
+    setFamilyMapping(null);
     setError(null);
     setOpen(true);
     generate();
@@ -98,6 +122,7 @@ export default function TransferStudentButton() {
       if (res.ok) {
         setOpen(false);
         setDraft(null);
+        setFamilyMapping(null);
         // 生徒一覧（Server Component）を再取得し、転入生を反映する。
         router.refresh();
       } else {
@@ -181,6 +206,15 @@ export default function TransferStudentButton() {
           <Button startIcon={<CasinoIcon />} onClick={generate} disabled={pending}>
             別の生徒を生成
           </Button>
+          {editRecord && (
+            <TransferDisplayNameEditor
+              record={editRecord}
+              disabled={pending}
+              onApply={(preferredFamily) =>
+                setDraft((prev) => (prev ? { ...prev, preferredFamily } : prev))
+              }
+            />
+          )}
           <Box sx={{ flex: 1 }} />
           <Button onClick={closeDialog} disabled={pending}>
             キャンセル
