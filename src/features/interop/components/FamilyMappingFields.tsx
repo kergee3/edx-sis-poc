@@ -35,11 +35,24 @@ export function defaultChoice(c: CharMapping): string {
   return c.raw; // non_kanji: 原字（カナ・記号等。JISで表示可能なことが多い）をそのまま
 }
 
-/** 原字の分類ラベル（JIS: 第N水準 / MJ特有文字 / 非漢字）。 */
+/** 原字の分類ラベル（JIS: 第N水準 / JIS異体字 / MJ特有文字 / 非漢字）。 */
 function roleLabel(c: CharMapping): string {
   if (c.kind === 'in_x0213') return c.level ? `JIS: 第${c.level}水準` : 'JIS';
-  if (c.kind === 'needs_choice') return 'MJ特有文字';
+  if (c.kind === 'needs_choice') {
+    // 入力図形自体は 0213（IVS 付き）→ 基底字へ寄せる要選択。MJ特有文字と区別して示す。
+    if (c.sourceInX0213) {
+      return c.sourceInX0213.level ? `JIS異体字: 第${c.sourceInX0213.level}水準` : 'JIS異体字';
+    }
+    return 'MJ特有文字';
+  }
   return '非漢字';
+}
+
+/** 分類チップの色（0213基底字=成功 / IVS異体字=警告 / MJ特有文字=エラー / 非漢字=既定）。 */
+function roleColor(c: CharMapping): 'success' | 'warning' | 'error' | 'default' {
+  if (c.kind === 'in_x0213') return 'success';
+  if (c.kind === 'needs_choice') return c.sourceInX0213 ? 'warning' : 'error';
+  return 'default';
 }
 
 /** 原字のコード表記（IVS付きは "U+xxxx_E01xx"、無しは "U+xxxx"）。 */
@@ -129,13 +142,7 @@ export default function FamilyMappingFields({
                 {/* 分類ラベル（塗りつぶしの丸枠チップ）＋ 原字のコード */}
                 <Chip
                   size="small"
-                  color={
-                    c.kind === 'in_x0213'
-                      ? 'success'
-                      : c.kind === 'needs_choice'
-                        ? 'error'
-                        : 'default'
-                  }
+                  color={roleColor(c)}
                   label={roleLabel(c)}
                   sx={{ mb: 0.5 }}
                 />

@@ -128,10 +128,19 @@ export interface X0213Candidate {
 }
 
 export type CharMapping =
-  // ① JIS X 0213 に定義あり（そのまま採用可）
+  // ① JIS X 0213 に定義あり、かつ入力が基底字（VS なし）＝そのまま採用可
   | { kind: 'in_x0213'; raw: string; mjId: string; ucs: string; x0213: string; level: JisLevel | null }
-  // ②③ 0213 に無い。代表字・異体字の 0213 候補を提示（最終選択は事務）
-  | { kind: 'needs_choice'; raw: string; source: { mjId: string; ucs: string }; candidates: X0213Candidate[] }
+  // ②③ 0213 に無い、または入力が IVS 付き（基底字へ正規化するため要選択）。
+  //     代表字・異体字の 0213 基底字候補を提示（最終選択は事務）。sourceInX0213 は
+  //     「入力図形自体は 0213 にあったが IVS 付きなので基底字へ寄せる」ケースの注記
+  //     （UI が『MJ特有文字』ではなく『JIS異体字（第N水準）』と示せるようにする）。
+  | {
+      kind: 'needs_choice';
+      raw: string;
+      source: { mjId: string; ucs: string };
+      candidates: X0213Candidate[];
+      sourceInX0213?: { x0213: string; level: JisLevel | null };
+    }
   // ④ MJ に無い → 非漢字
   | { kind: 'non_kanji'; raw: string };
 
@@ -246,6 +255,18 @@ async function mapGrapheme(g: Grapheme): Promise<CharMapping> {
 
   // ① 0213 にある
   if (row.x0213 != null) {
+    // 入力が IVS 付き（異体字セレクタあり）の場合は、その字形をそのまま保存しない
+    // （2026-07-03 方針改定: 変換先は JIS X 0213 の基底文字＝VS なしに限定）。
+    // 図形自体が 0213 でも、同符号位置の基底字を候補として提示し確定（手入力可）を事務に委ねる。
+    if (g.vs !== undefined) {
+      return {
+        kind: 'needs_choice',
+        raw: g.raw,
+        source: { mjId: row.mjId, ucs: row.correspondingUcs },
+        candidates: await collectCandidates(row),
+        sourceInX0213: { x0213: row.x0213, level: row.jisLevel as JisLevel | null },
+      };
+    }
     return {
       kind: 'in_x0213',
       raw: g.raw,
