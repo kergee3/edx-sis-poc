@@ -12,7 +12,7 @@
 
 `src/` の想定シナリオは、小さな離島の小さな中学校です。ログインした校長先生が、全校生徒の先生と事務を兼ねて校務を行います。生徒定員は 25 名、各学年 4 名で初期 12 名在籍という前提です。氏名の MJ 特有文字、たとえば戸籍漢字などを IPAmjexMincho で正しく表示することが眼目です。
 
-実装済みの基盤は次の通りです。
+基盤は次の通りです。
 
 - 認証: Google / LINE、Auth.js v5
 - ログイン履歴: サーバ側記録 + クライアント側補完
@@ -20,7 +20,7 @@
 - DB: Turso (SQLite, 東京 NRT) への一本化
 - UI: MUI Theme
 
-`students` は生徒一覧、転入/転出/編集、在学証明書発行、表示名（姓）の JIS X 0213 マッピング、OneRoster 出力を実装済みです（データ連携は当初 `interop` ページで試作しましたが `students` へ統合しました）。`home` はログイン中の校長氏名・学校名・在籍数を差し込む案内表示です。業務ドメインの設計は `docs/design/` を参照してください。
+`students` は生徒一覧、転入/転出/編集、在学証明書発行、表示名（姓）の JIS X 0213 マッピング、OneRoster 出力を扱います（データ連携は当初 `interop` ページで試作しましたが `students` へ統合しました）。`home` はログイン中の校長氏名・学校名・在籍数を差し込む案内表示です。業務ドメインの設計は `docs/design/` を参照してください。
 
 重要: このリポジトリは別アプリ (`life-todo`: todo / routines / packing) からの fork が出発点です。旧アプリの名残が一部残っています。`todo` / `routines` / `packing` / `data-transfer` / `memo` といった機能は現存しません。ドキュメントやコメントにこれらが出てきたら旧記述として扱ってください。
 
@@ -132,7 +132,7 @@ server/db
 
 Server Action (`features/*/actions.ts`) は薄い受け口に保ち、実処理は `server/services` へ委譲してください。Route Handler (`app/api/**/route.ts`) は Webhook / 外部公開 API 用途を基本とし、内部更新は原則 Server Action を使います。`middleware.ts` はログイン要否の判定に留め、リソース単位の認可は service / Server Action 側で行います。UI 層から Drizzle、DB クライアント、外部 SaaS SDK を直接呼ばないでください。
 
-現在の `src/features/` は、`auth` / `login-history` / `bug-report` / `home` / `students` がいずれも実装済みです。
+現在の `src/features/` は、`auth` / `login-history` / `bug-report` / `home` / `students` です。
 
 ## コーディング規約
 

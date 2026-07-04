@@ -23,7 +23,7 @@
     │   ├── layout.tsx
     │   └── page.tsx
     ├── features/
-    │   ├── login-history/        # 実装済み。新機能の参照実装
+    │   ├── login-history/        # 新機能の参照実装
     │   │   ├── components/
     │   │   ├── services/
     │   │   ├── schema/

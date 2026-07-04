@@ -242,7 +242,7 @@ type X0213Candidate = {
 
 ## 8. 実装状況
 
-データ基盤と写像ロジックは実装済み（本設計に追随）。残るは UI。
+データ基盤・写像ロジック・UI（生徒詳細／転入の表示名編集）とも実装済み（本設計に追随）。
 
 - [x] **スキーマ**: [src/server/db/turso/schema/mji.ts](../../src/server/db/turso/schema/mji.ts)（§3）。マイグレーション [0003_lovely_bushwacker.sql](../../src/server/db/turso/migrations/0003_lovely_bushwacker.sql)（`db:generate:turso` で生成、`db:migrate:turso` で適用済み）。
 - [x] **インポートスクリプト**: [scripts/import-mji.mjs](../../scripts/import-mji.mjs)（`npm run db:import:mji`）。5.9万行は SQL マイグレーションに含めず専用スクリプトで投入（冪等）。
