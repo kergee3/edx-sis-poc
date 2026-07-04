@@ -6,10 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **edx-sis-poc** は「文字情報基盤(MJ)の漢字を Web フォントとして使う」実証から出発し、その応用として**校務支援システムの PoC** を作るプロジェクト。本体は `src/` の Web アプリ。
 
-- **`src/`（Web アプリ）= SIS-PoC（Student Information System - Proof of Concept）** — IPAmjexMincho Web フォントを活かした**校務支援システムの実証実験**。Next.js 16 App Router + MUI v7。**現状は基盤のみ実装済みで、業務機能はこれから**。
+- **`src/`（Web アプリ）= SIS-PoC（Student Information System - Proof of Concept）** — IPAmjexMincho Web フォントを活かした**校務支援システムの実証実験**。Next.js 16 App Router + MUI v7。**認証・基盤に加え、ホームと生徒一覧（名簿・転入転出・編集・在学証明書・表示名マッピング・OneRoster 出力）まで、計画していた PoC の機能は一通り実装済み**。
   - 想定シナリオ: 小さな離島の小さな中学校。ログインした校長先生がワンオペで全校生徒の先生＋事務を兼ねて校務を行う（生徒定員 25 名・各学年 4 名で初期 12 名在籍）。氏名の MJ特有文字（戸籍漢字等）を IPAmjexMincho で正しく表示するのが眼目。
   - 実装済みの基盤: 認証（Google / LINE, Auth.js v5）、ログイン履歴（サーバ＋クライアント）、右上ユーザーメニュー（ログアウト / About / ログイン履歴）、Turso(SQLite) への一本化、MUI Theme。
-  - 機能: `home`＝位置づけ説明（プレースホルダ）/ `students`＝生徒一覧（名簿の転入/転出/編集・在学/成績証明書発行・表示名（姓）の JIS X 0213 マッピング・OneRoster 出力を実装済み）。データ連携（学齢簿マッピング・OneRoster 出力）は当初 `interop` ページで試作したが `students` へ統合済み。業務ドメインの設計は [docs/design/](docs/design/) を参照。
+  - 機能: `home`＝ログイン中の校長氏名・学校名・在籍数を差し込む案内表示 / `students`＝生徒一覧（名簿の転入/転出/編集・在学証明書発行・表示名（姓）の JIS X 0213 マッピング・OneRoster 出力を実装済み）。データ連携（学齢簿マッピング・OneRoster 出力）は当初 `interop` ページで試作したが `students` へ統合済み。業務ドメインの設計は [docs/design/](docs/design/) を参照。
 
 氏名表示に使う **IPAmjexMincho Web フォント**（IPAmj明朝 + IPAex明朝 を合成した 256 サブセット WOFF2）は、**外部に配信されているもの（[ipamjexmincho.shumy.app](https://ipamjexmincho.shumy.app)）を利用する**。フォントの合成・配信ツール自体は本リポジトリには含まない。アプリ側の利用箇所は [src/theme/fonts.ts](src/theme/fonts.ts) / [src/app/layout.tsx](src/app/layout.tsx)。
 
@@ -68,7 +68,7 @@ server/db (schema、migrations、client)
 - **middleware** (`middleware.ts`) はログイン要否の判定のみ。リソース単位の認可は service / Server Action 側で
 - UI 層から Drizzle や SaaS の SDK を直接呼ばない
 
-現在の `src/features/`: `auth`（実装済）/ `login-history`（実装済）/ `bug-report`（実装済）/ `students`（実装済。名簿・転入転出・証明書発行・表示名マッピング・OneRoster 出力）/ `home`（`components/*Placeholder.tsx` のみのスキャフォールド）。
+現在の `src/features/`: `auth` / `login-history` / `bug-report` / `home`（ログイン中の校長氏名・学校名・在籍数を差し込む案内表示）/ `students`（名簿・転入転出・編集・在学証明書発行・表示名マッピング・OneRoster 出力）。いずれも実装済み。
 
 ### 認証プロバイダ（Google / LINE）
 
@@ -140,6 +140,6 @@ server/db (schema、migrations、client)
 
 ## スコープの健全性
 
-- `home` は**プレースホルダ**。新しい業務機能に着手するときは [src/features/login-history/](src/features/login-history/) や実装済みの [src/features/students/](src/features/students/) を参照実装として、`actions.ts` / `schema` / `services/`（`format.ts` の `toView()`）/ `components/` を同じ構造で起こす
+- 計画していた PoC の機能は一通り実装済み。新しい業務機能を追加するときは [src/features/students/](src/features/students/) や [src/features/login-history/](src/features/login-history/) を参照実装として、`actions.ts` / `schema` / `services/`（`format.ts` の `toView()`）/ `components/` を同じ構造で起こす
 - 将来の機能を先回りしてスキャフォールドしない。今やる 1 機能に集中する
 - 依存追加は事前に確認する。テスト導入時に `vitest` 一式 + `@playwright/test`、フォーム本格化時に `react-hook-form` + `@hookform/resolvers` を初回利用時にまとめて install する前提（docs で未決）

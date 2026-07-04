@@ -21,7 +21,6 @@ import {
   Info as InfoIcon,
   Home as HomeIcon,
   PeopleAlt as PeopleAltIcon,
-  SyncAlt as SyncAltIcon,
 } from '@mui/icons-material';
 import AppFooter from '@/components/layout/AppFooter';
 
@@ -85,16 +84,7 @@ export default function AboutPage() {
               </ListItemIcon>
               <ListItemText
                 primary="生徒一覧"
-                secondary="生徒名簿の表示・管理（転入・転出・編集）、在学証明書・成績証明書の発行。氏名は IPAmjexMincho で表示します。（一覧表示を実装済み。管理・証明書は開発中）"
-              />
-            </ListItem>
-            <ListItem alignItems="flex-start">
-              <ListItemIcon>
-                <SyncAltIcon color="primary" />
-              </ListItemIcon>
-              <ListItemText
-                primary="データ連携"
-                secondary="学齢簿からのインポート、OneRoster に沿ったインポート・エクスポート。（開発中）"
+                secondary="生徒名簿の表示・管理（転入・転出・編集）、在学証明書の発行、表示名（姓）の JIS X 0213 マッピング、OneRoster 出力。氏名は IPAmjexMincho で表示します。"
               />
             </ListItem>
           </List>
