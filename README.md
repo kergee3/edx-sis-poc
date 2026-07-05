@@ -54,6 +54,10 @@ PoC の業務設計は、学齢簿〜校務支援システム〜学習eポータ
 >
 > **外部から複製した一次資料ファイルは、このリポジトリには保持しない。** 原典の出典・取得日・利用条件はこの索引に記録する。
 
+### PoC 用データについて
+
+`public/poc-data/initial-student-roster.xlsx` と `public/poc-data/name_list.xlsx` は、生成 AI の Claude を使って生成し、PoC 用に編集した仮名データです。実在の児童生徒名簿や外部一次資料を複製したものではありません。
+
 ---
 
 ## IPAmjexMincho Web フォント（外部配信を利用）
