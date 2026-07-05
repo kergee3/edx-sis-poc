@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireUser } from '@/server/auth/session';
 
 const ALLOW_ALL_ORIGINS = true;
 
@@ -31,6 +32,15 @@ export async function OPTIONS(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
+  try {
+    await requireUser();
+  } catch {
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401, headers: getCorsHeaders(request.headers.get('origin')) },
+    );
+  }
+
   const headers = request.headers;
   const origin = headers.get('origin');
 

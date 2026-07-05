@@ -7,6 +7,7 @@ export const config = {
      * 具体的な権限チェックは Server Action / Route Handler / service 層で行う。
      */
     '/account/:path*',
+    '/env/:path*',
     '/login-history/:path*',
   ],
 };
