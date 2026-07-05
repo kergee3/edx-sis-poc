@@ -1,11 +1,10 @@
-import { Box, Button, Card, CardContent, Link, Typography } from '@mui/material';
+import { Box, Card, CardContent, Link, Typography } from '@mui/material';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import ImportExportIcon from '@mui/icons-material/ImportExport';
 import AppFooter from '@/components/layout/AppFooter';
 import SignInButton from '@/features/auth/components/SignInButton';
 import StudentsTable from '@/features/students/components/StudentsTable';
 import TransferStudentButton from '@/features/students/components/TransferStudentButton';
+import ExportButtons from '@/features/students/components/ExportButtons';
 import { toView } from '@/features/students/services/format';
 import { listRosterForUser } from '@/server/services/students';
 import { auth } from '@/server/auth/config';
@@ -31,30 +30,9 @@ export default async function StudentsPage() {
               sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}
             >
               <TransferStudentButton />
-              {/* 右端の出力ボタン群。GET ダウンロード。Server Component から Next の Link を
-                  component に渡すと関数が渡せずエラーになるため、素の <a>（component="a"）で受ける。 */}
-              <Box sx={{ display: 'flex', gap: 1 }}>
-                <Button
-                  component="a"
-                  href="/api/students/oneroster"
-                  variant="outlined"
-                  size="small"
-                  startIcon={<ImportExportIcon />}
-                  sx={{ textTransform: 'none' }}
-                >
-                  OneRoster出力
-                </Button>
-                <Button
-                  component="a"
-                  href="/api/students/export"
-                  variant="outlined"
-                  size="small"
-                  startIcon={<FileDownloadIcon />}
-                  sx={{ textTransform: 'none' }}
-                >
-                  Excel出力
-                </Button>
-              </Box>
+              {/* 右端の出力ボタン群。fetch でダウンロードし、完了後に保存先とファイル名を
+                  メッセージボックスで示すクライアントコンポーネントに委譲する。 */}
+              <ExportButtons />
             </Box>
             <StudentsTable items={(await listRosterForUser(session.user.id)).map(toView)} />
             <Box
