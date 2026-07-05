@@ -7,38 +7,38 @@
 `edx-sis-poc` は、「文字情報基盤 (MJ) の漢字を Web フォントとして使う」実証から出発し、その応用として校務支援システムの PoC を作るプロジェクトです。本体は `src/` の Web アプリです。
 
 - `src/`: SIS-PoC (Student Information System - Proof of Concept)。IPAmjexMincho Web フォントを活かした校務支援システムの実証実験です。Next.js 16 App Router、React 19、MUI v7 を使います。認証・基盤に加え、ホームと生徒一覧（名簿・転入転出・編集・在学証明書・表示名マッピング・OneRoster 出力）まで、計画していた PoC の機能は一通り実装済みです。
+- 想定シナリオは、小さな離島の小さな中学校です。ログインした校長先生が、全校生徒の先生と事務を兼ねて校務を行います。生徒定員は 25 名、各学年 4 名で初期 12 名在籍という前提です。
+- 氏名の MJ 特有文字、たとえば戸籍漢字などを IPAmjexMincho で正しく表示することが眼目です。
 
-氏名表示に使う `IPAmjexMincho` Web フォント（IPAmj明朝 + IPAex明朝 を合成した 256 サブセット WOFF2）は、**外部に配信されているもの（[ipamjexmincho.shumy.app](https://ipamjexmincho.shumy.app)）を利用します**。フォントの合成・配信ツール自体はこのリポジトリには含みません（アプリ側の利用箇所は `src/theme/fonts.ts` / `src/app/layout.tsx`）。
+氏名表示に使う `IPAmjexMincho` Web フォント（IPAmj明朝 + IPAex明朝 を合成した 256 サブセット WOFF2）は、外部に配信されているもの（`https://ipamjexmincho.shumy.app`）を利用します。フォントの合成・配信ツール自体はこのリポジトリには含みません。アプリ側の利用箇所は `src/theme/fonts.ts` / `src/app/layout.tsx` です。
 
-`src/` の想定シナリオは、小さな離島の小さな中学校です。ログインした校長先生が、全校生徒の先生と事務を兼ねて校務を行います。生徒定員は 25 名、各学年 4 名で初期 12 名在籍という前提です。氏名の MJ 特有文字、たとえば戸籍漢字などを IPAmjexMincho で正しく表示することが眼目です。
-
-基盤は次の通りです。
+主な機能は次の通りです。
 
 - 認証: Google / LINE、Auth.js v5
 - ログイン履歴: サーバ側記録 + クライアント側補完
 - 右上ユーザーメニュー: ログアウト / About / ログイン履歴
+- バグ報告: スクリーンショット付き GitHub Issue 起票
+- `home`: ログイン中の校長氏名・学校名・在籍数を差し込む案内表示
+- `students`: 生徒一覧、転入/転出/編集、在学証明書発行、表示名（姓）の JIS X 0213 マッピング、OneRoster 出力
 - DB: Turso (SQLite, 東京 NRT) への一本化
 - UI: MUI Theme
 
-`students` は生徒一覧、転入/転出/編集、在学証明書発行、表示名（姓）の JIS X 0213 マッピング、OneRoster 出力を扱います（データ連携は当初 `interop` ページで試作しましたが `students` へ統合しました）。`home` はログイン中の校長氏名・学校名・在籍数を差し込む案内表示です。業務ドメインの設計は `docs/design/` を参照してください。
-
-重要: このリポジトリは別アプリ (`life-todo`: todo / routines / packing) からの fork が出発点です。旧アプリの名残が一部残っています。`todo` / `routines` / `packing` / `data-transfer` / `memo` といった機能は現存しません。ドキュメントやコメントにこれらが出てきたら旧記述として扱ってください。
+重要: このリポジトリは別アプリ (`life-todo`: todo / routines / packing) からの fork が出発点です。旧アプリの名残が一部残っていた経緯があります。`todo` / `routines` / `packing` / `data-transfer` / `memo` といった旧機能名を見かけた場合は、現行機能ではなく旧記述として扱ってください。
 
 ## 重要な変更の前に必読
 
-`docs/` 配下の設計文書がレイヤ責務・規約の基準です。ただし一部の例が旧アプリ (`todo` など) のままなので、具体例より考え方を参照してください。
+`docs/` 配下の設計文書がレイヤ責務・規約の基準です。ただし一部の例が旧アプリ (`todo` など) のまま残る可能性があるため、具体例より考え方を参照してください。
 
 - `docs/dev-guideline.md`: 技術スタック、「正本」の考え方、未決事項
 - `docs/architecture-guidelines.md`: レイヤ責務、Server Action と Route Handler の使い分け、認証・認可
 - `docs/directory-structure.md`: `src/` 配下の配置方針
 - `docs/coding-guidelines.md`: TypeScript / React / MUI のルール、セキュリティ、a11y
+- `docs/environment-setup.md`: Turso、Google OAuth、LINE Login、`.env.local` の手順
 
 設計の軸は次の 2 つです。
 
 - データの正本: Turso (SQLite, 東京 NRT) 1 系統
 - デザインの正本: MUI Theme
-
-環境構築、Turso、Google OAuth、LINE Login、`.env.local` の手順は `docs/environment-setup.md` を参照してください。
 
 政府機関などが公開する外部仕様書 PDF / xlsx 等はリポジトリに複製せず、`docs/design/external-references.md` の索引に外部リンク、出典、取得日、利用条件を記録します。それらを踏まえて本プロジェクトが作成する設計・調査ドキュメントも同じ `docs/design/` に置きます。
 
@@ -70,7 +70,7 @@
    ```
 
 3. `.env.example` を参考に `.env.local` を作成する。
-4. Turso、Google OAuth、LINE Login などの外部サービスを設定する。詳細は `docs/environment-setup.md` を参照する。
+4. Turso、Google OAuth、LINE Login、GitHub Issue 起票、Vercel Blob など必要な外部サービスを設定する。詳細は `docs/environment-setup.md` と関連コードを参照する。
 5. 必要に応じて DB マイグレーションを適用する。
 
    ```bash
@@ -83,18 +83,22 @@
    npm run dev
    ```
 
-## 開発・ビルド・Lint コマンド
+## 開発・ビルド・テスト・Lint コマンド
 
 ```bash
 npm run dev                  # 開発サーバ起動 http://localhost:3000
 npm run build                # 本番ビルド
+npm run start                # 本番ビルド後の起動
 npm run lint                 # ESLint
-npm run typecheck            # TypeScript 型チェック
+npm run typecheck            # TypeScript 型チェック (tsc --noEmit)
 npm run db:generate:turso    # Turso の Drizzle マイグレーション生成
 npm run db:migrate:turso     # Turso に未適用マイグレーションを適用
 npm run db:studio:turso      # Turso の Drizzle Studio 起動
+npm run db:import:mji        # MJ 文字情報の参照データ取り込み
 npm run icons                # public/icon.svg から PWA アイコン再生成
 ```
+
+現時点で専用の `npm test` script はありません。作業内容に応じて `npm run typecheck`、`npm run lint`、`npm run build` を確認してください。テストを追加する場合は、既存方針と `docs/` の未決事項に従い、導入範囲を明記してください。
 
 本物のシークレットが未設定の CI ビルドなどでは、必要に応じて env 検証を迂回できます。
 
@@ -132,7 +136,7 @@ server/db
 
 Server Action (`features/*/actions.ts`) は薄い受け口に保ち、実処理は `server/services` へ委譲してください。Route Handler (`app/api/**/route.ts`) は Webhook / 外部公開 API 用途を基本とし、内部更新は原則 Server Action を使います。`middleware.ts` はログイン要否の判定に留め、リソース単位の認可は service / Server Action 側で行います。UI 層から Drizzle、DB クライアント、外部 SaaS SDK を直接呼ばないでください。
 
-現在の `src/features/` は、`auth` / `login-history` / `bug-report` / `home` / `students` です。
+現在の `src/features/` は、`auth` / `bug-report` / `home` / `login-history` / `settings` / `students` です。
 
 ## コーディング規約
 
@@ -148,6 +152,7 @@ Server Action (`features/*/actions.ts`) は薄い受け口に保ち、実処理�
 - 一覧取得は service で `unstable_cache(fn, key, { tags, revalidate })` で包み、タグは `src/server/cache/tags.ts` のヘルパ経由で生成する。タグ名の文字列リテラルを直接書かない。
 - 更新系 Server Action は処理成功後に `updateTag(<tag>(userId))` を呼んでキャッシュを失効させる。
 - 新しい依存関係を追加する前に、既存実装・標準 API・導入済みライブラリで対応できないか確認する。大きな依存追加は作業内容に明記する。
+- 将来の機能を先回りしてスキャフォールドせず、今やる 1 機能に集中する。
 
 ## 認証プロバイダ
 
@@ -168,6 +173,16 @@ Auth.js v5 + DrizzleAdapter で Google と LINE の 2 プロバイダを `provid
 - サーバ側で取れる provider / IP / UA / Referer / Geo は `headers()` 経由で記録する。
 - `src/app/ClientLayout.tsx` にマウントされた `ClientEnricher` が、OS / ブラウザ / 解像度 / UA Data などクライアント側でしか取れない情報を収集する。
 - `enrichLatestLoginAction` で同じ行を UPDATE する。冪等性は repository 側の `os IS NULL` フィルタで担保する。
+
+## バグ報告
+
+バグ報告は、スクリーンショット付きで GitHub Issue を自動起票する機能です。
+
+- ヘッダ右上のバグ報告ボタンが `modern-screenshot` で `document.body` をキャプチャし、JPEG に縮小してダイアログを開く。
+- スクリーンショットは Vercel Blob にクライアント直アップロードし、公開 URL を Server Action に渡す。`userId` はクライアントを信用せず、Server Action 側で `auth()` から取得する。
+- Vercel Blob ストアは公開 URL が必要なため public access で作成する。private ストアでは GitHub Issue に画像を埋め込めない。
+- `BLOB_READ_WRITE_TOKEN`、`GITHUB_TOKEN`、`GITHUB_REPO` などの実シークレットは表示・ログ出力・コミットしない。
+- GitHub Issue に付けるラベルは GitHub 側で事前作成が必要です。GitHub API は未存在ラベルを自動作成しません。
 
 ## ユーザ設定とキャッシュ
 
@@ -209,16 +224,16 @@ Auth.js v5 + DrizzleAdapter で Google と LINE の 2 プロバイダを `provid
 
 氏名表示に使う IPAmjexMincho Web フォントは、外部に配信されているもの（`https://ipamjexmincho.shumy.app`）を参照します。フォントの合成・配信ツールはこのリポジトリには含みません。
 
-- 配信元 URL は `src/theme/fonts.ts` の `IPAMJEX_FONT_CSS_URL` / `IPAMJEX_FONT_ORIGIN` で定義（環境変数 `IPAMJEX_FONT_CSS_URL` で上書き可）。`src/app/layout.tsx` が preconnect と CSS の `<link>` を出力する
-- 適用は正式氏名（MJ特有文字を含みうる）の表示に限定する（`FONT_MJ`）
-- ライセンスは IPA フォントライセンス v1.0、派生名は `IPAmjexMincho`
+- 配信元 URL は `src/theme/fonts.ts` の `IPAMJEX_FONT_CSS_URL` / `IPAMJEX_FONT_ORIGIN` で定義（環境変数 `IPAMJEX_FONT_CSS_URL` で上書き可）。`src/app/layout.tsx` が preconnect と CSS の `<link>` を出力する。
+- 適用は正式氏名（MJ 特有文字を含みうる）の表示に限定する（`FONT_MJ`）。アプリ全体のフォントには当てない。
+- ライセンスは IPA フォントライセンス v1.0、派生名は `IPAmjexMincho`。
 
 ## 変更してはいけないファイルや注意点
 
 - `.env.local` には実シークレットが入る可能性があります。値を表示・コミット・不要に編集しないでください。
 - `src/server/auth/config.ts` の `NextAuth(() => config)` 形式を eager な設定に戻さないでください。env / DB の評価をリクエスト時まで遅延させ、シークレット未設定時の build を通すためです。
 - `src/server/db/turso/client.ts` の lazy な `getTursoDb()` をトップレベルの `db` 定数 import 方式へ戻さないでください。
-- DB は Turso 1 系統です。認証、ログイン履歴、ユーザ設定はすべて同一 DB に同居しています。
+- DB は Turso 1 系統です。認証、ログイン履歴、ユーザ設定などは同一 DB に同居しています。
 - `drizzle.turso.config.ts` は Node 22 の `process.loadEnvFile('.env.local')` で `.env.local` を明示的に読んでいます。理由なく dotenv へ置き換えないでください。
 - drizzle-kit は常に `--config` 指定で呼び出す npm scripts (`db:*:turso`) を使ってください。
 - 既存の Drizzle migration は履歴です。過去 migration を手編集せず、新しい schema 変更は `npm run db:generate:turso` で追加 migration を生成してください。
@@ -226,17 +241,17 @@ Auth.js v5 + DrizzleAdapter で Google と LINE の 2 プロバイダを `provid
 - `src/features/auth/actions.ts` の sign out フローは、`signOut({ redirect: false })`、`revalidatePath('/', 'layout')`、`redirect('/home')` の順序を維持してください。
 - Server Component で MUI Button に `component={Link}` を直接渡すと RSC の関数 prop エラーになり得ます。`<Link>` で `<Button component="span">` を包む既存方針に従ってください。
 - 現在の依頼範囲を尊重し、将来機能を先回りしてスキャフォールドしないでください。
+- Claude Code 固有のコマンド、サブエージェント指定、ツール呼び出し前提はこのファイルへ移植しないでください。汎用的な AI コーディングエージェント向けの作業原則として記述してください。
 
 ## 既知の名残・要整理
 
-旧 `life-todo` 由来の不整合があります。新規にこれらへ依存しないでください。
+旧 `life-todo` 由来の不整合は順次解消されています。新規に旧機能名へ依存しないでください。
 
-- `user_preferences` に `routines*` / `packing*` の未使用カラムが残っている。
-- `tsconfig.json` の `include` に存在しない `drizzle.neon.config.ts` への参照がある。
-- `exceljs` / `@vercel/blob` など旧 data-transfer 用の依存が残っているが、現状未使用。
-- README や旧ドキュメントに出ていた `data-transfer` / `app/api/export` は未実装。
-- `src/app/about/page.tsx` の説明文が旧アプリのまま。
-- Turso の古いマイグレーションに `todos` / `packing_*` などの旧テーブル定義が含まれるが、現スキーマにはない。
+- `tsconfig.json` の存在しない `drizzle.neon.config.ts` 参照は削除済み。
+- `src/app/about/page.tsx` の説明文は SIS-PoC の内容へ更新済み。
+- `@vercel/blob` は旧 data-transfer 用ではなく、現在はバグ報告スクリーンショット保存用途で利用しています。
+- Turso を `edx-poc` へ切り替える際に、旧 `todos` / `packing_*` などのテーブル定義はクリーンなベースラインへ整理済みです。
+- `todo` / `routines` / `packing` / `memo` といった語が古いドキュメントやコメントに残っていた場合は、現行仕様ではなく旧記述として扱ってください。
 
 ## スコープの健全性
 
@@ -251,6 +266,7 @@ Auth.js v5 + DrizzleAdapter で Google と LINE の 2 プロバイダを `provid
 - `npm run typecheck`
 - `npm run lint`
 - `npm run build`
+- 専用テストを追加した場合は、そのテストコマンド
 - DB schema を変えた場合は migration が生成され、内容が意図通りであること
 - UI を変えた場合は主要 viewport で崩れや操作不能がないこと
 - 認証・認可・ユーザ別データに関わる変更では、未ログイン時、別ユーザ、email null のケースを考慮していること
