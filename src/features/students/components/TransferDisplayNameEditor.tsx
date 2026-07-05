@@ -21,6 +21,8 @@ interface TransferDisplayNameEditorProps {
   onApply: (preferredFamily: string) => void;
   /** 生成／登録中は無効化する。 */
   disabled?: boolean;
+  /** xs（スマホ幅）でボタンのアイコンを隠す。 */
+  hideIcon?: boolean;
 }
 
 /**
@@ -33,6 +35,7 @@ export default function TransferDisplayNameEditor({
   record,
   onApply,
   disabled,
+  hideIcon,
 }: TransferDisplayNameEditorProps) {
   const [open, setOpen] = useState(false);
   const [selections, setSelections] = useState<string[]>([]);
@@ -67,7 +70,7 @@ export default function TransferDisplayNameEditor({
       <Button
         variant="outlined"
         size="small"
-        startIcon={<EditIcon />}
+        startIcon={hideIcon ? undefined : <EditIcon />}
         onClick={openDialog}
         disabled={disabled}
         sx={{ whiteSpace: 'nowrap' }}

@@ -14,6 +14,8 @@ import {
   Paper,
   Stack,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import CasinoIcon from '@mui/icons-material/Casino';
@@ -62,6 +64,9 @@ export default function TransferStudentButton() {
   const router = useRouter();
   const { displayFont } = useSettings();
   const nameFont = displayFontFamily(displayFont);
+  const theme = useTheme();
+  // xs（スマホ幅）ではボタンのアイコンを隠し、文言の折り返しを防ぐ。
+  const isXs = useMediaQuery(theme.breakpoints.only('xs'));
 
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState<TransferStudentDraft | null>(null);
@@ -203,13 +208,18 @@ export default function TransferStudentButton() {
           )}
         </DialogContent>
         <DialogActions>
-          <Button startIcon={<CasinoIcon />} onClick={generate} disabled={pending}>
+          <Button
+            startIcon={isXs ? undefined : <CasinoIcon />}
+            onClick={generate}
+            disabled={pending}
+          >
             再生成
           </Button>
           {editRecord && (
             <TransferDisplayNameEditor
               record={editRecord}
               disabled={pending}
+              hideIcon={isXs}
               onApply={(preferredFamily) =>
                 setDraft((prev) => (prev ? { ...prev, preferredFamily } : prev))
               }
