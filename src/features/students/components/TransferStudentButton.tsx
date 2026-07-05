@@ -149,7 +149,7 @@ export default function TransferStudentButton() {
             <>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                 次の転入生を登録します。内容を確認し、[転入] で確定してください。別の候補にするには
-                [別の生徒を生成] を押します。
+                [再生成] を押します。表示名を編集する場合には[表示名編集]ボタンを押します。
               </Typography>
               <Paper variant="outlined" sx={{ p: 2 }}>
                 <Stack spacing={2}>
@@ -204,7 +204,7 @@ export default function TransferStudentButton() {
         </DialogContent>
         <DialogActions>
           <Button startIcon={<CasinoIcon />} onClick={generate} disabled={pending}>
-            別の生徒を生成
+            再生成
           </Button>
           {editRecord && (
             <TransferDisplayNameEditor

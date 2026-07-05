@@ -72,11 +72,11 @@ export default function TransferDisplayNameEditor({
         disabled={disabled}
         sx={{ whiteSpace: 'nowrap' }}
       >
-        表示名の編集
+        表示名編集
       </Button>
 
       <Dialog open={open} onClose={closeDialog} maxWidth="md" fullWidth>
-        <DialogTitle>表示名の編集</DialogTitle>
+        <DialogTitle>表示名編集</DialogTitle>
         <DialogContent dividers>
           <FamilyMappingFields
             record={record}
