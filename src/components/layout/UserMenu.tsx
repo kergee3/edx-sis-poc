@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Avatar, Button, Divider, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import SettingsIcon from '@mui/icons-material/Settings';
 import InfoIcon from '@mui/icons-material/Info';
 import HistoryIcon from '@mui/icons-material/History';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -91,12 +90,6 @@ export default function UserMenu({ user, variant = 'default' }: UserMenuProps) {
       >
         {user ? (
           [
-            <MenuItem key="settings" component={Link} href="/settings" onClick={handleClose}>
-              <ListItemIcon>
-                <SettingsIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>設定</ListItemText>
-            </MenuItem>,
             <MenuItem key="about" component={Link} href="/about" onClick={handleClose}>
               <ListItemIcon>
                 <InfoIcon fontSize="small" />
