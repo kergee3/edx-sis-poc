@@ -158,7 +158,7 @@ export default function FamilyMappingFields({
 
             {/* 「対応付け候補」〜「確定する字」はインデントせずカード左端に左寄せ */}
             {c.kind === 'needs_choice' && (
-              <Box sx={{ mt: 1.5 }}>
+              <Box sx={{ mt: 0.5 }}>
                 <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 0.5 }}>
                   対応付け候補
                 </Typography>
@@ -167,7 +167,7 @@ export default function FamilyMappingFields({
                     候補がありません。下の欄に手入力してください。
                   </Typography>
                 ) : (
-                  <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap sx={{ mb: 1 }}>
+                  <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap sx={{ mb: 2.5 }}>
                     {c.candidates.map((cand, ci) => {
                       const selected = (selections[i] ?? '') === cand.char && cand.char !== '';
                       return (
