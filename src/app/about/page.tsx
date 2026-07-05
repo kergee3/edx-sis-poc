@@ -93,6 +93,17 @@ export default function AboutPage() {
             （生徒定員 25 名・各学年 4 名で初期 12 名が在籍）。氏名に現れる、
             JIS X 0213 外の文字情報基盤の文字も正しく表示するのが眼目です。
           </Typography>
+          <Typography variant="body2" color="text.secondary">
+            ソースコードは{' '}
+            <Link
+              href="https://github.com/kergee3/edx-sis-poc"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              github.com/kergee3/edx-sis-poc
+            </Link>
+            {' '}で公開しています。
+          </Typography>
         </Box>
 
         <Divider sx={{ my: 3 }} />
