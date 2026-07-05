@@ -125,20 +125,21 @@ export default function FamilyMappingFields({
 
       {/* 氏（姓）の字ごとのマッピング */}
       <Typography variant="subtitle1" sx={{ mb: 1 }}>
-        正式氏名（姓）の各字を JIS X 0213 へ対応付け
+        正式氏名(姓)を JIS X 0213 へ対応付け
       </Typography>
       <Stack spacing={1.5} sx={{ mb: 2 }}>
         {record.familyMapping.chars.map((c, i) => (
           <Paper key={i} variant="outlined" sx={{ p: 1.5 }}>
-            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, flexWrap: 'wrap' }}>
+            {/* xs でもチップ＋コードが原字の右に並ぶよう nowrap（右カラムは縮んでよい） */}
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, flexWrap: 'nowrap' }}>
               {/* 原字（MJ）の字形 */}
-              <Box sx={{ minWidth: 56, textAlign: 'center' }}>
+              <Box sx={{ flexShrink: 0, minWidth: 56, textAlign: 'center' }}>
                 <Typography sx={{ fontFamily: FONT_MJ, fontSize: '2rem', lineHeight: 1.1 }}>
                   {c.raw}
                 </Typography>
               </Box>
 
-              <Box sx={{ flex: 1, minWidth: 240 }}>
+              <Box sx={{ flex: 1, minWidth: 0 }}>
                 {/* 分類ラベル（塗りつぶしの丸枠チップ）＋ 原字のコード */}
                 <Chip
                   size="small"
