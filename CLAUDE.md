@@ -68,7 +68,7 @@ server/db (schema、migrations、client)
 - **middleware** (`middleware.ts`) はログイン要否の判定のみ。リソース単位の認可は service / Server Action 側で
 - UI 層から Drizzle や SaaS の SDK を直接呼ばない
 
-現在の `src/features/`: `auth` / `login-history` / `bug-report` / `home`（ログイン中の校長氏名・学校名・在籍数を差し込む案内表示）/ `students`（名簿・転入転出・編集・在学証明書発行・表示名マッピング・OneRoster 出力）。
+現在の `src/features/`: `auth` / `login-history` / `bug-report` / `home`（ログイン中の校長氏名・学校名・在籍数を差し込む案内表示）/ `students`（名簿・転入転出・編集・在学証明書発行・表示名マッピング・OneRoster 出力）/ `settings`（学校情報・名簿の初期化・表示名編集の JIS X 0213 対応付け候補の生成元・表示名のフォント・Navigation Bar の位置）。
 
 ### 認証プロバイダ（Google / LINE）
 
@@ -91,6 +91,12 @@ server/db (schema、migrations、client)
   - スクショ送信は best-effort で、[BugReportDialog](src/components/layout/BugReportDialog.tsx) で `AbortController` により 15 秒で打ち切りテキストのみ起票にフォールバックする。`@vercel/blob` は失敗時に既定 10 回リトライ（≈17分）するため。`AbortSignal.timeout()` は `TimeoutError` を投げ SDK にリトライ継続されるので不可、`controller.abort()`（`AbortError`）でないと止まらない
 - 実処理は [src/server/services/bug-report.ts](src/server/services/bug-report.ts) → [src/server/adapters/github/issues.ts](src/server/adapters/github/issues.ts)（GitHub REST `POST /issues` の薄いラッパ）。`env.GITHUB_TOKEN` / `env.GITHUB_REPO`（`"owner/name"`）が必要で、未設定なら service が throw → action が `github_failed` を返す（アプリは落ちない）。ラベル `bug` / `enhancement` / `user-report` は**リポジトリに事前作成が必要**（GitHub API は未存在ラベルを自動作成しない）
 
+### 表示名編集の JIS X 0213 対応付け候補（ローカル / Web API 切り替え）
+
+- 生徒詳細・転入の表示名編集（[FamilyMappingFields](src/features/students/components/FamilyMappingFields.tsx)）が使う対応付け候補は、[src/server/services/mji-mapping.ts](src/server/services/mji-mapping.ts) の `mapSurnameWithSource(input, source)` が生成元を切り替える。`mapSurname()`（ローカルの MJ 縮退マップ、DB 照合で複数候補）と `mapSurnameViaApi()`（[maji.shumi.dev の MJ→JIS 変換 Web API](https://maji.shumi.dev/mj2jis-api) を [src/server/adapters/mj2jis/client.ts](src/server/adapters/mj2jis/client.ts) 経由で叩き、1 字につき候補 0〜1 件に一意解決）の 2 系統
+- 生成元は `user_preferences.mj_mapping_source`（`'local' | 'api'`、既定 `'api'`）で、設定ページの [MjMappingSourceSetting](src/features/settings/components/MjMappingSourceSetting.tsx) から切り替える。取得は `getMjMappingSourceForUser()`（[user-preferences.ts](src/server/services/user-preferences.ts)）
+- API 呼び出しが失敗（タイムアウト 5 秒・通信断等）した場合は `mapSurnameWithSource` が例外を握りつぶしローカルへ自動フォールバックする（表示名編集自体を止めないための best-effort 方針。[バグ報告](#バグ報告-スクショ--github-issue-自動起票) の best-effort パターンと同じ考え方）
+
 ### ユーザ設定（user_preferences）とキャッシュ戦略
 
 - サーバ側に永続化する設定は `user_preferences` テーブル（[src/server/db/turso/schema/user-preferences.ts](src/server/db/turso/schema/user-preferences.ts)）に列を足し、`server/services/user-preferences.ts` / `server/repositories/user-preferences.ts` を経由する
@@ -108,7 +114,7 @@ server/db (schema、migrations、client)
 ## ナビゲーションの追加
 
 - 左メニュー/ボトムナビに項目を追加するときは [src/app/ClientLayout.tsx](src/app/ClientLayout.tsx) の `navigationItems` 配列にエントリを足す。ログイン必須なら `requiresAuth: true`。配列はハードコードで、他に登録場所はない
-- 現在のエントリ: ホーム(`/home`, 公開) / 生徒一覧(`/students`, `requiresAuth: true`)
+- 現在のエントリ: ホーム(`/home`, 公開) / 生徒一覧(`/students`, `requiresAuth: true`) / 設定(`/settings`, `requiresAuth: true`)
 
 ## IPAmjexMincho Web フォント（外部配信を利用）
 

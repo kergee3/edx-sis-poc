@@ -21,6 +21,7 @@ import {
   Info as InfoIcon,
   Home as HomeIcon,
   PeopleAlt as PeopleAltIcon,
+  Settings as SettingsIcon,
 } from '@mui/icons-material';
 import AppFooter from '@/components/layout/AppFooter';
 
@@ -30,8 +31,9 @@ const techStack = [
     items: ['Next.js', 'React', 'TypeScript', 'Material-UI'],
   },
   { title: 'データベース', items: ['Drizzle ORM', 'Turso / SQLite'] },
-  { title: '認証', items: ['Auth.js', 'Google', 'LINE'] },
+  { title: '認証', items: ['Auth.js', 'Google', 'LINE', 'ゲストログイン'] },
   { title: 'Web フォント', items: ['IPAmjexMincho', 'Noto Sans JP', 'Noto Serif JP'] },
+  { title: '外部 API', items: ['maji.shumi.dev（MJ→JIS変換）', 'GitHub Issues（バグ報告）'] },
   { title: 'インフラ', items: ['Vercel'] },
 ] as const;
 
@@ -129,6 +131,15 @@ export default function AboutPage() {
               <ListItemText
                 primary="生徒一覧"
                 secondary="生徒名簿の表示・管理（転入・転出・編集）、在学証明書の発行、表示名（姓）の JIS X 0213 マッピング、OneRoster 出力。氏名は IPAmjexMincho で表示します。"
+              />
+            </ListItem>
+            <ListItem alignItems="flex-start">
+              <ListItemIcon>
+                <SettingsIcon color="primary" />
+              </ListItemIcon>
+              <ListItemText
+                primary="設定"
+                secondary="学校情報、名簿の初期化、表示名編集の JIS X 0213 対応付け候補の生成元（ローカルの MJ 縮退マップ／外部 Web API から選択）、表示名のフォント、Navigation Bar の位置を設定します。"
               />
             </ListItem>
           </List>
