@@ -85,7 +85,7 @@ export default function AboutPage() {
           </Typography>
           <Typography variant="body1" color="text.secondary" paragraph>
             SIS-PoC（Student Information System - Proof of Concept）は、
-            <Link href="https://ipamjexmincho.shumy.app/" target="_blank" rel="noopener noreferrer">
+            <Link href="https://ipamjexmincho.shumi.dev/" target="_blank" rel="noopener noreferrer">
               IPAmjexMincho Web フォント
             </Link>
             を活かした校務支援システムの実証実験（PoC）です。小さな離島の小さな中学校を舞台に、

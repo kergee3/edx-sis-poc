@@ -11,7 +11,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - 基盤: 認証（Google / LINE, Auth.js v5）、ログイン履歴（サーバ＋クライアント）、右上ユーザーメニュー（ログアウト / About / ログイン履歴）、Turso(SQLite) への一本化、MUI Theme。
   - 機能: `home`＝ログイン中の校長氏名・学校名・在籍数を差し込む案内表示 / `students`＝生徒一覧（名簿の転入/転出/編集・在学証明書発行・表示名（姓）の JIS X 0213 マッピング・OneRoster 出力）。データ連携（学齢簿マッピング・OneRoster 出力）は当初 `interop` ページで試作したが `students` へ統合済み。業務ドメインの設計は [docs/design/](docs/design/) を参照。
 
-氏名表示に使う **IPAmjexMincho Web フォント**（IPAmj明朝 + IPAex明朝 を合成した 256 サブセット WOFF2）は、**外部に配信されているもの（[ipamjexmincho.shumy.app](https://ipamjexmincho.shumy.app)）を利用する**。フォントの合成・配信ツール自体は本リポジトリには含まない。アプリ側の利用箇所は [src/theme/fonts.ts](src/theme/fonts.ts) / [src/app/layout.tsx](src/app/layout.tsx)。
+氏名表示に使う **IPAmjexMincho Web フォント**（IPAmj明朝 + IPAex明朝 を合成した 256 サブセット WOFF2）は、**外部に配信されているもの（[ipamjexmincho.shumi.dev](https://ipamjexmincho.shumi.dev)）を利用する**。フォントの合成・配信ツール自体は本リポジトリには含まない。アプリ側の利用箇所は [src/theme/fonts.ts](src/theme/fonts.ts) / [src/app/layout.tsx](src/app/layout.tsx)。
 
 Node 22 LTS、npm。
 
@@ -111,7 +111,7 @@ server/db (schema、migrations、client)
 
 ## IPAmjexMincho Web フォント（外部配信を利用）
 
-氏名表示に使う IPAmjexMincho Web フォントは **外部に配信されているもの（[ipamjexmincho.shumy.app](https://ipamjexmincho.shumy.app)）を参照する**。フォントの合成・配信ツールは本リポジトリには含まない。
+氏名表示に使う IPAmjexMincho Web フォントは **外部に配信されているもの（[ipamjexmincho.shumi.dev](https://ipamjexmincho.shumi.dev)）を参照する**。フォントの合成・配信ツールは本リポジトリには含まない。
 
 - 配信元 URL は [src/theme/fonts.ts](src/theme/fonts.ts) の `IPAMJEX_FONT_CSS_URL` / `IPAMJEX_FONT_ORIGIN` で定義（環境変数 `IPAMJEX_FONT_CSS_URL` で上書き可）。[src/app/layout.tsx](src/app/layout.tsx) が `<link rel="preconnect">` と CSS の `<link>` を出力する
 - 適用は正式氏名（MJ特有文字を含みうる）の表示に限定（`FONT_MJ`）。アプリ全体のフォントには当てない

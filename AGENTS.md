@@ -10,7 +10,7 @@
 - 想定シナリオは、小さな離島の小さな中学校です。ログインした校長先生が、全校生徒の先生と事務を兼ねて校務を行います。生徒定員は 25 名、各学年 4 名で初期 12 名在籍という前提です。
 - 氏名の MJ 特有文字、たとえば戸籍漢字などを IPAmjexMincho で正しく表示することが眼目です。
 
-氏名表示に使う `IPAmjexMincho` Web フォント（IPAmj明朝 + IPAex明朝 を合成した 256 サブセット WOFF2）は、外部に配信されているもの（`https://ipamjexmincho.shumy.app`）を利用します。フォントの合成・配信ツール自体はこのリポジトリには含みません。アプリ側の利用箇所は `src/theme/fonts.ts` / `src/app/layout.tsx` です。
+氏名表示に使う `IPAmjexMincho` Web フォント（IPAmj明朝 + IPAex明朝 を合成した 256 サブセット WOFF2）は、外部に配信されているもの（`https://ipamjexmincho.shumi.dev`）を利用します。フォントの合成・配信ツール自体はこのリポジトリには含みません。アプリ側の利用箇所は `src/theme/fonts.ts` / `src/app/layout.tsx` です。
 
 主な機能は次の通りです。
 
@@ -222,7 +222,7 @@ Auth.js v5 + DrizzleAdapter で Google と LINE の 2 プロバイダを `provid
 
 ## IPAmjexMincho Web フォント（外部配信を利用）
 
-氏名表示に使う IPAmjexMincho Web フォントは、外部に配信されているもの（`https://ipamjexmincho.shumy.app`）を参照します。フォントの合成・配信ツールはこのリポジトリには含みません。
+氏名表示に使う IPAmjexMincho Web フォントは、外部に配信されているもの（`https://ipamjexmincho.shumi.dev`）を参照します。フォントの合成・配信ツールはこのリポジトリには含みません。
 
 - 配信元 URL は `src/theme/fonts.ts` の `IPAMJEX_FONT_CSS_URL` / `IPAMJEX_FONT_ORIGIN` で定義（環境変数 `IPAMJEX_FONT_CSS_URL` で上書き可）。`src/app/layout.tsx` が preconnect と CSS の `<link>` を出力する。
 - 適用は正式氏名（MJ 特有文字を含みうる）の表示に限定する（`FONT_MJ`）。アプリ全体のフォントには当てない。

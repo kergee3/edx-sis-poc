@@ -45,7 +45,7 @@ export default async function StudentsPage() {
               <Typography component="li" variant="body2" color="text.secondary">
                 正式苗字は{' '}
                 <Link
-                  href="https://ipamjexmincho.shumy.app/"
+                  href="https://ipamjexmincho.shumi.dev/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

@@ -31,7 +31,7 @@ export function displayFontFamily(font: DisplayFont): string {
 
 /** IPAmjexMincho Web フォントの CSS（256 サブセット定義）の配信元。 */
 export const IPAMJEX_FONT_CSS_URL =
-  process.env.IPAMJEX_FONT_CSS_URL ?? 'https://ipamjexmincho.shumy.app/IPAmjexMincho.css';
+  process.env.IPAMJEX_FONT_CSS_URL ?? 'https://ipamjexmincho.shumi.dev/IPAmjexMincho.css';
 
 /** フォント CDN のオリジン（preconnect 用）。 */
-export const IPAMJEX_FONT_ORIGIN = 'https://ipamjexmincho.shumy.app';
+export const IPAMJEX_FONT_ORIGIN = 'https://ipamjexmincho.shumi.dev';

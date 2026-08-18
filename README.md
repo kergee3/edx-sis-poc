@@ -2,7 +2,7 @@
 
 本リポジトリは **SIS-PoC(Student Information System - Proof of Concept)** アプリからなる。IPAmjexMincho Web フォントを活かした、**校務支援システム(Student Information System, SIS)の実証実験(PoC)**アプリ。Next.js 16 App Router + MUI v7。
 
-氏名表示に使う **IPAmjexMincho Web フォント**は、**外部に配信されているもの（[ipamjexmincho.shumy.app](https://ipamjexmincho.shumy.app)）を利用する**（フォントの合成・配信ツール自体は本リポジトリには含まない）。
+氏名表示に使う **IPAmjexMincho Web フォント**は、**外部に配信されているもの（[ipamjexmincho.shumi.dev](https://ipamjexmincho.shumi.dev)）を利用する**（フォントの合成・配信ツール自体は本リポジトリには含まない）。
 
 
 > 名称について: 本 PoC は校務のうち**児童生徒の情報管理に絞っている**ため、システムを **SIS (Student Information System)** と呼称している。なお政府標準仕様での「校務支援システム」の英語表記は **School affairs support system (SSS)** である（用語の詳細は [docs/design/README.md](docs/design/README.md) を参照）。
@@ -62,7 +62,7 @@ PoC の業務設計は、学齢簿〜校務支援システム〜学習eポータ
 
 ## IPAmjexMincho Web フォント（外部配信を利用）
 
-SIS-PoC の氏名表示は **IPAmjexMincho Web フォント**を利用する。IPAmj明朝 + IPAex明朝 を合成し 256 サブセットの WOFF2 として配信した Web フォントで、**外部（[ipamjexmincho.shumy.app](https://ipamjexmincho.shumy.app)）で配信されているものを参照する**（本リポジトリにはフォントの合成・配信ツールは含まない）。
+SIS-PoC の氏名表示は **IPAmjexMincho Web フォント**を利用する。IPAmj明朝 + IPAex明朝 を合成し 256 サブセットの WOFF2 として配信した Web フォントで、**外部（[ipamjexmincho.shumi.dev](https://ipamjexmincho.shumi.dev)）で配信されているものを参照する**（本リポジトリにはフォントの合成・配信ツールは含まない）。
 
 アプリ側は [src/theme/fonts.ts](src/theme/fonts.ts) で配信元 URL を定義し、[src/app/layout.tsx](src/app/layout.tsx) の `<link>` で CSS（`unicode-range` による遅延配信）を読み込み、正式氏名（MJ特有文字を含みうる）の表示に適用している。
 
