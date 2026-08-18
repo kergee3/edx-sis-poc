@@ -15,6 +15,11 @@ export default function SignInButton({ direction = 'column' }: SignInButtonProps
         useFlexGap
         sx={{ alignItems: 'flex-start', flexWrap: 'wrap' }}
       >
+        <form action={signInAsGuestAction}>
+          <Button type="submit" variant="outlined" sx={{ textTransform: 'none' }}>
+            ゲストとして始める
+          </Button>
+        </form>
         <form action={signInWithGoogle}>
           <Button
             type="submit"
@@ -37,11 +42,6 @@ export default function SignInButton({ direction = 'column' }: SignInButtonProps
             }}
           >
             LINE でログイン
-          </Button>
-        </form>
-        <form action={signInAsGuestAction}>
-          <Button type="submit" variant="outlined" sx={{ textTransform: 'none' }}>
-            ゲストとして始める
           </Button>
         </form>
       </Stack>
