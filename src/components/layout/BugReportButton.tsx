@@ -51,7 +51,7 @@ export default function BugReportButton({ user }: BugReportButtonProps) {
     return () => releasePreview();
   }, []);
 
-  if (!user) return null;
+  if (!user || user.isGuest) return null;
 
   const handleClick = async () => {
     if (capturing || open) return;
