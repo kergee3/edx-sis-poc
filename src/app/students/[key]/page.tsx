@@ -17,7 +17,7 @@ import {
 } from '@/features/students/services/student-key';
 import { listRosterForUser } from '@/server/services/students';
 import { buildMappingRecordFromRoster } from '@/server/services/gakureibo-import';
-import { getSchoolProfileForUser } from '@/server/services/user-preferences';
+import { getSchoolProfileForUser, getMjMappingSourceForUser } from '@/server/services/user-preferences';
 import { auth } from '@/server/auth/config';
 
 export default async function StudentDetailPage({
@@ -66,7 +66,9 @@ export default async function StudentDetailPage({
   const view = toDetailView(entry);
 
   // 表示名（姓）編集ダイアログ用に、正式氏名 → JIS X 0213 の写像を組み立てる。
-  const mappingRecord = await buildMappingRecordFromRoster(entry);
+  // 候補の生成元（ローカル / Web API）は設定ページで選べる。
+  const mjMappingSource = await getMjMappingSourceForUser(session.user.id);
+  const mappingRecord = await buildMappingRecordFromRoster(entry, mjMappingSource);
 
   // 在学証明書には学校プロフィール（学校名・住所・校長氏名）と発行日（本日）を合成する。
   const school = await getSchoolProfileForUser(session.user.id, session.user.name ?? null);

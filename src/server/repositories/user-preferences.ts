@@ -60,3 +60,18 @@ export async function seedPreferencesIfAbsent(
     .values({ userId, ...profile, createdAt: now, updatedAt: now })
     .onConflictDoNothing({ target: userPreferences.userId });
 }
+
+/**
+ * 表示名編集の JIS X 0213 対応付け候補の生成元 (mjMappingSource) を upsert する。
+ * 行が無ければこの列だけを持つ行を作成する（他列は null のまま。service 層が既定値で補う）。
+ */
+export async function upsertMjMappingSource(userId: string, source: string): Promise<void> {
+  const now = new Date();
+  await getTursoDb()
+    .insert(userPreferences)
+    .values({ userId, mjMappingSource: source, createdAt: now, updatedAt: now })
+    .onConflictDoUpdate({
+      target: userPreferences.userId,
+      set: { mjMappingSource: source, updatedAt: now },
+    });
+}

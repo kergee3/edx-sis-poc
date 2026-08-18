@@ -3,6 +3,7 @@ import {
   findPreferencesByUserId,
   seedPreferencesIfAbsent,
   upsertSchoolProfile,
+  upsertMjMappingSource,
   type SchoolProfileColumns,
 } from '@/server/repositories/user-preferences';
 
@@ -83,4 +84,26 @@ export async function updateSchoolProfileForUser(
   profile: SchoolProfile,
 ): Promise<void> {
   await upsertSchoolProfile(userId, profile);
+}
+
+/** 表示名編集の JIS X 0213 対応付け候補の生成元。既定は maji.shumi.dev の Web API。 */
+export type MjMappingSource = 'local' | 'api';
+export const DEFAULT_MJ_MAPPING_SOURCE: MjMappingSource = 'api';
+
+/**
+ * そのユーザ（校長）の対応付け候補の生成元設定を取得する。未設定・不正値は既定値（'api'）。
+ * DB 列の値を 'local' / 'api' どちらでも明示的に尊重し、それ以外（null 等）だけ既定値にする。
+ */
+export async function getMjMappingSourceForUser(userId: string): Promise<MjMappingSource> {
+  const existing = await findPreferencesByUserId(userId);
+  const value = existing?.mjMappingSource;
+  return value === 'local' || value === 'api' ? value : DEFAULT_MJ_MAPPING_SOURCE;
+}
+
+/** 対応付け候補の生成元設定を保存する。 */
+export async function updateMjMappingSourceForUser(
+  userId: string,
+  source: MjMappingSource,
+): Promise<void> {
+  await upsertMjMappingSource(userId, source);
 }

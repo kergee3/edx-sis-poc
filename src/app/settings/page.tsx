@@ -13,14 +13,21 @@ import SchoolProfileForm from '@/features/settings/components/SchoolProfileForm'
 import DefaultRosterSetting from '@/features/settings/components/DefaultRosterSetting';
 import DisplayFontSetting from '@/features/settings/components/DisplayFontSetting';
 import NavigationPositionSetting from '@/features/settings/components/NavigationPositionSetting';
+import MjMappingSourceSetting from '@/features/settings/components/MjMappingSourceSetting';
 import { auth } from '@/server/auth/config';
-import { getSchoolProfileForUser } from '@/server/services/user-preferences';
+import {
+  getSchoolProfileForUser,
+  getMjMappingSourceForUser,
+} from '@/server/services/user-preferences';
 import { listRosterSheetNames } from '@/server/services/roster-master';
 
 export default async function SettingsPage() {
   const session = await auth();
   const profile = session?.user?.id
     ? await getSchoolProfileForUser(session.user.id, session.user.name ?? null)
+    : null;
+  const mjMappingSource = session?.user?.id
+    ? await getMjMappingSourceForUser(session.user.id)
     : null;
 
   // 名簿初期化のシート選択肢（先頭が既定）。読み込みに失敗しても設定ページは表示する。
@@ -71,6 +78,13 @@ export default async function SettingsPage() {
           <>
             <Divider sx={{ my: 3 }} />
             <DefaultRosterSetting sheetNames={rosterSheetNames} />
+          </>
+        )}
+
+        {mjMappingSource && (
+          <>
+            <Divider sx={{ my: 3 }} />
+            <MjMappingSourceSetting initial={mjMappingSource} />
           </>
         )}
 

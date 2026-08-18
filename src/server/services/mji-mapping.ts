@@ -6,6 +6,9 @@ import {
   findX0213VariantsByShrinkTarget,
 } from '@/server/repositories/mji';
 import type { MjiCharacterRow } from '@/server/db/turso/schema/mji';
+import { fetchMj2Jis, type Mj2JisApiResult } from '@/server/adapters/mj2jis/client';
+import { logger } from '@/lib/logging';
+import type { MjMappingSource } from './user-preferences';
 
 /**
  * 苗字（MJ文字・IVS付き）を JIS X 0213 へ写像する処理。
@@ -109,7 +112,8 @@ export type X0213Via =
   | 'kokuji582' // 縮退マップ: 法務省告示582号別表第四
   | 'dict' // 縮退マップ: 辞書類等による関連字
   | 'reading_shape' // 縮退マップ: 読み・字形による類推
-  | 'rep_variant'; // 代表字の異体字（代表字に縮退してくる 0213 の文字。縮退マップ逆引き）
+  | 'rep_variant' // 代表字の異体字（代表字に縮退してくる 0213 の文字。縮退マップ逆引き）
+  | 'api'; // maji.shumi.dev の MJ→JIS 変換 Web API による解決
 
 export interface X0213Candidate {
   /** 表示・保存に使う字（同符号位置の IVS 異体字は IVS 字形、その他は基底 JIS 字）。 */
@@ -297,7 +301,7 @@ export interface SurnameMapping {
   needsChoiceCount: number;
 }
 
-/** 苗字（IVS 付き MJ文字列）を字ごとに JIS X 0213 へ写像する。 */
+/** 苗字（IVS 付き MJ文字列）を字ごとに JIS X 0213 へ写像する（ローカルの MJ 縮退マップ）。 */
 export async function mapSurname(input: string): Promise<SurnameMapping> {
   const chars = await Promise.all(segment(input).map(mapGrapheme));
   return {
@@ -307,4 +311,94 @@ export async function mapSurname(input: string): Promise<SurnameMapping> {
     hasNonKanji: chars.some((c) => c.kind === 'non_kanji'),
     needsChoiceCount: chars.filter((c) => c.kind === 'needs_choice').length,
   };
+}
+
+/**
+ * 1 書記素分の mj2jis API 結果を CharMapping へ変換する。
+ * 入力に IVS が無く、かつ API の解決先が入力の符号位置そのものなら「そのまま採用可」
+ * （in_x0213）とし、それ以外（IVS 付き／代表字・異体字へ寄せられた／未解決）は
+ * 候補 0〜1 件の要選択（needs_choice）とする。
+ */
+function apiResultToCharMapping(g: Grapheme, result: Mj2JisApiResult): CharMapping {
+  const source = { mjId: result.mjCode ?? '', ucs: result.mjUcs ?? '' };
+  const resolvedUcs = result.representativeUcs ?? result.mjUcs;
+  const char = result.error ? '' : ucsToChar(resolvedUcs);
+
+  if (!result.jisX0213 || !char) {
+    return { kind: 'needs_choice', raw: g.raw, source, candidates: [] };
+  }
+
+  if (g.vs === undefined && resolvedUcs === ucsKey(g.base) && result.mjCode) {
+    return {
+      kind: 'in_x0213',
+      raw: g.raw,
+      mjId: result.mjCode,
+      ucs: resolvedUcs,
+      x0213: result.jisX0213,
+      level: result.mappingLevel,
+    };
+  }
+
+  const candidate: X0213Candidate = {
+    char,
+    ucs: resolvedUcs,
+    ivs: null,
+    x0213: result.jisX0213,
+    level: result.mappingLevel,
+    via: 'api',
+    isRepresentative: true,
+    mjId: result.mjCode ?? undefined,
+  };
+  return { kind: 'needs_choice', raw: g.raw, source, candidates: [candidate] };
+}
+
+/**
+ * 苗字を maji.shumi.dev の MJ→JIS 変換 Web API で字ごとに JIS X 0213 へ写像する。
+ * ローカルの縮退マップとは異なり 1 字につき候補は常に 0〜1 件（API が一意に解決するため）。
+ * 入力の符号位置がそのまま採用できる字は in_x0213、代表字・異体字へ寄せられた字や
+ * 未解決の字は needs_choice（候補 0〜1 件、未解決は手入力に委ねる）として返す。
+ * API は分割せず `char` パラメータへ姓全体を渡す（クラスタ単位で入力順のまま解決される
+ * 仕様のため、ローカルの segment() と 1:1 で対応する）。
+ */
+export async function mapSurnameViaApi(input: string): Promise<SurnameMapping> {
+  const graphemes = segment(input);
+  if (graphemes.length === 0) {
+    return { input, chars: [], allInX0213: false, hasNonKanji: false, needsChoiceCount: 0 };
+  }
+
+  const results = await fetchMj2Jis(graphemes.map((g) => g.raw).join(''));
+  if (results.length !== graphemes.length) {
+    throw new Error(`mj2jis API: 入力字数 (${graphemes.length}) と結果件数 (${results.length}) が不一致`);
+  }
+
+  const chars = graphemes.map((g, i) => apiResultToCharMapping(g, results[i]!));
+  return {
+    input,
+    chars,
+    allInX0213: chars.length > 0 && chars.every((c) => c.kind === 'in_x0213'),
+    hasNonKanji: false,
+    needsChoiceCount: chars.filter((c) => c.kind === 'needs_choice').length,
+  };
+}
+
+/**
+ * 設定（MjMappingSource）に応じて対応付け候補の生成元を切り替える薄いディスパッチャ。
+ * 'api' 選択時に Web API 呼び出しが失敗した場合（通信断・タイムアウト等）は、
+ * 表示名編集そのものを止めないようローカルの縮退マップへフォールバックする。
+ */
+export async function mapSurnameWithSource(
+  input: string,
+  source: MjMappingSource,
+): Promise<SurnameMapping> {
+  if (source !== 'api') return mapSurname(input);
+
+  try {
+    return await mapSurnameViaApi(input);
+  } catch (error) {
+    logger.error('mji_mapping.api_fallback_to_local', {
+      input,
+      error: error instanceof Error ? error.message : String(error),
+    });
+    return mapSurname(input);
+  }
 }

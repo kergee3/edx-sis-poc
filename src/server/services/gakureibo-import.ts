@@ -1,5 +1,6 @@
 import { type RosterEntry } from '@/server/repositories/students';
-import { mapSurname, type SurnameMapping } from './mji-mapping';
+import { mapSurnameWithSource, type SurnameMapping } from './mji-mapping';
+import type { MjMappingSource } from './user-preferences';
 
 /**
  * 学齢簿（PoC ではマスタ名簿 xlsx）由来の 1 レコードを、正式氏名(MJ)の「氏（姓）」を
@@ -29,7 +30,10 @@ export interface GakureiboRecord {
  * 生徒詳細ページ・転入で表示名（姓）の編集 UI（FamilyMappingFields）を表示するために使う。
  * 正式氏名は DB の値をそのまま使うので、applyMappedFamilyAction が同一行に一致・更新する。
  */
-export async function buildMappingRecordFromRoster(entry: RosterEntry): Promise<GakureiboRecord> {
+export async function buildMappingRecordFromRoster(
+  entry: RosterEntry,
+  mjMappingSource: MjMappingSource,
+): Promise<GakureiboRecord> {
   const { student, enrollment } = entry;
   return {
     index: 0,
@@ -40,7 +44,7 @@ export async function buildMappingRecordFromRoster(entry: RosterEntry): Promise<
     kanaFamily: student.kanaFamilyName,
     kanaGiven: student.kanaGivenName,
     sex: student.sex ?? '',
-    familyMapping: await mapSurname(student.officialFamilyName),
+    familyMapping: await mapSurnameWithSource(student.officialFamilyName, mjMappingSource),
     currentPreferredFamily: student.preferredFamilyName,
   };
 }

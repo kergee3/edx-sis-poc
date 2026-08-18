@@ -1,0 +1,1 @@
+ALTER TABLE `user_preferences` ADD `mj_mapping_source` text;
