@@ -13,6 +13,9 @@ export const users = sqliteTable('user', {
   email: text('email').unique(),
   emailVerified: integer('emailVerified', { mode: 'timestamp_ms' }),
   image: text('image'),
+  // ゲストログイン（Credentials プロバイダ）で作られたユーザかどうか。
+  // 現時点では削除・掃除処理はなく、将来のクリーンアップ用の判別フラグ。
+  isGuest: integer('is_guest', { mode: 'boolean' }).notNull().default(false),
 });
 
 export const accounts = sqliteTable(

@@ -8,7 +8,13 @@ import InfoIcon from '@mui/icons-material/Info';
 import HistoryIcon from '@mui/icons-material/History';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LoginIcon from '@mui/icons-material/Login';
-import { signInWithGoogle, signInWithLine, signOutAction } from '@/features/auth/actions';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import {
+  signInWithGoogle,
+  signInWithLine,
+  signInAsGuestAction,
+  signOutAction,
+} from '@/features/auth/actions';
 import type { SessionUserView } from '@/features/auth/types';
 
 interface UserMenuProps {
@@ -152,6 +158,18 @@ export default function UserMenu({ user, variant = 'default' }: UserMenuProps) {
                 <LoginIcon fontSize="small" />
               </ListItemIcon>
               <ListItemText>LINE でログイン</ListItemText>
+            </MenuItem>,
+            <MenuItem
+              key="login-guest"
+              onClick={() => {
+                handleClose();
+                void signInAsGuestAction();
+              }}
+            >
+              <ListItemIcon>
+                <PersonOutlineIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>ゲストとして始める</ListItemText>
             </MenuItem>,
           ]
         )}

@@ -12,6 +12,10 @@ export async function signInWithLine() {
   await signIn('line', { redirectTo: '/home' });
 }
 
+export async function signInAsGuestAction() {
+  await signIn('guest', { redirectTo: '/home' });
+}
+
 export async function signOutAction() {
   await signOut({ redirect: false });
   // signOut の redirectTo はソフトナビゲーションになり、RootLayout のキャッシュ

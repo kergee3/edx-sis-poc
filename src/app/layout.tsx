@@ -54,6 +54,7 @@ export default async function RootLayout({
         name: session.user.name ?? null,
         email: session.user.email ?? null,
         image: session.user.image ?? null,
+        isGuest: session.user.isGuest,
       }
     : null;
 

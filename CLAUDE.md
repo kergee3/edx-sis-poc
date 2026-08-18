@@ -75,6 +75,7 @@ server/db (schema、migrations、client)
 - Auth.js v5 + DrizzleAdapter で **Google と LINE** の 2 プロバイダを `providers` 配列にぶら下げている ([src/server/auth/config.ts](src/server/auth/config.ts))。同種の OAuth プロバイダを追加するときは、(1) この配列、(2) [src/lib/env/index.ts](src/lib/env/index.ts) の env スキーマ、(3) [src/features/auth/actions.ts](src/features/auth/actions.ts) の Server Action、(4) [src/features/auth/components/SignInButton.tsx](src/features/auth/components/SignInButton.tsx) と関連メニューのボタン、の 4 箇所を揃えて足す
 - **アカウントは provider ごとに別ユーザ扱い**（`allowDangerousEmailAccountLinking` は使わない）。`account` テーブルが `(provider, providerAccountId)` の複合主キーなので、同じ人が Google と LINE でログインすると別 `user` 行が作られる。これは仕様
 - LINE は **Email permission を申請しないと email を返さない**。`users.email` は nullable なので UI も null セーフに書く（[AccountPanel](src/features/auth/components/AccountPanel.tsx) 参照）
+- **ゲストログイン**は OAuth 系と同じ4箇所パターンではなく、Credentials プロバイダ（`id: 'guest'`）1本で完結する。`authorize()` が [src/server/repositories/users.ts](src/server/repositories/users.ts) の `insertGuestUser()` を直接呼んで `users` 行を払い出す（Credentials は OAuth と違いアダプタの `createUser` を自動実行しないため）。`users.isGuest` フラグで判別できるが、**現時点では削除・掃除処理は無い**（将来のクリーンアップ用に列だけ用意）。アカウント連携（ゲスト→Google/LINEへのデータ引き継ぎ）も未実装
 
 ### ログイン履歴のフロー（後続機能のリファレンス実装）
 

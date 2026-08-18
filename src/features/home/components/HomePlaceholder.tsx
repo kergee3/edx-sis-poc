@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Box, Link, Paper, Stack, Typography } from '@mui/material';
+import { Alert, Box, Link, Paper, Stack, Typography } from '@mui/material';
 import SailingIcon from '@mui/icons-material/Sailing';
 import SchoolIcon from '@mui/icons-material/School';
 import GroupsIcon from '@mui/icons-material/Groups';
@@ -9,8 +9,8 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import SignInButton from '@/features/auth/components/SignInButton';
 
 interface HomePlaceholderProps {
-  /** ログイン中ならアカウント情報、ゲスト（未ログイン）なら null。 */
-  account: { userName: string; schoolName: string; studentCount: number } | null;
+  /** ログイン中ならアカウント情報、未ログインなら null。 */
+  account: { userName: string; schoolName: string; studentCount: number; isGuest: boolean } | null;
 }
 
 /** 小さな中学校の生徒定員（各学年 4 名 × …ではなく PoC の上限）。 */
@@ -119,6 +119,13 @@ export default function HomePlaceholder({ account }: HomePlaceholderProps) {
             title={`${account.userName} さん、おかえりなさい`}
             subtitle={`南の海にある小さな島の ${account.schoolName} 校長`}
           />
+
+          {account.isGuest && (
+            <Alert severity="info">
+              ゲスト利用中です。データはこのブラウザだけに保存されます。ブラウザを変えたり Cookie
+              を消したりすると名簿は復元できません。
+            </Alert>
+          )}
 
           {/* 在籍状況を一目で。文章での「現在◯名／定員25名」はここに集約する。 */}
           <Stack direction="row" spacing={{ xs: 1, sm: 2 }}>

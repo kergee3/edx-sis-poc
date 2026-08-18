@@ -10,7 +10,12 @@ export default async function HomePage() {
   const session = await auth();
 
   // ログイン時のみ学校名と在籍数を取得して案内文に差し込む。
-  let account: { userName: string; schoolName: string; studentCount: number } | null = null;
+  let account: {
+    userName: string;
+    schoolName: string;
+    studentCount: number;
+    isGuest: boolean;
+  } | null = null;
   if (session?.user?.id) {
     const [roster, school] = await Promise.all([
       listRosterForUser(session.user.id),
@@ -21,6 +26,7 @@ export default async function HomePage() {
       userName: school.principalName || session.user.name || '校長先生',
       schoolName: school.schoolName,
       studentCount: roster.length,
+      isGuest: session.user.isGuest,
     };
   }
 
