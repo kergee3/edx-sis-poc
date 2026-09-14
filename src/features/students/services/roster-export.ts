@@ -4,10 +4,14 @@ import type { RosterEntry } from '@/server/repositories/students';
 /**
  * 名簿 xlsx の正式氏名セルに指定するフォント名。
  *
- * NOTE: アプリ画面では Web フォント "IPAmjexMincho"（[src/theme/fonts.ts](../../theme/fonts.ts)）を
+ * NOTE: アプリ画面では Web フォント "GyoseiHyojunMincho"（[src/theme/fonts.ts](../../theme/fonts.ts)）を
  * 使うが、xlsx に埋め込めるのは「閲覧端末にインストール済みのデスクトップフォント名」だけ。
  * 校務の現場で配布される MJ明朝のデスクトップフォント名は "IPAmj明朝" なので、
  * ファイル内のフォント指定にはこちら（ユーザ指定どおり）を用いる。
+ *
+ * NOTE: IPAmj明朝 が持つのは MJ 文字のみ。GyoseiHyojunMincho が追加でカバーする GJ 文字
+ * （Unicode 第16面私用領域の GJ暫定私用コード）は xlsx 側では字形が出ず、そもそも暫定符号を
+ * 合意組織間以外へ伝送しないことが求められている。GJ 文字は画面表示までの実験用と割り切る。
  */
 const FONT_MJ_DESKTOP = 'IPAmj明朝';
 

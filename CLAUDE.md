@@ -4,14 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## プロジェクト概要
 
-**edx-sis-poc** は「文字情報基盤(MJ)の漢字を Web フォントとして使う」実証から出発し、その応用として**校務支援システムの PoC** を作るプロジェクト。本体は `src/` の Web アプリ。
+**edx-sis-poc** は「行政事務標準文字（文字情報基盤 MJ + GJ）の漢字を Web フォントとして使う」実証から出発し、その応用として**校務支援システムの PoC** を作るプロジェクト。本体は `src/` の Web アプリ。
 
-- **`src/`（Web アプリ）= SIS-PoC（Student Information System - Proof of Concept）** — IPAmjexMincho Web フォントを活かした**校務支援システムの実証実験**。Next.js 16 App Router + MUI v7。**認証・基盤に加え、ホームと生徒一覧（名簿・転入転出・編集・在学証明書・表示名マッピング・OneRoster 出力）まで、計画していた PoC の機能は一通り実装済み**。
-  - 想定シナリオ: 小さな離島の小さな中学校。ログインした校長先生がワンオペで全校生徒の先生＋事務を兼ねて校務を行う（生徒定員 25 名・各学年 4 名で初期 12 名在籍）。氏名の MJ特有文字（戸籍漢字等）を IPAmjexMincho で正しく表示するのが眼目。
+- **`src/`（Web アプリ）= SIS-PoC（Student Information System - Proof of Concept）** — GyoseiHyojunMincho Web フォントを活かした**校務支援システムの実証実験**。Next.js 16 App Router + MUI v7。**認証・基盤に加え、ホームと生徒一覧（名簿・転入転出・編集・在学証明書・表示名マッピング・OneRoster 出力）まで、計画していた PoC の機能は一通り実装済み**。
+  - 想定シナリオ: 小さな離島の小さな中学校。ログインした校長先生がワンオペで全校生徒の先生＋事務を兼ねて校務を行う（生徒定員 25 名・各学年 4 名で初期 12 名在籍）。氏名の MJ特有文字（戸籍漢字等）を GyoseiHyojunMincho で正しく表示するのが眼目。
   - 基盤: 認証（Google / LINE, Auth.js v5）、ログイン履歴（サーバ＋クライアント）、右上ユーザーメニュー（ログアウト / About / ログイン履歴）、Turso(SQLite) への一本化、MUI Theme。
   - 機能: `home`＝ログイン中の校長氏名・学校名・在籍数を差し込む案内表示 / `students`＝生徒一覧（名簿の転入/転出/編集・在学証明書発行・表示名（姓）の JIS X 0213 マッピング・OneRoster 出力）。データ連携（学齢簿マッピング・OneRoster 出力）は当初 `interop` ページで試作したが `students` へ統合済み。業務ドメインの設計は [docs/design/](docs/design/) を参照。
 
-氏名表示に使う **IPAmjexMincho Web フォント**（IPAmj明朝 + IPAex明朝 を合成した 256 サブセット WOFF2）は、**外部に配信されているもの（[ipamjexmincho.shumi.dev](https://ipamjexmincho.shumi.dev)）を利用する**。フォントの合成・配信ツール自体は本リポジトリには含まない。アプリ側の利用箇所は [src/theme/fonts.ts](src/theme/fonts.ts) / [src/app/layout.tsx](src/app/layout.tsx)。
+氏名表示に使う **GyoseiHyojunMincho Web フォント**（IPAmjexMincho の MJ 2048 スライス + GJ2608puaMinchoAddon の GJ 512 スライスを CSS 合成した計 2560 サブセット WOFF2）は、**外部に配信されているもの（[gyoseihyojun.shumi.dev](https://gyoseihyojun.shumi.dev)）を利用する**。フォントの合成・配信ツール自体は本リポジトリには含まない。アプリ側の利用箇所は [src/theme/fonts.ts](src/theme/fonts.ts) / [src/app/layout.tsx](src/app/layout.tsx)。
 
 Node 22 LTS、npm。
 
@@ -116,13 +116,15 @@ server/db (schema、migrations、client)
 - 左メニュー/ボトムナビに項目を追加するときは [src/app/ClientLayout.tsx](src/app/ClientLayout.tsx) の `navigationItems` 配列にエントリを足す。ログイン必須なら `requiresAuth: true`。配列はハードコードで、他に登録場所はない
 - 現在のエントリ: ホーム(`/home`, 公開) / 生徒一覧(`/students`, `requiresAuth: true`) / 設定(`/settings`, `requiresAuth: true`)
 
-## IPAmjexMincho Web フォント（外部配信を利用）
+## GyoseiHyojunMincho Web フォント（外部配信を利用）
 
-氏名表示に使う IPAmjexMincho Web フォントは **外部に配信されているもの（[ipamjexmincho.shumi.dev](https://ipamjexmincho.shumi.dev)）を参照する**。フォントの合成・配信ツールは本リポジトリには含まない。
+氏名表示に使う GyoseiHyojunMincho Web フォント（行政事務標準文字＝MJ+GJ、約 6.4 万字）は **外部に配信されているもの（[gyoseihyojun.shumi.dev](https://gyoseihyojun.shumi.dev)）を参照する**。フォントの合成・配信ツールは本リポジトリには含まない。
 
-- 配信元 URL は [src/theme/fonts.ts](src/theme/fonts.ts) の `IPAMJEX_FONT_CSS_URL` / `IPAMJEX_FONT_ORIGIN` で定義（環境変数 `IPAMJEX_FONT_CSS_URL` で上書き可）。[src/app/layout.tsx](src/app/layout.tsx) が `<link rel="preconnect">` と CSS の `<link>` を出力する
-- 適用は正式氏名（MJ特有文字を含みうる）の表示に限定（`FONT_MJ`）。アプリ全体のフォントには当てない
-- ライセンスは IPAフォントライセンス v1.0（派生名 IPAmjexMincho）
+- 配信元 URL は [src/theme/fonts.ts](src/theme/fonts.ts) の `GYOSEI_FONT_CSS_URL` / `GYOSEI_FONT_ORIGINS` で定義（環境変数 `GYOSEI_FONT_CSS_URL` で上書き可。env スキーマには載せず `process.env` 直読み）。[src/app/layout.tsx](src/app/layout.tsx) が `<link rel="preconnect">` と CSS の `<link>` を出力する
+- **preconnect は 3 オリジン**。CSS（`gyoseihyojun.shumi.dev`）が woff2 を**別オリジンの絶対 URL**で参照する（MJ=`ipamjexmincho.shumi.dev` / GJ=`gj2608pua.shumi.dev`）ため、CSS 自身のオリジンだけでは足りない。`GYOSEI_FONT_ORIGINS` を map して出す
+- 適用は正式氏名（MJ特有文字・GJ文字を含みうる）の表示に限定（`FONT_MJ`）。アプリ全体のフォントには当てない
+- ライセンスは MJ 部分が IPAフォントライセンス v1.0、GJ 部分が SIL Open Font License 1.1
+- **GJ 文字は暫定符号**（Unicode 第16面私用領域の GJ暫定私用コード、`U+100000`〜）。正式 UCS 符号位置ではなく、合意組織間以外への伝送は避けるべきものなので、**画面表示の実験に留める**。xlsx（デスクトップの IPAmj明朝に GJ 字形は無い）や OneRoster 出力には載せない
 
 ## 自明でない実装上の注意点（src）
 

@@ -45,13 +45,13 @@ export default async function StudentsPage() {
               <Typography component="li" variant="body2" color="text.secondary">
                 正式苗字は{' '}
                 <Link
-                  href="https://ipamjexmincho.shumi.dev/"
+                  href="https://gyoseihyojun.shumi.dev/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  IPAmjexMincho Web フォント
+                  GyoseiHyojunMincho Web フォント
                 </Link>
-                で表示しているため、JIS X 0213に含まれない文字情報基盤の文字も正しく表示されます。
+                で表示しているため、JIS X 0213に含まれない行政事務標準文字（文字情報基盤の MJ 文字と GJ 文字）も正しく表示されます。
               </Typography>
             </Box>
           </>

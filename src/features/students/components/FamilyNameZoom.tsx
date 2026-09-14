@@ -10,7 +10,7 @@ import { FONT_MJ } from '@/theme/fonts';
 interface FamilyNameZoomProps {
   /** トリガーに表示する内容（'←'・正式苗字・氏名の苗字部分など） */
   children: ReactNode;
-  /** 60px・IPAmjexMincho で拡大表示する正式苗字 */
+  /** 60px・GyoseiHyojunMincho で拡大表示する正式苗字 */
   familyName: string;
   /** トリガーのフォント（正式苗字セルは MJ、氏名セルは通常フォント） */
   fontFamily?: string;

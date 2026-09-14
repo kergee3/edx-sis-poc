@@ -79,7 +79,7 @@ function RubyName({
 
 /**
  * 生徒詳細（閲覧）。Drizzle 行ではなく StudentDetailView のみを受け取る。
- * 正式氏名は MJ特有文字を含みうるため IPAmjexMincho で大きく表示する。
+ * 正式氏名は MJ特有文字を含みうるため GyoseiHyojunMincho で大きく表示する。
  */
 export default function StudentDetail({ view }: StudentDetailProps) {
   return (

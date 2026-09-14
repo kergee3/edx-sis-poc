@@ -4,13 +4,13 @@
 
 ## プロジェクト概要
 
-`edx-sis-poc` は、「文字情報基盤 (MJ) の漢字を Web フォントとして使う」実証から出発し、その応用として校務支援システムの PoC を作るプロジェクトです。本体は `src/` の Web アプリです。
+`edx-sis-poc` は、「行政事務標準文字（文字情報基盤 MJ + GJ）の漢字を Web フォントとして使う」実証から出発し、その応用として校務支援システムの PoC を作るプロジェクトです。本体は `src/` の Web アプリです。
 
-- `src/`: SIS-PoC (Student Information System - Proof of Concept)。IPAmjexMincho Web フォントを活かした校務支援システムの実証実験です。Next.js 16 App Router、React 19、MUI v7 を使います。認証・基盤に加え、ホームと生徒一覧（名簿・転入転出・編集・在学証明書・表示名マッピング・OneRoster 出力）まで、計画していた PoC の機能は一通り実装済みです。
+- `src/`: SIS-PoC (Student Information System - Proof of Concept)。GyoseiHyojunMincho Web フォントを活かした校務支援システムの実証実験です。Next.js 16 App Router、React 19、MUI v7 を使います。認証・基盤に加え、ホームと生徒一覧（名簿・転入転出・編集・在学証明書・表示名マッピング・OneRoster 出力）まで、計画していた PoC の機能は一通り実装済みです。
 - 想定シナリオは、小さな離島の小さな中学校です。ログインした校長先生が、全校生徒の先生と事務を兼ねて校務を行います。生徒定員は 25 名、各学年 4 名で初期 12 名在籍という前提です。
-- 氏名の MJ 特有文字、たとえば戸籍漢字などを IPAmjexMincho で正しく表示することが眼目です。
+- 氏名の MJ 特有文字、たとえば戸籍漢字などを GyoseiHyojunMincho で正しく表示することが眼目です。GJ 文字（MJ に無い約 9,400 字）も同じフォントで表示できます。
 
-氏名表示に使う `IPAmjexMincho` Web フォント（IPAmj明朝 + IPAex明朝 を合成した 256 サブセット WOFF2）は、外部に配信されているもの（`https://ipamjexmincho.shumi.dev`）を利用します。フォントの合成・配信ツール自体はこのリポジトリには含みません。アプリ側の利用箇所は `src/theme/fonts.ts` / `src/app/layout.tsx` です。
+氏名表示に使う `GyoseiHyojunMincho` Web フォント（`IPAmjexMincho` の MJ 2048 スライス + `GJ2608puaMinchoAddon` の GJ 512 スライスを CSS 合成した計 2560 サブセット WOFF2）は、外部に配信されているもの（`https://gyoseihyojun.shumi.dev`）を利用します。フォントの合成・配信ツール自体はこのリポジトリには含みません。アプリ側の利用箇所は `src/theme/fonts.ts` / `src/app/layout.tsx` です。
 
 主な機能は次の通りです。
 
@@ -220,13 +220,15 @@ Auth.js v5 + DrizzleAdapter で Google と LINE の 2 プロバイダを `provid
 
 現在のエントリは、ホーム (`/home`, 公開)、生徒一覧 (`/students`, 認証必須) です。
 
-## IPAmjexMincho Web フォント（外部配信を利用）
+## GyoseiHyojunMincho Web フォント（外部配信を利用）
 
-氏名表示に使う IPAmjexMincho Web フォントは、外部に配信されているもの（`https://ipamjexmincho.shumi.dev`）を参照します。フォントの合成・配信ツールはこのリポジトリには含みません。
+氏名表示に使う GyoseiHyojunMincho Web フォント（行政事務標準文字＝MJ+GJ、約 6.4 万字）は、外部に配信されているもの（`https://gyoseihyojun.shumi.dev`）を参照します。フォントの合成・配信ツールはこのリポジトリには含みません。
 
-- 配信元 URL は `src/theme/fonts.ts` の `IPAMJEX_FONT_CSS_URL` / `IPAMJEX_FONT_ORIGIN` で定義（環境変数 `IPAMJEX_FONT_CSS_URL` で上書き可）。`src/app/layout.tsx` が preconnect と CSS の `<link>` を出力する。
-- 適用は正式氏名（MJ 特有文字を含みうる）の表示に限定する（`FONT_MJ`）。アプリ全体のフォントには当てない。
-- ライセンスは IPA フォントライセンス v1.0、派生名は `IPAmjexMincho`。
+- 配信元 URL は `src/theme/fonts.ts` の `GYOSEI_FONT_CSS_URL` / `GYOSEI_FONT_ORIGINS` で定義（環境変数 `GYOSEI_FONT_CSS_URL` で上書き可）。`src/app/layout.tsx` が preconnect と CSS の `<link>` を出力する。
+- preconnect は 3 オリジンです。CSS (`gyoseihyojun.shumi.dev`) が woff2 を別オリジンの絶対 URL で参照する（MJ は `ipamjexmincho.shumi.dev`、GJ は `gj2608pua.shumi.dev`）ため、CSS 自身のオリジンだけでは足りません。`GYOSEI_FONT_ORIGINS` を map して出します。
+- 適用は正式氏名（MJ 特有文字・GJ 文字を含みうる）の表示に限定する（`FONT_MJ`）。アプリ全体のフォントには当てない。
+- ライセンスは MJ 部分が IPA フォントライセンス v1.0、GJ 部分が SIL Open Font License 1.1 です。
+- GJ 文字は Unicode 第16面私用領域の GJ 暫定私用コード (`U+100000` 〜) による暫定符号です。正式な UCS 符号位置ではなく、合意組織間以外への伝送は避けるべきものなので、画面表示の実験に留めます。xlsx（デスクトップの IPAmj明朝に GJ 字形はありません）や OneRoster 出力には載せません。
 
 ## 変更してはいけないファイルや注意点
 
@@ -276,3 +278,13 @@ Auth.js v5 + DrizzleAdapter で Google と LINE の 2 プロバイダを `provid
 - 表示用データが ViewModel に整形され、DB 行をそのまま UI に漏らしていないこと
 - `.env.local` や生成物、不要なビルド成果物をコミット対象に含めていないこと
 - 既存の設計ドキュメントと矛盾する変更をした場合は、関連 docs も更新していること
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

@@ -4,7 +4,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Analytics } from '@vercel/analytics/next';
 import { theme } from '@/theme';
-import { IPAMJEX_FONT_CSS_URL, IPAMJEX_FONT_ORIGIN } from '@/theme/fonts';
+import { GYOSEI_FONT_CSS_URL, GYOSEI_FONT_ORIGINS } from '@/theme/fonts';
 import { auth } from '@/server/auth/config';
 import type { SessionUserView } from '@/features/auth/types';
 import "./globals.css";
@@ -13,8 +13,8 @@ import ClientLayout from './ClientLayout';
 export const metadata: Metadata = {
   title: "SIS-PoC",
   description:
-    "IPAmjexMincho Web フォントを活かした校務支援システムの実証実験 (SIS-PoC / Student Information System - Proof of Concept)",
-  keywords: ["SIS-PoC", "校務支援システム", "文字情報基盤", "IPAmjexMincho", "Webフォント"],
+    "GyoseiHyojunMincho Web フォントを活かした校務支援システムの実証実験 (SIS-PoC / Student Information System - Proof of Concept)",
+  keywords: ["SIS-PoC", "校務支援システム", "文字情報基盤", "GyoseiHyojunMincho", "行政事務標準文字", "Webフォント"],
   manifest: "/manifest.json",
   icons: {
     icon: [
@@ -61,9 +61,12 @@ export default async function RootLayout({
   return (
     <html lang="ja">
       <head>
-        {/* 氏名表示用の IPAmjexMincho Web フォント（CDN 配信の 256 サブセット CSS） */}
-        <link rel="preconnect" href={IPAMJEX_FONT_ORIGIN} crossOrigin="anonymous" />
-        <link rel="stylesheet" href={IPAMJEX_FONT_CSS_URL} />
+        {/* 氏名表示用の GyoseiHyojunMincho Web フォント（CDN 配信の 2560 サブセット CSS）。
+            CSS 自身と woff2 本体（MJ / GJ）でオリジンが分かれるため preconnect は複数出す。 */}
+        {GYOSEI_FONT_ORIGINS.map((origin) => (
+          <link key={origin} rel="preconnect" href={origin} crossOrigin="anonymous" />
+        ))}
+        <link rel="stylesheet" href={GYOSEI_FONT_CSS_URL} />
         {/* 表示名（JIS文字）用の Noto Web フォント（Google Fonts 配信）。
             ゴシック（Sans）／明朝（Serif）をユーザ設定で切り替えるため両方読み込む。 */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />

@@ -17,7 +17,7 @@ import { FONT_NOTO_SANS_JP, FONT_NOTO_SERIF_JP, type DisplayFont } from '@/theme
  * 表示名フォントの設定（localStorage 管理。ナビ位置と同系統で、学校情報の DB 保存とは別）。
  * 生徒一覧の「氏名」やデータ連携の表示名など、JIS 文字の表示名に使うフォントを
  * ゴシック（Noto Sans JP）／明朝（Noto Serif JP）から選ぶ。既定はゴシック。
- * 正式氏名（MJ特有文字）の IPAmjexMincho 表示には影響しない。
+ * 正式氏名（MJ特有文字）の GyoseiHyojunMincho 表示には影響しない。
  */
 export default function DisplayFontSetting() {
   const { displayFont, setDisplayFont } = useSettings();
@@ -36,7 +36,7 @@ export default function DisplayFontSetting() {
       </Box>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
         生徒一覧の「氏名」やデータ連携の表示名など、JIS 文字の表示名に使うフォントです。
-        正式苗字（IPAmjexMincho）の表示には影響しません。
+        正式苗字（GyoseiHyojunMincho）の表示には影響しません。
       </Typography>
       <FormControl component="fieldset">
         <FormLabel component="legend" sx={{ display: 'none' }}>

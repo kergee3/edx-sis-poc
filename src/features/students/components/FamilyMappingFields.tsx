@@ -178,7 +178,7 @@ export default function FamilyMappingFields({
                           variant={selected ? 'contained' : 'outlined'}
                           sx={{ flexDirection: 'column', textTransform: 'none', py: 0.5, minWidth: 76 }}
                         >
-                          {/* IVS 異体字も正しい字形で見せるため IPAmjexMincho で描画 */}
+                          {/* IVS 異体字も正しい字形で見せるため GyoseiHyojunMincho で描画 */}
                           <Box sx={{ fontFamily: FONT_MJ, fontSize: '1.6rem', lineHeight: 1.1 }}>
                             {cand.char || '□'}
                           </Box>

@@ -32,7 +32,10 @@ const techStack = [
   },
   { title: 'データベース', items: ['Drizzle ORM', 'Turso / SQLite'] },
   { title: '認証', items: ['Auth.js', 'Google', 'LINE', 'ゲストログイン'] },
-  { title: 'Web フォント', items: ['IPAmjexMincho', 'Noto Sans JP', 'Noto Serif JP'] },
+  {
+    title: 'Web フォント',
+    items: ['GyoseiHyojunMincho（MJ+GJ）', 'Noto Sans JP', 'Noto Serif JP'],
+  },
   { title: '外部 API', items: ['maji.shumi.dev（MJ→JIS変換）', 'GitHub Issues（バグ報告）'] },
   { title: 'インフラ', items: ['Vercel'] },
 ] as const;
@@ -87,13 +90,14 @@ export default function AboutPage() {
           </Typography>
           <Typography variant="body1" color="text.secondary" paragraph>
             SIS-PoC（Student Information System - Proof of Concept）は、
-            <Link href="https://ipamjexmincho.shumi.dev/" target="_blank" rel="noopener noreferrer">
-              IPAmjexMincho Web フォント
+            <Link href="https://gyoseihyojun.shumi.dev/" target="_blank" rel="noopener noreferrer">
+              GyoseiHyojunMincho Web フォント
             </Link>
             を活かした校務支援システムの実証実験（PoC）です。小さな離島の小さな中学校を舞台に、
             ログインした校長先生がワンオペで全校生徒の先生と事務を兼ねて校務を行います
             （生徒定員 25 名・各学年 4 名で初期 12 名が在籍）。氏名に現れる、
-            JIS X 0213 外の文字情報基盤の文字も正しく表示するのが眼目です。
+            JIS X 0213 外の行政事務標準文字（文字情報基盤の MJ 文字と GJ 文字）も
+            正しく表示するのが眼目です。
           </Typography>
           <Typography variant="body2" color="text.secondary">
             ソースコードは{' '}
@@ -130,7 +134,7 @@ export default function AboutPage() {
               </ListItemIcon>
               <ListItemText
                 primary="生徒一覧"
-                secondary="生徒名簿の表示・管理（転入・転出・編集）、在学証明書の発行、表示名（姓）の JIS X 0213 マッピング、OneRoster 出力。氏名は IPAmjexMincho で表示します。"
+                secondary="生徒名簿の表示・管理（転入・転出・編集）、在学証明書の発行、表示名（姓）の JIS X 0213 マッピング、OneRoster 出力。氏名は GyoseiHyojunMincho で表示します。"
               />
             </ListItem>
             <ListItem alignItems="flex-start">

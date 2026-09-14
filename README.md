@@ -1,8 +1,8 @@
 # SIS-PoC — Web Fontを活かした校務支援システム PoC
 
-本リポジトリは **SIS-PoC(Student Information System - Proof of Concept)** アプリからなる。IPAmjexMincho Web フォントを活かした、**校務支援システム(Student Information System, SIS)の実証実験(PoC)**アプリ。Next.js 16 App Router + MUI v7。
+本リポジトリは **SIS-PoC(Student Information System - Proof of Concept)** アプリからなる。GyoseiHyojunMincho Web フォントを活かした、**校務支援システム(Student Information System, SIS)の実証実験(PoC)**アプリ。Next.js 16 App Router + MUI v7。
 
-氏名表示に使う **IPAmjexMincho Web フォント**は、**外部に配信されているもの（[ipamjexmincho.shumi.dev](https://ipamjexmincho.shumi.dev)）を利用する**（フォントの合成・配信ツール自体は本リポジトリには含まない）。
+氏名表示に使う **GyoseiHyojunMincho Web フォント**（行政事務標準文字＝MJ+GJ をカバー）は、**外部に配信されているもの（[gyoseihyojun.shumi.dev](https://gyoseihyojun.shumi.dev)）を利用する**（フォントの合成・配信ツール自体は本リポジトリには含まない）。
 
 
 > 名称について: 本 PoC は校務のうち**児童生徒の情報管理に絞っている**ため、システムを **SIS (Student Information System)** と呼称している。なお政府標準仕様での「校務支援システム」の英語表記は **School affairs support system (SSS)** である（用語の詳細は [docs/design/README.md](docs/design/README.md) を参照）。
@@ -16,7 +16,7 @@
 **小さな離島にある小さな中学校**を舞台にした校務支援システムの PoC。ログインすると、あなたは**その中学校の校長先生**になる。校長は**ワンオペ**で全校生徒に対する「先生」と「事務」を兼ね、校務を行う。
 
 - 生徒定員: **25 名**（各学年 4 名・3 学年で初期 **12 名** が在籍）
-- IPAmjexMincho Web フォントにより、**氏名に含まれる MJ特有文字（戸籍漢字等）も正しく表示**される。これが本アプリでフォントを活かす中心的なポイント。
+- GyoseiHyojunMincho Web フォントにより、**氏名に含まれる MJ特有文字（戸籍漢字等）も正しく表示**される。これが本アプリでフォントを活かす中心的なポイント。GJ 文字（MJ に無い約 9,400 字）も同じフォントで表示できる。
 
 ### ナビゲーション
 
@@ -63,11 +63,15 @@ PoC の業務設計は、学齢簿〜校務支援システム〜学習eポータ
 
 ---
 
-## IPAmjexMincho Web フォント（外部配信を利用）
+## GyoseiHyojunMincho Web フォント（外部配信を利用）
 
-SIS-PoC の氏名表示は **IPAmjexMincho Web フォント**を利用する。IPAmj明朝 + IPAex明朝 を合成し 256 サブセットの WOFF2 として配信した Web フォントで、**外部（[ipamjexmincho.shumi.dev](https://ipamjexmincho.shumi.dev)）で配信されているものを参照する**（本リポジトリにはフォントの合成・配信ツールは含まない）。
+SIS-PoC の氏名表示は **GyoseiHyojunMincho Web フォント**を利用する。**行政事務標準文字（MJ+GJ、約 6.4 万字）**をカバーするため、IPAmjexMincho（MJ 部分・2048 スライス）と GJ2608puaMinchoAddon（GJ 部分・512 スライス）を CSS レベルで合成した計 2560 サブセットの Web フォントで、**外部（[gyoseihyojun.shumi.dev](https://gyoseihyojun.shumi.dev)）で配信されているものを参照する**（本リポジトリにはフォントの合成・配信ツールは含まない）。
 
-アプリ側は [src/theme/fonts.ts](src/theme/fonts.ts) で配信元 URL を定義し、[src/app/layout.tsx](src/app/layout.tsx) の `<link>` で CSS（`unicode-range` による遅延配信）を読み込み、正式氏名（MJ特有文字を含みうる）の表示に適用している。
+アプリ側は [src/theme/fonts.ts](src/theme/fonts.ts) で配信元 URL を定義し、[src/app/layout.tsx](src/app/layout.tsx) の `<link>` で CSS（`unicode-range` による遅延配信）を読み込み、正式氏名（MJ特有文字・GJ文字を含みうる）の表示に適用している。CSS と woff2 本体がオリジンを跨ぐため、preconnect は CSS 自身・MJ 側・GJ 側の 3 オリジンに出す。
+
+ライセンスは MJ 部分が IPAフォントライセンス v1.0、GJ 部分が SIL Open Font License 1.1。
+
+> **GJ 文字の注意**: GJ 文字は Unicode 第16面私用領域の **GJ暫定私用コード**による暫定的な符号位置で、正式な UCS 符号位置ではない（将来デジタル庁により確定した時点で置き換えが見込まれる）。テクニカルレポートは暫定符号を合意組織間以外へそのまま伝送しないよう求めているため、本 PoC では**画面表示の実験用途**と位置づける。xlsx / OneRoster などの出力に GJ 文字を載せない（デスクトップの IPAmj明朝にも GJ 字形は無い）。
 
 ---
 

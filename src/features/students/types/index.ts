@@ -35,9 +35,9 @@ export interface StudentDetailView {
   id: string;
 
   // 氏名 3 系統
-  /** 正式氏名 姓（MJ特有文字可。IPAmjexMincho で表示） */
+  /** 正式氏名 姓（MJ特有文字可。GyoseiHyojunMincho で表示） */
   officialFamilyName: string;
-  /** 正式氏名 名（MJ特有文字可。IPAmjexMincho で表示） */
+  /** 正式氏名 名（MJ特有文字可。GyoseiHyojunMincho で表示） */
   officialGivenName: string;
   /** 表示名 姓（JIS文字） */
   preferredFamilyName: string;
@@ -86,9 +86,9 @@ export interface StudentDetailView {
 export interface CertificateView {
   /** 証明書番号（例: '第 0042 号'。生徒 id から決定的に導出） */
   certificateNumber: string;
-  /** 正式氏名 姓（MJ特有文字可。IPAmjexMincho で表示） */
+  /** 正式氏名 姓（MJ特有文字可。GyoseiHyojunMincho で表示） */
   officialFamilyName: string;
-  /** 正式氏名 名（MJ特有文字可。IPAmjexMincho で表示） */
+  /** 正式氏名 名（MJ特有文字可。GyoseiHyojunMincho で表示） */
   officialGivenName: string;
   /** 生年月日（和暦整形済み） */
   birthDateWareki: string;

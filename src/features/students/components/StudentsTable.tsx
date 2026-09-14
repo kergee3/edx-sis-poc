@@ -243,7 +243,7 @@ export default function StudentsTable({ items }: StudentsTableProps) {
                     </Box>
                   </Box>
                 </TableCell>
-                {/* 正式苗字は MJ特有文字を含みうるため IPAmjexMincho で表示。preferred と同じなら ← */}
+                {/* 正式苗字は MJ特有文字を含みうるため GyoseiHyojunMincho で表示。preferred と同じなら ← */}
                 <TableCell
                   sx={{ px: CELL_PX, whiteSpace: 'nowrap', fontFamily: FONT_MJ, fontSize: '1.575rem' }}
                 >

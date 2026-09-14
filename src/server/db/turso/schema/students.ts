@@ -7,7 +7,7 @@ import { users } from './auth';
  * - per-user スコープ: `ownerUserId` でログインした校長 (users.id) ごとに名簿を分離する。
  *   users への FK は onDelete: cascade なので user 削除時に自動削除される（user-deletion.ts 改修不要）。
  * - 氏名は 3 系統に分離する（文字集合の用語は docs/design/koumu-eportal-student-data-model.md §5.0）:
- *     official_* = 正式氏名（漢字。MJ特有文字可。IPAmjexMincho で表示）
+ *     official_* = 正式氏名（漢字。MJ特有文字可。GyoseiHyojunMincho で表示）
  *     preferred_* = 表示名（JIS文字。連携・一般表示用）
  *     kana_*      = カナ（全角）
  * - 増分1では住所・外国人氏名・郵便番号など設計書 §3.1 の一部列は未実装（読取一覧に不要なため後続）。
