@@ -52,6 +52,8 @@ PoC の業務設計は、学齢簿〜校務支援システム〜学習eポータ
 - [学校受入に必要な最小限データ項目（入学・転入学）](docs/design/gakureibo-acceptance-data-items.md)
 - [校務支援システムと学習eポータルにおける児童生徒情報の持ち方](docs/design/koumu-eportal-student-data-model.md)
 - [児童生徒スキーマ設計（あるべき持ち方とステージ別データ充足）](docs/design/student-schema-design.md)
+- [MJ文字 → JIS X 0213 マッピング設計（氏名文字の正規化）](docs/design/mji-jisx0213-mapping-design.md) / [変換方針の調査レポート](docs/design/mj_to_jisx0213_conversion_report.md)
+- [OneRoster Japan Profile 出力（名簿 ZIP エクスポート）設計](docs/design/oneroster-export-design.md)
 
 > 一次資料（政府の標準仕様書 PDF/xlsx 等）への外部リンク集は [docs/design/external-references.md](docs/design/external-references.md) に記録している。
 >
@@ -90,6 +92,8 @@ SIS-PoC の氏名表示は **GyoseiHyojunMincho Web フォント**を利用す�
 
 業務ドメイン（児童生徒・名簿）の設計は [docs/design/](docs/design/) を参照する。
 
+AI コーディングエージェント向けの入口は [AGENTS.md](AGENTS.md)（正本）。ルート直下の `CLAUDE.md` はそこへのポインタ。
+
 ## 読む順序の目安
 
 1. まず [開発ガイドライン](docs/dev-guideline.md) で前提と技術スタックを押さえる
@@ -100,3 +104,5 @@ SIS-PoC の氏名表示は **GyoseiHyojunMincho Web フォント**を利用す�
 ## 環境構築
 
 ローカル開発を始めるには、Turso（DB）と Google OAuth / LINE Login（認証）のセットアップが必要です。手順は [環境構築手順](docs/environment-setup.md) を参照してください。
+
+バグ報告（GitHub Issue 起票＋スクショ保存）で使う `GITHUB_TOKEN` / `GITHUB_REPO` / `BLOB_READ_WRITE_TOKEN` は任意で、未設定でもアプリは動作します（バグ報告の送信のみ失敗します）。設定値の一覧は [.env.example](.env.example) を参照してください。

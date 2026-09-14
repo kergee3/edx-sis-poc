@@ -1,6 +1,8 @@
 # AGENTS.md
 
-このファイルは、Codex などの AI コーディングエージェントがこのリポジトリで作業するときの入口です。詳細な設計判断は `docs/` 配下を正本として扱い、このファイルは作業開始時の要点確認に使ってください。
+このファイルは、Codex や Claude Code などの AI コーディングエージェントがこのリポジトリで作業するときの入口です。詳細な設計判断は `docs/` 配下を正本として扱い、このファイルは作業開始時の要点確認に使ってください。
+
+ルート直下の `CLAUDE.md` はこのファイルへのポインタです。エージェント向けの記述を足すときは、このファイル（正本）だけを更新してください。
 
 ## プロジェクト概要
 
@@ -14,16 +16,19 @@
 
 主な機能は次の通りです。
 
-- 認証: Google / LINE、Auth.js v5
+- 認証: Google / LINE / ゲスト、Auth.js v5
 - ログイン履歴: サーバ側記録 + クライアント側補完
 - 右上ユーザーメニュー: ログアウト / About / ログイン履歴
-- バグ報告: スクリーンショット付き GitHub Issue 起票
+- バグ報告: スクリーンショット付き GitHub Issue 起票（ゲストログイン時はボタン非表示）
 - `home`: ログイン中の校長氏名・学校名・在籍数を差し込む案内表示
 - `students`: 生徒一覧、転入/転出/編集、在学証明書発行、表示名（姓）の JIS X 0213 マッピング、OneRoster 出力
+- `settings`: 学校情報、名簿の初期化、表示名編集の JIS X 0213 対応付け候補の生成元、表示名のフォント、Navigation Bar の位置
 - DB: Turso (SQLite, 東京 NRT) への一本化
 - UI: MUI Theme
 
-重要: このリポジトリは別アプリ (`life-todo`: todo / routines / packing) からの fork が出発点です。旧アプリの名残が一部残っていた経緯があります。`todo` / `routines` / `packing` / `data-transfer` / `memo` といった旧機能名を見かけた場合は、現行機能ではなく旧記述として扱ってください。
+データ連携（学齢簿マッピング・OneRoster 出力）は当初 `interop` ページで試作しましたが、`students` へ統合済みです。業務ドメインの設計は `docs/design/` を参照してください。
+
+重要: このリポジトリは別アプリ (`life-todo`: todo / routines / packing) からの fork が出発点です。旧アプリの名残が一部残っていた経緯があります。`todo` / `routines` / `packing` / `data-transfer` といった旧機能名を見かけた場合は、現行機能ではなく旧記述として扱ってください。なおルート直下の `memo/` は旧機能ではなく、現行の設計メモ置き場です。
 
 ## 重要な変更の前に必読
 
@@ -57,6 +62,7 @@
 - Validation: Zod
 - Lint: ESLint
 - Hosting: Vercel
+- 主なライブラリ: `exceljs`（名簿 xlsx の読み書き・在学証明書）、`fflate`（OneRoster の zip 生成）、`modern-screenshot` + `@vercel/blob`（バグ報告のスクリーンショット）、`@base-ui/react`（数値入力などの低レベル UI）、`date-fns` / `@holiday-jp/holiday_jp`（日付・祝日）、`@vercel/analytics`
 
 `.npmrc` で `legacy-peer-deps=true` が設定されています。`next-auth@5.0.0-beta.*` の peer dependencies が Next 16 を明示していないため、依存関係を扱うときはこの前提を維持してください。
 
@@ -121,7 +127,7 @@ app
   ↓
 features/<domain>
   ↓
-server/services
+server/services  →  server/adapters (外部 API の薄いラッパ)
   ↓
 server/repositories
   ↓
@@ -133,8 +139,17 @@ server/db
 - `server/services`: 業務ロジック、複数 repository の横断処理
 - `server/repositories`: Drizzle クエリのみ。DB アクセスはここに閉じる
 - `server/db`: schema、migrations、client
+- `server/adapters`: 外部 HTTP API の薄いラッパ。現在は `github`（Issue 起票）と `mj2jis`（MJ→JIS 変換 API）
 
-Server Action (`features/*/actions.ts`) は薄い受け口に保ち、実処理は `server/services` へ委譲してください。Route Handler (`app/api/**/route.ts`) は Webhook / 外部公開 API 用途を基本とし、内部更新は原則 Server Action を使います。`middleware.ts` はログイン要否の判定に留め、リソース単位の認可は service / Server Action 側で行います。UI 層から Drizzle、DB クライアント、外部 SaaS SDK を直接呼ばないでください。
+Server Action (`features/*/actions.ts`) は薄い受け口に保ち、実処理は `server/services` へ委譲してください。`middleware.ts` はログイン要否の判定に留め、リソース単位の認可は service / Server Action 側で行います。UI 層から Drizzle、DB クライアント、外部 SaaS SDK を直接呼ばないでください。
+
+Route Handler (`app/api/**/route.ts`) は、Webhook / 外部公開 API と、Server Action では返せないバイナリ・ファイルダウンロードに限定します。内部の状態更新は原則 Server Action です。現在の Route Handler は次の 5 本です。
+
+- `api/auth/[...nextauth]`: Auth.js
+- `api/bug-report/upload`: Vercel Blob のクライアント直アップロード用トークン発行
+- `api/students/export`: 名簿・在学証明書の xlsx ダウンロード（`exceljs` のため Node ランタイム前提）
+- `api/students/oneroster`: OneRoster 一式の zip ダウンロード（`fflate` のため Node ランタイム前提）
+- `api/env`: 動作確認用の env 疎通エンドポイント（`requireUser` 必須）
 
 現在の `src/features/` は、`auth` / `bug-report` / `home` / `login-history` / `settings` / `students` です。
 
@@ -163,7 +178,9 @@ Auth.js v5 + DrizzleAdapter で Google と LINE の 2 プロバイダを `provid
 - `src/features/auth/actions.ts`
 - `src/features/auth/components/SignInButton.tsx` と関連メニューのボタン
 
-アカウントは provider ごとに別ユーザ扱いです。`allowDangerousEmailAccountLinking` は使わないでください。LINE は Email permission を申請しないと email を返さないため、`users.email` は nullable 前提で UI も null safe にしてください。
+アカウントは provider ごとに別ユーザ扱いです。`allowDangerousEmailAccountLinking` は使わないでください。`account` テーブルが `(provider, providerAccountId)` の複合主キーなので、同じ人が Google と LINE でログインすると別 `user` 行が作られます。これは仕様です。LINE は Email permission を申請しないと email を返さないため、`users.email` は nullable 前提で UI も null safe にしてください。
+
+ゲストログインは OAuth 系と同じ 4 箇所パターンではなく、Credentials プロバイダ (`id: 'guest'`) 1 本で完結します。`authorize()` が `src/server/repositories/users.ts` の `insertGuestUser()` を直接呼んで `users` 行を払い出します（Credentials は OAuth と違いアダプタの `createUser` を自動実行しないため）。`users.isGuest` フラグで判別でき、JWT / session にも載ります。現時点で削除・掃除処理はありません（将来のクリーンアップ用に列だけ用意）。アカウント連携（ゲストから Google / LINE へのデータ引き継ぎ）も未実装です。
 
 ## ログイン履歴
 
@@ -184,20 +201,32 @@ Auth.js v5 + DrizzleAdapter で Google と LINE の 2 プロバイダを `provid
 - `BLOB_READ_WRITE_TOKEN`、`GITHUB_TOKEN`、`GITHUB_REPO` などの実シークレットは表示・ログ出力・コミットしない。
 - GitHub Issue に付けるラベルは GitHub 側で事前作成が必要です。GitHub API は未存在ラベルを自動作成しません。
 
+## 表示名編集の JIS X 0213 対応付け候補（ローカル / Web API 切り替え）
+
+生徒詳細・転入の表示名編集 (`src/features/students/components/FamilyMappingFields.tsx`) が使う対応付け候補は、`src/server/services/mji-mapping.ts` の `mapSurnameWithSource(input, source)` が生成元を切り替えます。
+
+- `mapSurname()`: アプリ内蔵のローカル MJ 縮退マップ。DB 照合で 1 字につき複数候補を返す。
+- `mapSurnameViaApi()`: maji.shumi.dev の MJ→JIS 変換 Web API を `src/server/adapters/mj2jis/client.ts` 経由で叩き、1 字につき候補 0〜1 件に一意解決する。
+
+生成元は `user_preferences.mj_mapping_source` (`'local' | 'api'`、既定は `'api'`) に保存し、設定ページの `MjMappingSourceSetting` から切り替えます。取得は `getMjMappingSourceForUser()` (`src/server/services/user-preferences.ts`) です。
+
+API 呼び出しが失敗（タイムアウト 5 秒・通信断など）した場合は `mapSurnameWithSource` が例外を握りつぶしてローカルへ自動フォールバックします。表示名編集自体を止めないための best-effort 方針で、バグ報告のスクリーンショット送信と同じ考え方です。
+
 ## ユーザ設定とキャッシュ
 
 サーバ側に永続化する設定は `user_preferences` テーブルに列を足し、`server/services/user-preferences.ts` と `server/repositories/user-preferences.ts` を経由してください。
 
-取得系の service は `unstable_cache(fn, key, { tags: [preferencesTag(userId)], revalidate })` で包みます。タグは `src/server/cache/tags.ts` の `preferencesTag(userId)` などのヘルパを必ず経由してください。更新系 Server Action は処理成功後に `updateTag(preferencesTag(userId))` を呼びます。
+取得系の service は `unstable_cache(fn, key, { tags: [preferencesTag(userId)], revalidate })` で包みます。タグは `src/server/cache/tags.ts` のヘルパ（現在は `preferencesTag(userId)` と `studentsTag(userId)`）を必ず経由してください。新しい一覧 service を足すときも同じパターンで、ドメインごとのタグ関数を `tags.ts` に追加します。更新系 Server Action は処理成功後に `updateTag(preferencesTag(userId))` などを呼びます。
 
 ## ディレクトリ構成
 
 ```text
 .
 ├── docs/                  # 開発・設計・環境構築ドキュメント
-├── public/                # 静的アセット、PWA アイコン
+├── memo/                  # 設計メモ（学齢簿と転入転出の扱いなど）
+├── public/                # 静的アセット、PWA アイコン、PoC 用の名簿 xlsx
 ├── scripts/               # 運用・生成スクリプト
-├── tests/                 # E2E / 統合テスト用
+├── tests/                 # E2E / 統合テスト用（現状は空のプレースホルダ）
 ├── src/
 │   ├── app/               # App Router のルート、page/layout、Route Handler
 │   ├── components/        # 機能横断の共通 UI
@@ -205,7 +234,7 @@ Auth.js v5 + DrizzleAdapter で Google と LINE の 2 プロバイダを `provid
 │   ├── features/          # 機能単位の UI、actions、schema、types、format
 │   ├── hooks/             # 共通 React hooks
 │   ├── lib/               # env、logging、共通 utils
-│   ├── server/            # DB、repositories、services、cache、auth などサーバ専用コード
+│   ├── server/            # db、repositories、services、adapters、cache、auth などサーバ専用コード
 │   ├── theme/             # MUI Theme
 │   └── types/             # 横断的な型定義
 ├── drizzle.turso.config.ts # Drizzle 設定 (Turso)
@@ -218,7 +247,7 @@ Auth.js v5 + DrizzleAdapter で Google と LINE の 2 プロバイダを `provid
 
 左メニュー / ボトムナビに項目を追加するときは `src/app/ClientLayout.tsx` の `navigationItems` 配列にエントリを足してください。ログイン必須なら `requiresAuth: true` を付けます。登録場所はこの配列に集約されています。
 
-現在のエントリは、ホーム (`/home`, 公開)、生徒一覧 (`/students`, 認証必須) です。
+現在のエントリは、ホーム (`/home`, 公開)、生徒一覧 (`/students`, 認証必須)、設定 (`/settings`, 認証必須) です。
 
 ## GyoseiHyojunMincho Web フォント（外部配信を利用）
 
@@ -253,7 +282,8 @@ Auth.js v5 + DrizzleAdapter で Google と LINE の 2 プロバイダを `provid
 - `src/app/about/page.tsx` の説明文は SIS-PoC の内容へ更新済み。
 - `@vercel/blob` は旧 data-transfer 用ではなく、現在はバグ報告スクリーンショット保存用途で利用しています。
 - Turso を `edx-poc` へ切り替える際に、旧 `todos` / `packing_*` などのテーブル定義はクリーンなベースラインへ整理済みです。
-- `todo` / `routines` / `packing` / `memo` といった語が古いドキュメントやコメントに残っていた場合は、現行仕様ではなく旧記述として扱ってください。
+- `exceljs` は旧 data-transfer 用としていったん除去しましたが、名簿 xlsx の読み書きと在学証明書の発行で再導入済みです。
+- `todo` / `routines` / `packing` / `data-transfer` といった語が古いドキュメントやコメントに残っていた場合は、現行仕様ではなく旧記述として扱ってください。
 
 ## スコープの健全性
 
