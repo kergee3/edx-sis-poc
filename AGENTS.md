@@ -206,7 +206,7 @@ Auth.js v5 + DrizzleAdapter で Google と LINE の 2 プロバイダを `provid
 生徒詳細・転入の表示名編集 (`src/features/students/components/FamilyMappingFields.tsx`) が使う対応付け候補は、`src/server/services/mji-mapping.ts` の `mapSurnameWithSource(input, source)` が生成元を切り替えます。
 
 - `mapSurname()`: アプリ内蔵のローカル MJ 縮退マップ。DB 照合で 1 字につき複数候補を返す。
-- `mapSurnameViaApi()`: maji.shumi.dev の MJ→JIS 変換 Web API を `src/server/adapters/mj2jis/client.ts` 経由で叩き、1 字につき候補 0〜1 件に一意解決する。
+- `mapSurnameViaApi()`: maji.shumi.dev の MJ→JIS 変換 Web API（v1: `/api/mj2jis/v1`。版なしの旧エンドポイントは 2026-11-03 廃止予定）を `src/server/adapters/mj2jis/client.ts` 経由で叩き、1 字につき候補 0〜1 件に一意解決する。
 
 生成元は `user_preferences.mj_mapping_source` (`'local' | 'api'`、既定は `'api'`) に保存し、設定ページの `MjMappingSourceSetting` から切り替えます。取得は `getMjMappingSourceForUser()` (`src/server/services/user-preferences.ts`) です。
 

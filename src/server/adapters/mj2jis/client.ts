@@ -1,11 +1,13 @@
 import { logger } from '@/lib/logging';
 
-const MJ2JIS_API_BASE = 'https://maji.shumi.dev/api/mj2jis';
+// v1（版付き）エンドポイント。版なしの /api/mj2jis は 2026-11-03 に廃止予定。
+const MJ2JIS_API_BASE = 'https://maji.shumi.dev/api/mj2jis/v1';
 const TIMEOUT_MS = 5000;
 
 /**
- * maji.shumi.dev の MJ→JIS 変換 Web API のレスポンス 1 件分。
+ * maji.shumi.dev の MJ→JIS 変換 Web API（v1）のレスポンス 1 件分。
  * フィールドの意味は https://maji.shumi.dev/mj2jis-api を参照。
+ * v1 内ではフィールドの削除・改名・意味変更は無い（あれば v2 になる）が、項目の追加はありうる。
  * mappingMethod / representativeUcsReason は将来値が増える可能性があるため string に広げる。
  */
 export interface Mj2JisApiResult {
