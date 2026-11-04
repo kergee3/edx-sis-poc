@@ -8,6 +8,7 @@ import ExportButtons from '@/features/students/components/ExportButtons';
 import { toView } from '@/features/students/services/format';
 import { listRosterForUser } from '@/server/services/students';
 import { auth } from '@/server/auth/config';
+import DemoDataNotice from '@/components/feedback/DemoDataNotice';
 
 export default async function StudentsPage() {
   const session = await auth();
@@ -21,6 +22,7 @@ export default async function StudentsPage() {
             生徒一覧
           </Typography>
         </Box>
+        <DemoDataNotice />
 
         {session?.user?.id ? (
           <>

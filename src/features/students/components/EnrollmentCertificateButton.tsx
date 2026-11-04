@@ -13,6 +13,7 @@ import {
 import DescriptionIcon from '@mui/icons-material/Description';
 import PrintIcon from '@mui/icons-material/Print';
 import SailingTwoToneIcon from '@mui/icons-material/SailingTwoTone';
+import DemoDataNotice from '@/components/feedback/DemoDataNotice';
 import { FONT_MJ } from '@/theme/fonts';
 import type { CertificateView } from '../types';
 
@@ -86,6 +87,8 @@ export default function EnrollmentCertificateButton({
 
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
         <DialogContent>
+          {/* 印刷対象外（.certificate-print-root の外）なので、印刷物には載らない。 */}
+          <DemoDataNotice />
           {/* 印刷対象。これ以外（操作ボタン・背景）は @media print で非表示にする。 */}
           <Box className="certificate-print-root" sx={{ px: { xs: 1, sm: 3 }, py: 2 }}>
             <Typography variant="body2" color="text.secondary" align="right" sx={{ mb: 1 }}>

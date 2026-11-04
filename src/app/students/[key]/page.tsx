@@ -3,6 +3,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import AppFooter from '@/components/layout/AppFooter';
+import DemoDataNotice from '@/components/feedback/DemoDataNotice';
 import SignInButton from '@/features/auth/components/SignInButton';
 import StudentDetail from '@/features/students/components/StudentDetail';
 import StudentDetailNav from '@/features/students/components/StudentDetailNav';
@@ -84,6 +85,8 @@ export default async function StudentDetailPage({
             </Button>
           </Link>
         </Box>
+
+        <DemoDataNotice sx={{ mt: 1 }} />
 
         <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 1, mb: 1, flexWrap: 'wrap' }}>
           <StudentDetailNav

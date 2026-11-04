@@ -1,6 +1,7 @@
 import { Box, Card, CardContent, Typography } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AccountPanel from '@/features/auth/components/AccountPanel';
+import DemoDataNotice from '@/components/feedback/DemoDataNotice';
 
 export default function AccountPage() {
   return (
@@ -12,6 +13,7 @@ export default function AccountPage() {
             アカウント
           </Typography>
         </Box>
+        <DemoDataNotice />
         <AccountPanel />
       </CardContent>
     </Card>

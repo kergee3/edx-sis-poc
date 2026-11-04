@@ -3,6 +3,7 @@
 import { Card, CardContent, Typography, Box } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import AppFooter from '@/components/layout/AppFooter';
+import DemoDataNotice from '@/components/feedback/DemoDataNotice';
 
 export default function PrivatePage() {
   return (
@@ -14,6 +15,7 @@ export default function PrivatePage() {
             Private
           </Typography>
         </Box>
+        <DemoDataNotice />
 
         <Typography variant="body1" color="text.secondary" paragraph>
           このページはナビゲーションバーには表示されません。URL を直接指定した場合のみアクセスできます。

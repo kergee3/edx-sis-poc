@@ -22,6 +22,7 @@ import { getCoreInfo } from '@/lib/utils/core-info';
 import { fetchServerInfo, type ServerInfo } from '@/lib/utils/server-info';
 import { useDeviceDetection } from '@/hooks/use-device-detection';
 import AppFooter from '@/components/layout/AppFooter';
+import DemoDataNotice from '@/components/feedback/DemoDataNotice';
 
 interface UserAgentData {
   brands: { brand: string; version: string }[];
@@ -340,6 +341,7 @@ export default function EnvPage() {
             実行環境
           </Typography>
         </Box>
+        <DemoDataNotice />
 
         <DetailSection title="デバイスと画面の概要" rows={summaryRows} />
         <Box sx={{ mt: 3 }}>

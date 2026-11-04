@@ -19,6 +19,7 @@ import { FONT_MJ } from '@/theme/fonts';
 import type { StudentDetailView } from '../types';
 import { transferOutStudentAction } from '../actions';
 import { transferOutErrorMessage } from '../error-messages';
+import DemoDataNotice from '@/components/feedback/DemoDataNotice';
 
 /** 苗字と名前の間の全角スペース。 */
 const FULLWIDTH_SPACE = '　';
@@ -99,6 +100,7 @@ export default function TransferOutStudentButton({
       <Dialog open={open} onClose={closeDialog} maxWidth="sm" fullWidth>
         <DialogTitle>転出の確認</DialogTitle>
         <DialogContent dividers>
+          <DemoDataNotice />
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
             次の生徒を転出させます。名簿の一覧からは外れますが、転出日つきで記録は残ります。内容を確認し、[転出]
             で確定してください。

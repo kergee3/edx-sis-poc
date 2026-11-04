@@ -17,6 +17,7 @@ import FamilyMappingFields, {
   defaultChoice,
   type MappingRecordView,
 } from './FamilyMappingFields';
+import DemoDataNotice from '@/components/feedback/DemoDataNotice';
 
 interface StudentDisplayNameEditorProps {
   /** この生徒の正式氏名（姓）マッピング。正式氏名は DB 値なので action が同一行に一致する。 */
@@ -91,6 +92,7 @@ export default function StudentDisplayNameEditor({ record }: StudentDisplayNameE
       <Dialog open={open} onClose={closeDialog} maxWidth="md" fullWidth>
         <DialogTitle>表示名編集</DialogTitle>
         <DialogContent dividers>
+          <DemoDataNotice />
           <FamilyMappingFields
             record={record}
             selections={selections}

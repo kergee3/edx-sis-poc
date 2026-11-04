@@ -5,6 +5,7 @@ import HomePlaceholder from '@/features/home/components/HomePlaceholder';
 import { listRosterForUser } from '@/server/services/students';
 import { getSchoolProfileForUser } from '@/server/services/user-preferences';
 import { auth } from '@/server/auth/config';
+import DemoDataNotice from '@/components/feedback/DemoDataNotice';
 
 export default async function HomePage() {
   const session = await auth();
@@ -39,6 +40,7 @@ export default async function HomePage() {
             ホーム
           </Typography>
         </Box>
+        <DemoDataNotice />
 
         <HomePlaceholder account={account} />
 

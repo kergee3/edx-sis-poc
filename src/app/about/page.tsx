@@ -24,6 +24,7 @@ import {
   Settings as SettingsIcon,
 } from '@mui/icons-material';
 import AppFooter from '@/components/layout/AppFooter';
+import DemoDataNotice from '@/components/feedback/DemoDataNotice';
 
 const techStack = [
   {
@@ -83,6 +84,7 @@ export default function AboutPage() {
             About
           </Typography>
         </Box>
+        <DemoDataNotice />
 
         <Box sx={{ my: 3 }}>
           <Typography variant="h6" gutterBottom>

@@ -5,6 +5,7 @@ import { listRecentLoginsForUser } from '@/server/services/login-history';
 import { toView } from '@/features/login-history/services/format';
 import LoginHistoryTable from '@/features/login-history/components/LoginHistoryTable';
 import LoginHistorySignInPrompt from '@/features/login-history/components/LoginHistorySignInPrompt';
+import DemoDataNotice from '@/components/feedback/DemoDataNotice';
 
 export default async function LoginHistoryPage() {
   const session = await auth();
@@ -18,6 +19,7 @@ export default async function LoginHistoryPage() {
             ログイン履歴
           </Typography>
         </Box>
+        <DemoDataNotice />
 
         {session?.user?.id ? (
           <LoginHistoryTable

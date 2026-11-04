@@ -1,6 +1,7 @@
 import { Box, Card, CardContent, Typography } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import PageContentSkeleton from '@/components/layout/PageContentSkeleton';
+import DemoDataNotice from '@/components/feedback/DemoDataNotice';
 
 export default function HomeLoading() {
   return (
@@ -12,6 +13,7 @@ export default function HomeLoading() {
             ホーム
           </Typography>
         </Box>
+        <DemoDataNotice />
         <PageContentSkeleton rows={3} />
       </CardContent>
     </Card>

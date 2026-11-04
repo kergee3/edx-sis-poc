@@ -13,6 +13,9 @@ interface SettingsContextType {
   /** 表示名（JIS文字）用フォント。ゴシック（sans）／明朝（serif）。既定は sans。 */
   displayFont: DisplayFont;
   setDisplayFont: (font: DisplayFont) => void;
+  /** 各画面のタイトル下に「架空のテストデータ」である旨を表示するか。既定は false（表示しない）。 */
+  showDemoDataNotice: boolean;
+  setShowDemoDataNotice: (show: boolean) => void;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -20,6 +23,7 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [navigationPosition, setNavigationPositionState] = useState<NavigationPosition>('auto');
   const [displayFont, setDisplayFontState] = useState<DisplayFont>(DEFAULT_DISPLAY_FONT);
+  const [showDemoDataNotice, setShowDemoDataNoticeState] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -32,6 +36,9 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     const savedFont = localStorage.getItem('displayFont') as DisplayFont | null;
     if (savedFont && DISPLAY_FONTS.includes(savedFont)) {
       setDisplayFontState(savedFont);
+    }
+    if (localStorage.getItem('showDemoDataNotice') === 'true') {
+      setShowDemoDataNoticeState(true);
     }
     setIsLoaded(true);
   }, []);
@@ -46,6 +53,11 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('displayFont', font);
   };
 
+  const setShowDemoDataNotice = (show: boolean) => {
+    setShowDemoDataNoticeState(show);
+    localStorage.setItem('showDemoDataNotice', show ? 'true' : 'false');
+  };
+
   if (!isLoaded) {
     return null;
   }
@@ -57,6 +69,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         setNavigationPosition,
         displayFont,
         setDisplayFont,
+        showDemoDataNotice,
+        setShowDemoDataNotice,
       }}
     >
       {children}

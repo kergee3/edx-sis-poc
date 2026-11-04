@@ -14,12 +14,14 @@ import DefaultRosterSetting from '@/features/settings/components/DefaultRosterSe
 import DisplayFontSetting from '@/features/settings/components/DisplayFontSetting';
 import NavigationPositionSetting from '@/features/settings/components/NavigationPositionSetting';
 import MjMappingSourceSetting from '@/features/settings/components/MjMappingSourceSetting';
+import DemoDataNoticeSetting from '@/features/settings/components/DemoDataNoticeSetting';
 import { auth } from '@/server/auth/config';
 import {
   getSchoolProfileForUser,
   getMjMappingSourceForUser,
 } from '@/server/services/user-preferences';
 import { listRosterSheetNames } from '@/server/services/roster-master';
+import DemoDataNotice from '@/components/feedback/DemoDataNotice';
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -49,6 +51,7 @@ export default async function SettingsPage() {
             設定
           </Typography>
         </Box>
+        <DemoDataNotice />
         <Typography variant="body1" color="text.secondary" gutterBottom sx={{ mb: 3 }}>
           アプリケーションの各種設定を行います
         </Typography>
@@ -95,6 +98,10 @@ export default async function SettingsPage() {
         <Divider sx={{ my: 3 }} />
 
         <NavigationPositionSetting />
+
+        <Divider sx={{ my: 3 }} />
+
+        <DemoDataNoticeSetting />
 
         <AppFooter />
       </CardContent>

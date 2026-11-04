@@ -33,6 +33,7 @@ import {
   generateTransferErrorMessage,
   commitTransferErrorMessage,
 } from '../error-messages';
+import DemoDataNotice from '@/components/feedback/DemoDataNotice';
 
 /** 苗字と名前の間の全角スペース。 */
 const FULLWIDTH_SPACE = '　';
@@ -150,6 +151,7 @@ export default function TransferStudentButton() {
       <Dialog open={open} onClose={closeDialog} maxWidth="sm" fullWidth>
         <DialogTitle>転入生の確認</DialogTitle>
         <DialogContent dividers>
+          <DemoDataNotice />
           {draft ? (
             <>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
