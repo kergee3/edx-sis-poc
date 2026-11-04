@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+import DemoDataNotice from '@/components/feedback/DemoDataNotice';
 import FamilyMappingFields, {
   defaultChoice,
   type MappingRecordView,
@@ -81,6 +82,7 @@ export default function TransferDisplayNameEditor({
       <Dialog open={open} onClose={closeDialog} maxWidth="md" fullWidth>
         <DialogTitle>表示名編集</DialogTitle>
         <DialogContent dividers>
+          <DemoDataNotice />
           <FamilyMappingFields
             record={record}
             selections={selections}

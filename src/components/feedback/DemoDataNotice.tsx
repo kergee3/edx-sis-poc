@@ -3,6 +3,15 @@
 import { Alert, AlertTitle, type SxProps, type Theme } from '@mui/material';
 import { useSettings } from '@/contexts/settings-context';
 
+/** 日本語と英語の区切り（スラッシュ）。読み上げでは不要なので aria-hidden にする。 */
+function BilingualSeparator() {
+  return (
+    <span aria-hidden="true" style={{ margin: '0 0.6em', opacity: 0.8 }}>
+      /
+    </span>
+  );
+}
+
 interface DemoDataNoticeProps {
   sx?: SxProps<Theme>;
 }
@@ -27,10 +36,18 @@ export default function DemoDataNotice({ sx }: DemoDataNoticeProps) {
       role="note"
       sx={[{ mb: 2, fontWeight: 'bold' }, ...(Array.isArray(sx) ? sx : [sx])]}
     >
+      {/* 海外の視聴者・審査担当にも伝わるよう、各行の横に同じ意味の英語を併記する。 */}
       <AlertTitle sx={{ fontWeight: 'bold', fontSize: '1.05rem' }}>
         表示されている名簿はすべて架空のテストデータです。
+        <BilingualSeparator />
+        <span lang="en">All roster data shown here is fictitious test data.</span>
       </AlertTitle>
       画面内の氏名・学校名・その他の個人情報はすべて架空であり、実在する人物とは関係ありません。
+      <BilingualSeparator />
+      <span lang="en">
+        All names, school names, and other personal information on this screen are fictitious and
+        have no connection to any real person.
+      </span>
     </Alert>
   );
 }
